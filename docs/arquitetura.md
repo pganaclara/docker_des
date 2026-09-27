@@ -267,6 +267,32 @@ Média ± intervalo de confiança de 95 % (t(0,975; 4) = 2,776; n = 5), em ms:
    menor que 1 %, essa diferença é da máquina, não ruído. Com a decifração
    emulada dominando, a CPU quase não pesa.
 
+### 6.4 Outra partição: S5 isolado
+
+A partição em blocos põe o S5, o supervisor mais carregado no ciclo 1 (41 das
+190 decifrações), junto com outros até 6 containers. Os cenários
+`fms-2-s5` a `fms-6-s5` o isolam num container e distribuem os outros 6
+minimizando a carga do container mais carregado. `REPEAT=5 scripts/run-all.sh
+s5` no WSL (60/60 PASS, invariantes idênticos nas repetições; dados em
+[`resultados-wsl/20260927-200439-varredura/`](resultados-wsl/20260927-200439-varredura/README.md)):
+
+| containers | ciclo 1: S5 isolado − blocos | ciclos 2–5: S5 isolado − blocos | limite: blocos → S5 |
+|---|---|---|---|
+| 2 | +23,2 % | +39,4 % | 164,7 → 233,7 |
+| 3 | −3,9 % | +5,8 % | 123,9 → 123,9 |
+| 4 | **−11,6 %** | **−6,8 %** | 105,1 → 91,0 |
+| 5 | −0,2 % (n.s.) | +1,6 % | 76,8 → 67,4 |
+| 6 | −2,4 % | +0,2 % (n.s.) | 65,9 → 64,3 |
+
+(n.s. = IC 95 % da diferença contém zero.) Isolar o S5 só compensa nas duas
+fases com 4 containers. Com 2 os outros seis ficam juntos. Com 3 e 6 o ganho
+fica no ciclo 1, porque depois dele o supervisor mais pesado passa a ser o S6
+(28 decifrações por ciclo, contra 22 do S5). Com 5 o limite cai sem que o
+tempo mude: o limite conta o trabalho total de cada nó, não *quando* ele
+acontece entre eventos compartilhados, e um modelo pelo caminho crítico não
+foi feito. Não há uma partição melhor para todo N; a partição é um parâmetro
+de projeto a medir.
+
 **Para citar:** *com o custo de decifração do ESP32-S3 emulado, distribuir os
 7 supervisores modulares locais do FMS em 7 containers reduz o tempo por passo
 de 303,1 ± 1,3 ms para 90,1 ± 1,0 ms (3,37×; IC 95 %, n = 5), com aceleração
@@ -420,9 +446,9 @@ mas numa rede física a conta muda.
   emulados. Por isso os tempos absolutos não coincidem com os das placas
   (2 placas: 296,9 ms/passo no ciclo 1; 2 containers: 195,2), e a emulação
   vale para a forma da curva de escala, não para prever tempos de placa.
-- **Uma partição por número de nós.** A varredura usa a partição em blocos
-  contíguos que o motor deriva. Outras partições (`DES_SUP_NODE_MAP`) podem
-  equilibrar melhor a carga e não foram medidas.
+- **Duas partições por número de nós.** Além dos blocos contíguos, só a
+  partição com o S5 isolado (§6.4) foi medida. Outras (`DES_SUP_NODE_MAP`)
+  podem equilibrar melhor a carga nas duas fases.
 - **A rede é uma *bridge* na memória.** Nos experimentos anteriores, perda e
   atraso foram injetados (motor ou `netem`), não medidos num enlace real. O `netem` não existe no kernel do
   ambiente de referência, mas o cenário `fms-7-wifi` rodou e passou num WSL 2

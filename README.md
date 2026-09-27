@@ -183,10 +183,12 @@ decifrações (190 no ciclo 1), oráculo PASS em todo nó e nenhum passo pulado.
 carregado no ciclo 1) sozinho num container, e os outros 6 nos demais,
 minimizando a carga do container mais carregado (`DES_SUP_NODE_MAP`).
 `scripts/run-all.sh s5` roda as duas partições lado a lado e a tabela de
-escala ganha uma comparação. Primeira execução (nuvem, n = 1): isolar o S5
-só compensa com **4 containers** (−11,6 % no ciclo 1, −6,6 % nos seguintes);
-com 2 é bem pior (+23,5 %), e com 3, 5 e 6 a diferença é pequena ou nula.
-Detalhes em [`docs/resultados/escala-s5/`](docs/resultados/escala-s5/README.md).
+escala ganha uma comparação. Com 5 repetições no WSL (60 execuções, 60/60
+PASS): isolar o S5 só compensa nas duas fases com **4 containers** (−11,6 %
+no ciclo 1, −6,8 % nos seguintes); com 2 é bem pior (+23 % e +39 %); com 3 e
+6 o ciclo 1 melhora pouco e os seguintes não; com 5 não há diferença no
+ciclo 1. Não existe partição melhor para todo número de containers.
+Detalhes em [`docs/resultados-wsl/20260927-200439-varredura/`](docs/resultados-wsl/20260927-200439-varredura/README.md) (com IC 95 % das diferenças) e na primeira execução, [`docs/resultados/escala-s5/`](docs/resultados/escala-s5/README.md).
 
 O resultado da varredura está na seção "O resultado principal", acima.
 
