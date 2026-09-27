@@ -48,7 +48,7 @@ RUN set -eu; mkdir -p /out; pids=""; \
           -DDES_ROUNDS="$DES_ROUNDS" -DDES_WORK_MS="$DES_WORK_MS" \
           $DES_EXTRA_FLAGS \
           -o "/out/des_node$id" src/des_container_main.cpp \
-          -l:libmbedcrypto.a & \
+          -Wl,--wrap=mbedtls_ecp_mul -l:libmbedcrypto.a & \
       pids="$pids $!"; \
     done; \
     for p in $pids; do wait "$p"; done; \

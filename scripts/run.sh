@@ -5,6 +5,7 @@
 #   scripts/run.sh                              scenarios/fms-7.env
 #   scripts/run.sh scenarios/fms-2.env
 #   QUIET=1 scripts/run.sh scenarios/fms-7.env  no live log, summary only
+#   DES_SKIP_BUILD=1 scripts/run.sh ...          reuse the image already built
 #
 # Starts node1..nodeN (N = DES_NUM_NODES of the scenario), waits for every
 # container to exit, then writes to results/<timestamp>-<scenario>/:
@@ -38,8 +39,12 @@ services=()
 for ((k = 1; k <= nodes; ++k)); do services+=("node$k"); done
 dc=(docker compose --env-file "$scenario")
 
-echo "== build ($scenario)"
-"${dc[@]}" build "${services[0]}"
+if [[ ${DES_SKIP_BUILD:-0} == 1 ]]; then
+    echo "== build skipped (DES_SKIP_BUILD=1): using the existing image"
+else
+    echo "== build ($scenario)"
+    "${dc[@]}" build "${services[0]}"
+fi
 "${dc[@]}" down --remove-orphans >/dev/null 2>&1 || true
 
 echo "== run: ${services[*]}"

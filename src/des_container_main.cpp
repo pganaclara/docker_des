@@ -81,6 +81,48 @@ static char g_des_auth_key[DES_KEY_CHARS + 1];
 #include "des_generic.h"
 #include "des_transport_unicast.h"
 
+// ── 5. optional: emulate the ESP32's cost of a decryption ───────────────────
+// On an ESP32-S3 one blinded scalar multiplication costs ~69 ms; on a PC it
+// costs well under a millisecond, which moves the bottleneck from cryptography
+// to coordination and turns "distributing is faster" around (docs/arquitetura
+// §6.3). To test that explanation, DES_EMU_SCALARMUL_MS=<ms> makes every
+// DECRYPTION take at least that long, by sleeping out the difference.
+//
+// The engine is not touched. The Dockerfile links with
+// -Wl,--wrap=mbedtls_ecp_mul, so the engine's calls land here and are passed
+// on to the real function. Only the call whose scalar is the negated private
+// key — row_decrypt(), the one decryption the engine performs — is slowed;
+// encryption at start-up and the self-test are not. The decryption COUNT is
+// unchanged, and so are all the checks.
+//
+// Sleeping, not spinning: each board has a core of its own, and seven
+// spinning containers on a laptop with fewer free cores would measure CPU
+// contention instead of the ESP32.
+static uint32_t g_emu_mul_us = 0;
+
+extern "C" int __real_mbedtls_ecp_mul(mbedtls_ecp_group* grp, mbedtls_ecp_point* R,
+                                      const mbedtls_mpi* m, const mbedtls_ecp_point* P,
+                                      int (*f_rng)(void*, unsigned char*, size_t),
+                                      void* p_rng);
+extern "C" int __wrap_mbedtls_ecp_mul(mbedtls_ecp_group* grp, mbedtls_ecp_point* R,
+                                      const mbedtls_mpi* m, const mbedtls_ecp_point* P,
+                                      int (*f_rng)(void*, unsigned char*, size_t),
+                                      void* p_rng) {
+    uint64_t t0 = des_micros();
+    int ret = __real_mbedtls_ecp_mul(grp, R, m, P, f_rng, p_rng);
+    if (g_emu_mul_us && m == &g_neg_priv) {
+        uint64_t spent = des_micros() - t0;
+        if (spent < g_emu_mul_us) {
+            uint64_t left = g_emu_mul_us - spent;
+            struct timespec ts;
+            ts.tv_sec  = (time_t)(left / 1000000u);
+            ts.tv_nsec = (long)(left % 1000000u) * 1000L;
+            while (nanosleep(&ts, &ts) != 0 && errno == EINTR) {}
+        }
+    }
+    return ret;
+}
+
 // The engine asks the platform which interface to join the multicast group on.
 // $DES_IFACE_IP when set, else the first non-loopback, multicast-capable IPv4
 // that is up — in a container attached to one network, that is eth0.
@@ -180,8 +222,8 @@ static void print_result(int code) {
            g_halt_why ? g_halt_why : "");
     for (int c = 0; c < g_cycles_done; ++c)
         printf("%s%.1f", c ? "," : "", g_cycle_end_ms[c]);
-    printf("],\"rounds\":%d,\"work_ms\":%d,\"exit\":%d}\n",
-           (int)DES_ROUNDS, (int)DES_WORK_MS, code);
+    printf("],\"rounds\":%d,\"work_ms\":%d,\"emu_scalarmul_ms\":%.1f,\"exit\":%d}\n",
+           (int)DES_ROUNDS, (int)DES_WORK_MS, g_emu_mul_us / 1000.0, code);
     fflush(stdout);
 }
 
@@ -211,12 +253,19 @@ int main(int argc, char** argv) {
         }
     }
 
+    // Fractional milliseconds allowed (e.g. 69 or 68.6).
+    if (const char* e = getenv("DES_EMU_SCALARMUL_MS"))
+        if (*e) g_emu_mul_us = (uint32_t)(atof(e) * 1000.0 + 0.5);
+
     uint32_t timeout_s = env_u32("DES_RUN_TIMEOUT_S", 900);
     if (timeout_s) { signal(SIGALRM, on_watchdog); alarm(timeout_s); }
 
     printf("des_container: node %d of %d, %s, data %s, transport %s\n",
            (int)DES_NODE_ID, (int)DES_NUM_NODES, DES_FAMILY_NAME, DES_DATA_HEADER,
            DES_TRANSPORT_IMPL.name);
+    if (g_emu_mul_us)
+        printf("des_container: EMULATING the ESP32 — every decryption takes at "
+               "least %.1f ms (DES_EMU_SCALARMUL_MS)\n", g_emu_mul_us / 1000.0);
 
     des_setup();          // rendezvous, probe, the scripted run, the summary
 

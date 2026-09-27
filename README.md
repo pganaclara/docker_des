@@ -57,6 +57,10 @@ O argumento completo está em [`docs/arquitetura.md`](docs/arquitetura.md) §5.
   distribuir acelera (2 placas: 296,9 ms/passo contra 346,0 numa só). No
   container ela custa ≈ 0,55 ms, a coordenação domina (88 % do passo) e
   distribuir atrasa (1 nó: 2,4 ms/passo; 7 nós: 4,7).
+- **Testado: emulando o custo de decifração do ESP32 (69 ms), distribuir
+  volta a acelerar.** 1 → 2 → 7 containers: 299,5 → 192,7 → 87,2 ms/passo,
+  perto do limite "decifrações do nó mais carregado × 69 ms"
+  (`fms-*-esp32`, `DES_EMU_SCALARMUL_MS`).
 - **Os *timeouts* do protocolo estão calibrados para o ESP32.** Com 5 % de
   perda, o passo vai a 511 ms com os *timeouts* de 1,5 s e a 85 ms com
   *timeouts* de 100 ms, sem mudar o resultado.
@@ -128,6 +132,7 @@ Cada arquivo em `scenarios/` é um experimento, com os valores esperados
 | `fms-7-loss5` | 7 | 5 % de perda de quadros: retransmissão, sem divergência |
 | `fms-7-loss5-fast` | 7 | idem, com *timeouts* ajustados para container (100 ms em vez de 1,5 s) |
 | `fms-2-loss30` | 2 | teste negativo: 30 % de perda leva ao **SAFE HALT** propagado |
+| `fms-1-esp32`, `fms-2-esp32`, `fms-7-esp32` | 1, 2, 7 | cada decifração leva 69 ms como no ESP32-S3: distribuir volta a acelerar |
 | `fms-7-wifi` | 7 | atraso de 7 ± 3 ms e 1 % de perda via `netem` (exige `sch_netem` no kernel; kernels WSL 2 recentes trazem como módulo, os antigos não) |
 
 ---
@@ -163,6 +168,8 @@ No arquivo de cenário (ou no ambiente):
 | `DES_TRANSPORT` | `multicast` | `multicast` ou `unicast` |
 | `DES_NETEM` | vazio | argumentos do `netem`, ex. `"delay 7ms 3ms loss 1%"` |
 | `DES_EXTRA_FLAGS` | vazio | qualquer macro do motor, ex. `-DDES_SIMULATE_LOSS_PCT=5`, `"-DDES_SUP_NODE_MAP={1,1,2,2,3,3,4}"`, `-DDES_CONTROLLABLE_MASK=...` |
+| `DES_EMU_SCALARMUL_MS` | vazio | emula o custo de decifração de uma placa, ex. `69` (ESP32-S3); só tempo, a lógica não muda |
+| `DES_SKIP_BUILD` | `0` | `1` reaproveita a imagem já compilada (sem internet) |
 | `DES_CPUS` | `1.0` | CPUs por container |
 | `DES_LINGER_MS` | `10000` | quanto o nó ainda atende os pares depois de terminar |
 | `DES_RUN_TIMEOUT_S` | `900` | *watchdog* da execução |

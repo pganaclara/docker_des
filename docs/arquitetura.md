@@ -246,6 +246,43 @@ por commit. É a mesma arquitetura com o gargalo em outro lugar, e o resultado
 vale ser discutido: a vantagem de distribuir depende da razão entre o custo
 criptográfico por passo e o custo de coordenação.
 
+### 6.3b Teste da explicação: emulando o custo de decifração do ESP32
+
+Se a explicação acima estiver certa, basta tornar a criptografia tão cara
+quanto no ESP32 para distribuir voltar a acelerar. `DES_EMU_SCALARMUL_MS=69`
+faz cada **decifração** levar pelo menos 69 ms, o custo medido de uma
+multiplicação escalar no ESP32-S3. O motor não é alterado: o ponto de entrada
+intercepta a chamada a `mbedtls_ecp_mul` com `-Wl,--wrap` e só dorme o que
+falta quando o escalar é a chave privada negada. Cenários `fms-{1,2,7}-esp32`,
+resultados em [`resultados/emulacao-esp32/`](resultados/emulacao-esp32/).
+
+| nós | sem emulação, ciclo 1 | **com emulação**, ciclo 1 | com emulação, ciclos 2–5 | limite inferior (nó mais carregado) |
+|---|---|---|---|---|
+| 1 | 2,08 ms | **299,5 ms** | 239,2 ms | 190 dec × 69 / 44 = 298,0 ms |
+| 2 | 3,93 ms | **192,7 ms** (1,6× mais rápido) | 147,5 ms | 105 × 69 / 44 = 164,7 ms |
+| 7 | 4,35 ms | **87,2 ms** (3,4× mais rápido) | 59,8 ms | 41 × 69 / 44 = 64,3 ms |
+
+Os invariantes não mudam (798 decifrações, 190 no ciclo 1, `edbd7971`,
+405 + 393). A tendência se inverte exatamente como previsto: com
+criptografia cara, distribuir paraleliza as decifrações e acelera; com
+criptografia barata, só acrescenta coordenação.
+
+O tempo por passo fica no mínimo em *decifrações do nó mais carregado × custo
+de uma decifração ÷ passos*, porque os nós só trabalham em paralelo entre dois
+eventos compartilhados. A distância até esse limite (1,5 ms, 28 ms e 23 ms
+acima) é o custo de coordenação e de serialização. Isso dá uma regra para
+escolher a partição: equilibrar as decifrações entre os nós e manter pequeno o
+número de eventos compartilhados.
+
+**Ressalvas.** A emulação só reproduz o custo da multiplicação escalar. As
+somas de pontos (`muladd`, ≈ 5 ms cada no ESP32), o HMAC, o Wi-Fi e o segundo
+núcleo da placa única não são emulados. Por isso os números absolutos não
+coincidem com os das placas (2 placas: 296,9 ms/passo; 2 containers
+emulados: 192,7), e o ganho de 1 → 2 nós é maior aqui (1,6×) que nas placas
+(1,17×, com a placa única usando 2 núcleos). A emulação serve para testar a
+**direção** do efeito e prever tendências, não para substituir a medição no
+hardware.
+
 ### 6.4 Perda: os *timeouts* do protocolo estão calibrados para o ESP32
 
 | cenário | perda | passos | retransmissões | tempo por passo (ciclo 1) |
