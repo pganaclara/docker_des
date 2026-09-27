@@ -1,0 +1,220 @@
+{
+  "run": "20260927-145850-fms-2",
+  "scenario": {
+    "DES_PROBLEM": "fms",
+    "DES_NUM_NODES": "2",
+    "DES_FAMILY": "LMOD",
+    "DES_ROUNDS": "5",
+    "DES_WORK_MS": "0",
+    "DES_TRANSPORT": "multicast",
+    "DES_NETEM": "",
+    "EXPECT_FINGERPRINT": "edbd7971",
+    "EXPECT_DEC_PER_NODE": "405 393",
+    "EXPECT_DEC_CYCLE1_PER_NODE": "85 105",
+    "EXPECT_OUTCOME": "complete"
+  },
+  "outcome": "complete",
+  "halted_nodes": [],
+  "fingerprints": [
+    "edbd7971"
+  ],
+  "rounds": 5,
+  "seq_len": 44,
+  "steps_fired": 220,
+  "skips": 0,
+  "decryptions_total": 798,
+  "decryptions_cycle1": 190,
+  "cycle_end_ms": [
+    228.5,
+    383.2,
+    519.6,
+    658.5,
+    812.6
+  ],
+  "per_step_ms_cycle1": 5.193181818181818,
+  "per_step_ms_steady": 3.31875,
+  "rtt_ms": {
+    "n": 20,
+    "avg": 3.8,
+    "min": 2.22,
+    "max": 5.28
+  },
+  "mono": "off",
+  "checks": [
+    {
+      "check": "config fingerprint",
+      "expected": "edbd7971",
+      "got": "edbd7971",
+      "ok": true
+    },
+    {
+      "check": "decryptions per node",
+      "expected": "405 393",
+      "got": "405 393",
+      "ok": true
+    },
+    {
+      "check": "decryptions per node, cycle 1",
+      "expected": "85 105",
+      "got": "85 105",
+      "ok": true
+    },
+    {
+      "check": "outcome",
+      "expected": "complete",
+      "got": "complete",
+      "ok": true
+    },
+    {
+      "check": "same fingerprint on every node",
+      "expected": 1,
+      "got": 1,
+      "ok": true
+    },
+    {
+      "check": "oracle PASS on every node",
+      "expected": true,
+      "got": true,
+      "ok": true
+    },
+    {
+      "check": "crypto self-test PASS on every node",
+      "expected": true,
+      "got": true,
+      "ok": true
+    }
+  ],
+  "all_checks_ok": true,
+  "nodes": [
+    {
+      "log": "node1.log",
+      "dec_total": 405,
+      "dec_by_cycle": {
+        "1": 85,
+        "2": 80,
+        "3": 80,
+        "4": 80,
+        "5": 80
+      },
+      "he_ms_total": 212.70000000000022,
+      "skip_lines": 0,
+      "selftest": "PASS",
+      "mono": "off",
+      "rtt": {
+        "n": 20,
+        "avg": 3.8,
+        "min": 2.22,
+        "max": 5.28
+      },
+      "result": {
+        "node": 1,
+        "nodes": 2,
+        "family": "LOCAL MODULAR",
+        "data": "supervisor_data_fms.h",
+        "transport": "UDP/IP multicast (RFC 1112)",
+        "fingerprint": "edbd7971",
+        "supervisors": [
+          "S0",
+          "S1",
+          "S2",
+          "S3"
+        ],
+        "fired": {
+          "local": 80,
+          "ctrl": 40,
+          "unctrl": 40
+        },
+        "applied_for_peers": 0,
+        "skips": 0,
+        "impossible": 0,
+        "tx": 148,
+        "rx": 229,
+        "retx": 0,
+        "auth_bad": 0,
+        "replays": 0,
+        "challenges": 1,
+        "mac_us": 1.4,
+        "rxq_peak": 1,
+        "rxq_drops": 0,
+        "sync_wait_ms": 284.7,
+        "oracle": "PASS",
+        "safe_halt": false,
+        "halt_reason": "",
+        "cycle_end_ms": [
+          201.9,
+          357.8,
+          493.1,
+          633.4,
+          785.9
+        ],
+        "rounds": 5,
+        "work_ms": 0,
+        "exit": 0
+      },
+      "seq_len": 44,
+      "exit": 0
+    },
+    {
+      "log": "node2.log",
+      "dec_total": 393,
+      "dec_by_cycle": {
+        "1": 105,
+        "2": 72,
+        "3": 72,
+        "4": 72,
+        "5": 72
+      },
+      "he_ms_total": 224.90000000000035,
+      "skip_lines": 0,
+      "selftest": "PASS",
+      "mono": "off",
+      "rtt": null,
+      "result": {
+        "node": 2,
+        "nodes": 2,
+        "family": "LOCAL MODULAR",
+        "data": "supervisor_data_fms.h",
+        "transport": "UDP/IP multicast (RFC 1112)",
+        "fingerprint": "edbd7971",
+        "supervisors": [
+          "S4",
+          "S5",
+          "S6"
+        ],
+        "fired": {
+          "local": 60,
+          "ctrl": 0,
+          "unctrl": 0
+        },
+        "applied_for_peers": 80,
+        "skips": 0,
+        "impossible": 0,
+        "tx": 229,
+        "rx": 148,
+        "retx": 0,
+        "auth_bad": 0,
+        "replays": 0,
+        "challenges": 1,
+        "mac_us": 2.04,
+        "rxq_peak": 1,
+        "rxq_drops": 0,
+        "sync_wait_ms": 0.0,
+        "oracle": "PASS",
+        "safe_halt": false,
+        "halt_reason": "",
+        "cycle_end_ms": [
+          228.5,
+          383.2,
+          519.6,
+          658.5,
+          812.6
+        ],
+        "rounds": 5,
+        "work_ms": 0,
+        "exit": 0
+      },
+      "seq_len": 44,
+      "exit": 0
+    }
+  ]
+}
