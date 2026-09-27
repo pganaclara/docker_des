@@ -40,7 +40,8 @@ Intervalo de 95 % = t(0,975; 4) × desvio padrão ÷ √5, com t = 2,776.
    custo de coordenação). De 6 para 7 o limite quase não muda (65,9 → 64,3),
    porque S5 sozinho concentra 41 das 190 decifrações do ciclo 1.
 3. **Reprodutível entre máquinas:** a média do WSL difere da referência na
-   nuvem em 0,4–2,1 % no ciclo 1.
+   nuvem em 1,2–3,3 % no ciclo 1 (sempre um pouco mais lento),
+   contra uma variação entre repetições < 1 %: a diferença é da máquina, não ruído.
 4. **RTT de aplicação:** algumas sondas iniciais passaram de 130 ms (máximo
    141,8 ms), com médias até 11 ms. São soluços do WSL/Windows durante a
    sondagem, antes do roteiro: não aparecem nos tempos por passo, cuja
