@@ -1,9 +1,9 @@
 # Arquitetura: do ESP32 ao container
 
-> **Nota.** As seções 5–6 descrevem experimentos com cenários que depois foram
-> retirados do repositório, que hoje tem só a varredura de 1 a 7 containers.
-> Os resultados dessas execuções estão no histórico do git, no commit
-> [`b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775/docs).
+> **Nota.** O resultado principal é a varredura de 1 a 7 containers com 5
+> repetições (§6). A §7 descreve experimentos anteriores com cenários que
+> depois foram retirados do repositório; os resultados deles estão no
+> histórico do git, no commit [`b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775/docs).
 
 Este documento explica como o sistema distribuído do
 [`esp32_crypto`](https://github.com/pganaclara/esp32_crypto) (supervisores
@@ -80,7 +80,7 @@ quatro coisas que só existem num container:
    então **um ESP32 e um container com a mesma chave são pares na mesma
    célula**.
 2. **Custo de decifração do ESP32** (`DES_EMU_SCALARMUL_MS`, padrão 69 ms):
-   ver §6.3b.
+   ver §6 e §7.4.
 3. **Terminar.** Uma placa roda para sempre, um container precisa acabar.
    Depois do roteiro, o nó continua atendendo os pares por `DES_LINGER_MS`
    (padrão 10 s), porque um par pode estar retransmitindo um COMMIT cujo ACK se
@@ -147,7 +147,8 @@ alteração é o que permite afirmar equivalência com o hardware.**
 
 ## 5. Como provar que o container executa o mesmo sistema
 
-Cinco evidências independentes, todas automáticas (`scripts/run-all.sh`):
+Cinco evidências independentes, todas conferidas automaticamente em cada
+execução (`scripts/summarize.py`):
 
 1. **Mesmo código.** `engine/` é byte a byte igual a
    `esp32_crypto/des_distributed/` no commit `bf0efe6`; o build confere os
@@ -156,7 +157,7 @@ Cinco evidências independentes, todas automáticas (`scripts/run-all.sh`):
    sobre versão do protocolo, número de nós, família, tabela de eventos,
    partição derivada e roteiro. Com FMS, 2 nós e família local modular, as
    placas imprimem **`edbd7971`**. O cenário `fms-2` exige o mesmo valor, e ele
-   bate.
+   bateu nas 5 repetições da varredura (§6).
 3. **Mesmo trabalho criptográfico, na unidade.** O número de decifrações por
    passo é função determinística do supervisor, do roteiro e de quais células
    cifradas são o `Enc(0)` global (o modelo estático do
@@ -165,31 +166,123 @@ Cinco evidências independentes, todas automáticas (`scripts/run-all.sh`):
 
    | configuração | placas ESP32-S3 | containers |
    |---|---|---|
-   | FMS, 1 nó, ciclo 1 | 190 (placa única) | **190** (`fms-1`) |
-   | FMS, 2 nós, 5 ciclos | 405 + 393 (85 + 105 no ciclo 1) | **405 + 393 (85 + 105)** (`fms-2`) |
-   | FMS, 7 nós, 5 ciclos | — | **798 no total, 190 no ciclo 1** (`fms-7`) |
-   | ESF, 2 nós, ciclo 1 | 8 (placa única) | **8** (`esf-2-lockstep`) |
+   | FMS, 1 nó, ciclo 1 | 190 (placa única) | **190** (`fms-1`, 5/5) |
+   | FMS, 2 nós, 5 ciclos | 405 + 393 (85 + 105 no ciclo 1) | **405 + 393 (85 + 105)** (`fms-2`, 5/5) |
+   | FMS, 3 a 7 nós, 5 ciclos | — | **798 no total, 190 no ciclo 1** (`fms-3` … `fms-7`, 5/5 cada) |
+   | ESF, 2 nós, ciclo 1 | 8 (placa única) | **8** (`esf-2-lockstep`, experimento anterior, §7) |
 
 4. **Mesma semântica.** Em todo nó, cada bit homomórfico é comparado com um
-   oráculo em texto claro depois de cada passo (**PASS** em todos os cenários
-   que completam). No `extended_small_factory`, que tem supervisor monolítico,
-   a execução distribuída é conferida evento a evento contra ele (**PASS**).
+   oráculo em texto claro depois de cada passo (**PASS** em todos os nós das
+   35 execuções da varredura). No `extended_small_factory`, que tem supervisor
+   monolítico, a execução distribuída foi conferida evento a evento contra ele
+   (**PASS**; experimento anterior, §7).
 5. **Criptografia real.** O autoteste EC-ElGamal e HMAC passa em todo nó com
    mbedTLS 3.6.5. A validação em Linux original do `esp32_crypto` usava um
    *test double* no lugar do mbedTLS; aqui a criptografia é a de verdade.
 
 **O que isso *não* prova:** equivalência de **tempo**. Um x86 faz uma
-decifração em ≈ 0,5 ms, contra 69–100 ms no ESP32-S3. A rede é uma *bridge*
-na memória, não Wi-Fi. Tempos medidos aqui não são tempos de placa (ver §7).
+decifração em ≈ 0,5 ms, contra 69–100 ms no ESP32-S3; a emulação (§7.4) só
+iguala a multiplicação escalar, não as somas de pontos, o HMAC nem o Wi-Fi. A
+rede é uma *bridge* na memória. Os tempos da §6 são tempos desta bancada, não
+tempos de placa (ver §8).
 
 ---
 
-## 6. Resultados e achados
+## 6. Resultado principal: escala de 1 a 7 containers
 
-Números das execuções de referência em [`docs/resultados/` no commit `b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775/docs/resultados), uma
-execução por cenário.
+`REPEAT=5 scripts/run-all.sh` no WSL 2 da autora (27/09/2026): FMS com os
+supervisores modulares locais completos (`LMOD`), decifração emulada a 69 ms
+(ESP32-S3), cada configuração de 1 a 7 containers executada 5 vezes.
+**35/35 execuções PASS**, nenhuma anomalia nos logs. Dados, tabela e análise em
+[`resultados-wsl/20260927-170420-varredura/`](resultados-wsl/20260927-170420-varredura/README.md).
 
-### 6.1 Um supervisor por container maximiza o compartilhamento
+### 6.1 Invariantes
+
+Nas 5 repetições de cada configuração o resultado lógico foi idêntico: 220/220
+passos, 798 decifrações (190 no ciclo 1), a mesma divisão por nó, a mesma
+impressão digital, oráculo PASS em todos os nós e nenhuma retransmissão. As
+impressões digitais coincidem com as da varredura de referência na nuvem
+([`resultados/escala/`](resultados/escala/escala.md)), e a de 2 nós
+(`edbd7971`) com a das placas ESP32-S3.
+
+| containers | supervisores por container | decifrações no ciclo 1 do nó mais carregado | impressão digital |
+|---|---|---|---|
+| 1 | S0–S6 | 190 | `3f2beff2` |
+| 2 | S0–S3 · S4–S6 | 105 | `edbd7971` |
+| 3 | S0–S2 · S3–S4 · S5–S6 | 79 | `04d74714` |
+| 4 | S0–S1 · S2–S3 · S4–S5 · S6 | 67 | `457cc268` |
+| 5 | S0–S1 · S2 · S3–S4 · S5 · S6 | 49 | `6f43d6b9` |
+| 6 | S0–S1 · S2 · S3 · S4 · S5 · S6 | 42 | `8d540ec9` |
+| 7 | um por container | 41 | `04511541` |
+
+A partição é a que o motor deriva sozinho: blocos contíguos, supervisor `s` no
+nó `1 + ⌊s·N/7⌋`.
+
+### 6.2 Tempo por passo
+
+Média ± intervalo de confiança de 95 % (t(0,975; 4) = 2,776; n = 5), em ms:
+
+| containers | ciclo 1 | aceleração | ciclos 2–5 | aceleração | limite (nó mais carregado) | acima do limite |
+|---|---|---|---|---|---|---|
+| 1 | 303,1 ± 1,3 | 1,00× | 240,8 ± 0,2 | 1,00× | 298,0 | 5,2 |
+| 2 | 195,2 ± 0,6 | 1,55× | 148,9 ± 0,2 | 1,62× | 164,7 | 30,5 |
+| 3 | 149,2 ± 0,6 | 2,03× | 112,4 ± 0,2 | 2,14× | 123,9 | 25,3 |
+| 4 | 133,2 ± 0,3 | 2,28× | 93,6 ± 0,3 | 2,57× | 105,1 | 28,1 |
+| 5 | 108,2 ± 1,3 | 2,80× | 82,7 ± 0,3 | 2,91× | 76,8 | 31,3 |
+| 6 | 98,8 ± 1,1 | 3,07× | 77,2 ± 0,2 | 3,12× | 65,9 | 32,9 |
+| 7 | 90,1 ± 1,0 | 3,37× | 61,5 ± 0,3 | 3,92× | 64,3 | 25,8 |
+
+### 6.3 Leitura
+
+1. **Distribuir acelera, e a curva é estatisticamente distinguível.** O
+   coeficiente de variação entre repetições é de 0,2–1,0 % no ciclo 1 e no
+   máximo 0,3 % nos ciclos 2–5. Os intervalos de confiança (≤ 1,3 ms) são bem
+   menores que a diferença entre configurações vizinhas (≥ 8,7 ms), então cada
+   container a mais reduz o tempo por passo de forma significativa.
+2. **O nó mais carregado limita a aceleração.** Os nós só trabalham em
+   paralelo entre dois eventos compartilhados, e em cada evento compartilhado
+   todos os participantes se sincronizam. Por isso a célula nunca é mais
+   rápida que *decifrações do nó mais carregado no ciclo × custo de uma
+   decifração ÷ passos do ciclo*. Com 1 nó o medido fica 5,2 ms acima desse
+   limite (o trabalho não criptográfico). Com 2 a 7 nós fica 25–33 ms acima:
+   é o custo de coordenação (votação, confirmação, espera pelo participante
+   mais lento), que não diminui com mais nós.
+3. **A aceleração é sublinear.** 7 containers dão 3,37× (ciclo 1) e 3,92×
+   (ciclos 2–5), longe do ideal de 7×. A carga não se divide por igual: o
+   supervisor S5 sozinho concentra 41 das 190 decifrações do ciclo 1, então de
+   6 para 7 containers o limite quase não muda (65,9 → 64,3 ms) e o ganho é
+   pequeno (98,8 → 90,1 ms). Uma partição que isole S5 mais cedo, ou que
+   equilibre melhor a carga, deve aproximar a curva do limite; isso não foi
+   medido.
+4. **Os ciclos 2–5 são mais rápidos que o ciclo 1** em todas as
+   configurações, porque exigem menos decifrações: 190 no ciclo 1 contra
+   (798 − 190) ÷ 4 = 152 por ciclo depois. O conjunto de células cifradas que
+   não são o `Enc(0)` global começa com todas as células e se contrai ao longo
+   da execução (`esp32_crypto/docs/code-explained.md` §4.8). A aceleração
+   também é maior nesses ciclos (3,92× contra 3,37× com 7 containers); a causa
+   dessa diferença não foi isolada aqui.
+5. **Reprodutível entre máquinas.** A mesma varredura na nuvem, com uma
+   execução por configuração, deu tempos 1,2–3,3 % menores em todas as
+   configurações e os mesmos invariantes. Como a variação entre repetições é
+   menor que 1 %, essa diferença é da máquina, não ruído. Com a decifração
+   emulada dominando, a CPU quase não pesa.
+
+**Para citar:** *com o custo de decifração do ESP32-S3 emulado, distribuir os
+7 supervisores modulares locais do FMS em 7 containers reduz o tempo por passo
+de 303,1 ± 1,3 ms para 90,1 ± 1,0 ms (3,37×; IC 95 %, n = 5), com aceleração
+limitada pelo supervisor mais carregado.*
+
+---
+
+## 7. Experimentos anteriores
+
+Antes de fixar a varredura da §6, outros cenários foram testados: sem a
+emulação do custo de decifração, com perda de quadros, com transporte unicast,
+com `netem` e com o `extended_small_factory`. Eles foram retirados do
+repositório para mantê-lo enxuto, e os resultados estão no commit
+[`b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775/docs). Uma execução por cenário, salvo indicação.
+
+### 7.1 Um supervisor por container maximiza o compartilhamento
 
 | partição | eventos compartilhados | eventos sem tráfego | participantes dos eventos 30–39 |
 |---|---|---|---|
@@ -203,13 +296,13 @@ custa um commit em duas fases com 6 participantes: `2 + 2·6 = 14` quadros. É
 o preço de granularidade máxima, e é o dado que justifica estudar a partição
 (`DES_SUP_NODE_MAP`) como variável experimental.
 
-### 6.2 Distribuir não aumenta o trabalho criptográfico
+### 7.2 Distribuir não aumenta o trabalho criptográfico
 
 798 decifrações no total e 190 no ciclo 1, com 1, 2 ou 7 nós, com multicast ou
 unicast, e com ou sem perda (as retransmissões são reconhecidas pelo número de
 sequência e não reaplicadas). Distribuir **divide** o trabalho, não o soma.
 
-### 6.3 No container a criptografia fica barata e o protocolo passa a dominar
+### 7.3 No container a criptografia fica barata e o protocolo passa a dominar
 
 | | ESP32-S3, 1 placa | ESP32-S3, 2 placas | containers, 1 nó | containers, 2 nós | containers, 7 nós |
 |---|---|---|---|---|---|
@@ -231,7 +324,7 @@ por commit. É a mesma arquitetura com o gargalo em outro lugar, e o resultado
 vale ser discutido: a vantagem de distribuir depende da razão entre o custo
 criptográfico por passo e o custo de coordenação.
 
-### 6.3b Teste da explicação: emulando o custo de decifração do ESP32
+### 7.4 Teste da explicação: emulando o custo de decifração do ESP32
 
 Se a explicação acima estiver certa, basta tornar a criptografia tão cara
 quanto no ESP32 para distribuir voltar a acelerar. `DES_EMU_SCALARMUL_MS=69`
@@ -268,7 +361,7 @@ emulados: 192,7), e o ganho de 1 → 2 nós é maior aqui (1,6×) que nas placas
 **direção** do efeito e prever tendências, não para substituir a medição no
 hardware.
 
-### 6.4 Perda: os *timeouts* do protocolo estão calibrados para o ESP32
+### 7.5 Perda: os *timeouts* do protocolo estão calibrados para o ESP32
 
 | cenário | perda | passos | retransmissões | tempo por passo (ciclo 1) |
 |---|---|---|---|---|
@@ -285,7 +378,7 @@ experimento fica 6× (ciclo 1) a 14× (ciclos 2–5) mais rápido. **Regra prát
 proporcional ao passo homomórfico mais lento entre os participantes, não ao
 RTT da rede.
 
-### 6.5 Perda pesada: segurança preservada, de dois jeitos
+### 7.6 Perda pesada: segurança preservada, de dois jeitos
 
 - **2 nós, 30 % de perda** (`fms-2-loss30`): depois de 116 dos 220 passos
   (73 numa execução anterior: a perda é aleatória), um COMMIT/NOTIFY esgota as
@@ -306,7 +399,7 @@ RTT da rede.
 A diferença é *onde* a perda acerta o protocolo: antes do ponto de commit ela
 vira SKIP (inofensivo), depois dele vira SAFE HALT (a única saída segura).
 
-### 6.6 Multicast × unicast
+### 7.7 Multicast × unicast
 
 Mesmos resultados lógicos e criptográficos. O unicast envia `N − 1`
 datagramas por quadro (6 com 7 nós). Numa *bridge* isso é cópia de memória,
@@ -314,14 +407,24 @@ mas numa rede física a conta muda.
 
 ---
 
-## 7. Limitações e ameaças à validade
+## 8. Limitações e ameaças à validade
 
 - **Tempo não é de tempo real.** Kernel genérico, sem PREEMPT_RT, CPUs
-  compartilhadas entre 7 containers num mesmo host, uma execução por cenário
-  (sem variância). Os tempos servem para comparar cenários *entre si* nesta
-  máquina, não para afirmar prazos [6], [9], [11].
-- **A rede é uma *bridge* na memória.** Perda e atraso são injetados (motor ou
-  `netem`), não medidos num enlace real. O `netem` não existe no kernel do
+  compartilhadas entre até 7 containers num mesmo host. A varredura principal
+  tem 5 repetições por configuração (variação < 1 %); os experimentos
+  anteriores (§7), uma. Os tempos servem para comparar configurações *entre
+  si*, não para afirmar prazos [6], [9], [11].
+- **A emulação cobre só a decifração.** `DES_EMU_SCALARMUL_MS` iguala a
+  multiplicação escalar ao ESP32-S3 (69 ms). As somas de pontos (≈ 5 ms cada
+  na placa), o HMAC, o Wi-Fi e o segundo núcleo da placa única não são
+  emulados. Por isso os tempos absolutos não coincidem com os das placas
+  (2 placas: 296,9 ms/passo no ciclo 1; 2 containers: 195,2), e a emulação
+  vale para a forma da curva de escala, não para prever tempos de placa.
+- **Uma partição por número de nós.** A varredura usa a partição em blocos
+  contíguos que o motor deriva. Outras partições (`DES_SUP_NODE_MAP`) podem
+  equilibrar melhor a carga e não foram medidas.
+- **A rede é uma *bridge* na memória.** Nos experimentos anteriores, perda e
+  atraso foram injetados (motor ou `netem`), não medidos num enlace real. O `netem` não existe no kernel do
   ambiente de referência, mas o cenário `fms-7-wifi` rodou e passou num WSL 2
   atual ([`docs/resultados-wsl/` no commit `b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775/docs/resultados-wsl)).
 - **Controlabilidade inferida.** Como no `esp32_crypto`, o cabeçalho não diz
@@ -339,7 +442,7 @@ mas numa rede física a conta muda.
 
 ---
 
-## 8. Como estender
+## 9. Como estender
 
 - **Mais de 7 nós:** acrescente serviços `node8`… na `compose.yaml` (mesma
   âncora) e aumente `DES_NUM_NODES`. O motor aceita até 31 nós.

@@ -83,7 +83,7 @@ static char g_des_auth_key[DES_KEY_CHARS + 1];
 // On an ESP32-S3 one blinded scalar multiplication costs ~69 ms; on a PC it
 // costs well under a millisecond, which moves the bottleneck from cryptography
 // to coordination and turns "distributing is faster" around (docs/arquitetura
-// §6.3). So every DECRYPTION is made to take at least DES_EMU_SCALARMUL_MS
+// §7.3). So every DECRYPTION is made to take at least DES_EMU_SCALARMUL_MS
 // (default 69 ms, the ESP32-S3 figure), by sleeping out the difference.
 // DES_EMU_SCALARMUL_MS=0 turns it off and runs at the PC's own speed.
 //

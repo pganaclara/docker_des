@@ -104,7 +104,7 @@ do repositório; código e resultados estão no
 - **Verificação contra o supervisor monolítico** (`extended_small_factory`):
   PASS.
 
-Detalhes e ressalvas em [`docs/arquitetura.md`](docs/arquitetura.md) §6–§7.
+Detalhes e ressalvas em [`docs/arquitetura.md`](docs/arquitetura.md) §6–§8.
 A revisão de literatura, com como isso costuma ser feito, a lacuna e onde cada
 afirmação se apoia, está em [`docs/literatura.md`](docs/literatura.md).
 
@@ -283,4 +283,4 @@ Rust, Go, Python e C está em [`docs/arquitetura.md`](docs/arquitetura.md) §4.
 
 Os dois podem até formar uma célula mista: um ESP32 e containers com a mesma
 chave e a mesma configuração são pares no mesmo grupo multicast (rede
-`macvlan`; ver [`docs/arquitetura.md`](docs/arquitetura.md) §8).
+`macvlan`; ver [`docs/arquitetura.md`](docs/arquitetura.md) §9).

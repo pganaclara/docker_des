@@ -152,7 +152,7 @@ sistemas distribuídos: *lock* no participante entre o voto e o COMMIT, mais
   e para (SAFE HALT). Formular isso como "garante segurança, não vivacidade,
   sob perda arbitrária" é honesto e defensável.
 - Os experimentos de perda deste repositório (`fms-7-loss5`, `fms-2-loss30`)
-  são a contraparte empírica dessa literatura (ver [`arquitetura.md`](arquitetura.md) §6).
+  são a contraparte empírica dessa literatura (ver [`arquitetura.md`](arquitetura.md) §7).
 
 ---
 
