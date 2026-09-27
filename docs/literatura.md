@@ -13,6 +13,15 @@ organizado para responder três perguntas:
 
 As referências numeradas `[n]` estão no fim.
 
+> **O resultado deste trabalho, em uma frase.** Com o custo de decifração do
+> ESP32-S3 emulado (69 ms), distribuir os 7 supervisores modulares locais do
+> FMS em 7 containers reduz o tempo por passo de 303,1 ± 1,3 ms para
+> 90,1 ± 1,0 ms (3,37×; IC 95 %, n = 5). A aceleração é limitada pelo
+> supervisor mais carregado, e cada configuração de 1 a 7 containers repete
+> exatamente o resultado lógico das placas. Detalhes em
+> [`arquitetura.md`](arquitetura.md) §6; como isso se situa na literatura,
+> §8–§9 abaixo.
+
 > **Como as referências foram conferidas.** Busca feita em setembro de 2026.
 > No ambiente em que este texto foi escrito, as páginas das editoras (IEEE,
 > ACM, Elsevier, Springer) e as bases (arXiv, Crossref, Semantic Scholar)
@@ -92,12 +101,15 @@ isolamento por namespaces não interpõe um hipervisor.
 - A escolha "um controlador = um container" é a prática estabelecida
   [1], [2], [9], [10]. Aqui ela vira "um **supervisor** = um container".
 - A métrica que essa literatura cobra é **tempo**: latência, *jitter* e
-  perdas de prazo. Os tempos medidos aqui (≈ 4 ms por passo do FMS com 7
-  containers) valem **nesta máquina, com este kernel**. Não são tempos de ESP32
-  nem de CLP. Para afirmar algo de tempo real seria preciso PREEMPT_RT, CPU
-  isolada e medição de percentis [6], [9], [11]. O que o `docker_des` prova
-  sem ressalvas é outra coisa: **equivalência lógica e criptográfica** com o
-  hardware (ver [`arquitetura.md`](arquitetura.md) §5).
+  perdas de prazo. Os tempos da varredura (de 303,1 ms por passo com 1
+  container a 90,1 ms com 7) são tempos com a decifração emulada a 69 ms, num
+  kernel genérico. Eles se repetem bem: o coeficiente de variação entre
+  execuções fica abaixo de 1 %, e duas máquinas diferentes discordam em só
+  1,2–3,3 %. Mas não são tempos de ESP32 nem de CLP. Para afirmar algo de
+  tempo real seria preciso PREEMPT_RT, CPU isolada e medição de percentis
+  [6], [9], [11]. O que o `docker_des` prova sem ressalvas é outra coisa:
+  **equivalência lógica e criptográfica** com o hardware (ver
+  [`arquitetura.md`](arquitetura.md) §5), e a **forma** da curva de escala.
 
 ---
 
@@ -151,8 +163,20 @@ sistemas distribuídos: *lock* no participante entre o voto e o COMMIT, mais
   **detecta em tempo de execução** quando não pode mais garantir consistência
   e para (SAFE HALT). Formular isso como "garante segurança, não vivacidade,
   sob perda arbitrária" é honesto e defensável.
-- Os experimentos de perda deste repositório (`fms-7-loss5`, `fms-2-loss30`)
-  são a contraparte empírica dessa literatura (ver [`arquitetura.md`](arquitetura.md) §7).
+- Os experimentos de perda feitos durante o desenvolvimento (5 % de perda:
+  execução completa sem divergência; 30 %: SAFE HALT) são a contraparte
+  empírica dessa literatura. Esses cenários foram depois retirados do
+  repositório; ver [`arquitetura.md`](arquitetura.md) §7.5–§7.6 e o
+  [commit `b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775).
+- A varredura de 1 a 7 containers (§6 da arquitetura) complementa a
+  localização [18] e a implementação distribuída [22] com uma medida
+  empírica: quanto se ganha, em tempo, distribuindo mais. Distribuir divide o trabalho criptográfico
+  (798 decifrações em todas as configurações, repartidas entre os nós), mas
+  cada nó a mais é mais um participante a sincronizar nos eventos
+  compartilhados. O custo de coordenação medido fica entre 25 e 33 ms por
+  passo com 2 a 7 nós, sem tendência clara com o número de nós. A aceleração é limitada pela parte que não se
+  divide, como prevê a Lei de Amdahl [43]: aqui, o supervisor mais carregado
+  (S5, com 41 das 190 decifrações do ciclo 1).
 
 ---
 
@@ -225,6 +249,13 @@ mbedTLS 3.6.5 (mesmo ramo LTS 3.6 que o ESP-IDF 5.5 usa nas placas [41]),
 `BUILD_INFO` gravado dentro da imagem e cenários como arquivos versionados com
 valores esperados (`EXPECT_*`).
 
+Na prática, isso se confirmou. A varredura de 1 a 7 containers rodou na nuvem
+(uma vez) e no WSL 2 da autora (5 vezes). Nas 35 execuções do WSL, cada
+configuração repetiu exatamente os mesmos invariantes (impressão digital,
+decifrações por nó, passos), iguais aos da nuvem. Os tempos variaram menos de
+1 % entre repetições e 1,2–3,3 % entre as duas máquinas
+([`arquitetura.md`](arquitetura.md) §6).
+
 ---
 
 ## 7. A lacuna
@@ -238,7 +269,7 @@ Cruzando as linhas acima:
 | TCS em rede [19]–[21], [23] | **sim** | **sim** (teoria) | não | não |
 | controle criptografado [27]–[29] | não (controle contínuo) | sim | às vezes | **sim** |
 | `esp32_crypto` | **sim** | **sim** (2 ESP32) | não | **sim** |
-| **`docker_des`** | **sim** | **sim** (7 nós) | **sim** | **sim** |
+| **`docker_des`** | **sim** | **sim** (1 a 7 nós) | **sim** | **sim** |
 
 Não encontrei trabalho que feche as quatro colunas. A busca foi ampla, mas não
 exaustiva: vale repetir no Scopus/IEEE Xplore com termos como
@@ -248,31 +279,37 @@ exaustiva: vale repetir no Scopus/IEEE Xplore com termos como
 
 ## 8. Onde cada afirmação do trabalho se apoia
 
-| afirmação | evidência neste repositório | literatura |
+Evidências da varredura atual (§6 da arquitetura, 35 execuções) ou, quando
+indicado, de experimentos anteriores (§7 da arquitetura, [commit `b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775)).
+
+| afirmação | evidência | literatura |
 |---|---|---|
-| Um supervisor por container é uma forma legítima de implantar controle | `compose.yaml`, cenário `fms-7` | [1], [2], [5], [9] |
-| O container executa **o mesmo sistema** que as placas | motor byte a byte idêntico (`engine/SHA256SUMS`); `fms-2` reproduz a impressão digital `edbd7971` e as decifrações 405 + 393 das placas | [13] (reprodutibilidade) |
-| Distribuir não aumenta o trabalho criptográfico | 798 decifrações (190 no ciclo 1) com 1, 2 e 7 nós | — (resultado próprio) |
+| Um supervisor por container é uma forma legítima de implantar controle | `compose.yaml`, cenário `fms-7` (5/5 PASS) | [1], [2], [5], [9] |
+| O container executa **o mesmo sistema** que as placas | motor byte a byte idêntico (`engine/SHA256SUMS`); `fms-2` reproduz a impressão digital `edbd7971` e as decifrações 405 + 393 das placas nas 5 repetições | [13] (reprodutibilidade) |
+| Distribuir não aumenta o trabalho criptográfico | 798 decifrações (190 no ciclo 1) com 1, 2, 3, 4, 5, 6 e 7 containers, em todas as 35 execuções | — (resultado próprio) |
+| **Com o custo de decifração do ESP32, distribuir acelera** | 303,1 ± 1,3 → 90,1 ± 1,0 ms/passo de 1 para 7 containers (3,37×; IC 95 %, n = 5); curva estatisticamente distinguível | [18], [22] (distribuir); [43] (limite da aceleração) |
+| **A aceleração é limitada pelo supervisor mais carregado** | o tempo medido acompanha o limite "decifrações do nó mais carregado × 69 ms ÷ 44", 25–33 ms acima dele | [43] |
+| Sem a emulação, distribuir atrasa | experimento anterior: 2,4 → 4,7 ms/passo de 1 para 7 nós na velocidade de um PC | [43]; [9]–[11] (custo de rede em containers) |
 | A decomposição modular local é a partição natural | roteamento derivado do cabeçalho; eventos locais não geram tráfego | [16], [18] |
-| O protocolo preserva segurança sob perda | `fms-7-loss5` completa sem divergência; `fms-2-loss30` para em SAFE HALT | [20], [21], [23], [33] |
+| O protocolo preserva segurança sob perda | experimento anterior: 5 % de perda completa sem divergência; 30 % para em SAFE HALT | [20], [21], [23], [33] |
 | Concorrência entre iniciadores é tratada | *lock* + *wound-wait* | [22] (mutex), [35] |
-| A distribuição preserva o comportamento do supervisor monolítico | `esf-2-lockstep`: verificação cruzada com o monolítico PASS | [16], [26] |
-| UDP basta como transporte | confiabilidade fim a fim no protocolo; multicast (e, no commit `b7f013b`, unicast) testados | [33], [36] |
+| A distribuição preserva o comportamento do supervisor monolítico | experimento anterior: `extended_small_factory`, verificação cruzada com o monolítico PASS | [16], [26] |
+| UDP basta como transporte | confiabilidade fim a fim no protocolo; multicast nas 35 execuções (e unicast no experimento anterior) | [33], [36] |
 | Cifrar supervisores é viável fora do microcontrolador | autoteste EC-ElGamal + oráculo PASS em todos os nós, com mbedTLS real | [27]–[29] |
 
 ---
 
-## 9. Experimentos que a literatura espera, e como rodá-los aqui
+## 9. Experimentos que a literatura espera, e o que já foi feito
 
-| pergunta | linha que a faz | como medir com este repositório |
-|---|---|---|
-| Latência e *jitter* por passo, em percentis | vPLC [9]–[11] | logs por passo (`nodeK.log`) → histograma; repetir N execuções |
-| Escalabilidade no número de nós | TCS distribuída [18], [22] | mesmo FMS com 1, 2, 3, 4 e 7 nós (`DES_NUM_NODES`); comparar quadros e tempo |
-| Efeito da partição | localização [18] | `DES_EXTRA_FLAGS="-DDES_SUP_NODE_MAP={...}"` |
-| Robustez a perda | TCS em rede [20], [21] | varrer `DES_SIMULATE_LOSS_PCT` de 0 a 30 |
-| Robustez a atraso | [19], [22] | `tc netem` nos containers (retirado; ver [commit `b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775)) |
-| Equivalência com o monolítico | TCS [16] | `esf-2-lockstep` (o FMS não tem monolítico, que não cabe na flash) |
-| Sobrecarga do container | [3], [12] | mesmo cenário com `network_mode: host` e sem limite de CPU |
+| pergunta | linha que a faz | situação | como medir com este repositório |
+|---|---|---|---|
+| Escalabilidade no número de nós | TCS distribuída [18], [22] | **feito**: 1 a 7 containers, 5 repetições (arquitetura §6) | `REPEAT=5 scripts/run-all.sh` |
+| Latência e *jitter* por passo | vPLC [9]–[11] | **parcial**: média e IC 95 % por configuração; percentis e distribuição por passo não | logs por passo (`nodeK.log`) → histograma e percentis |
+| Efeito da partição | localização [18] | **não feito**: só a partição em blocos contíguos | `DES_EXTRA_FLAGS="-DDES_SUP_NODE_MAP={...}"` num cenário novo |
+| Robustez a perda | TCS em rede [20], [21] | feito antes (arquitetura §7.5–§7.6), cenários retirados | `DES_EXTRA_FLAGS=-DDES_SIMULATE_LOSS_PCT=<p>` |
+| Robustez a atraso | [19], [22] | feito antes com `netem`, retirado | ver [commit `b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775) |
+| Equivalência com o monolítico | TCS [16] | feito antes (`extended_small_factory`), retirado; o FMS não tem monolítico | ver [commit `b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775) |
+| Sobrecarga do container | [3], [12] | **não feito** | mesmo cenário com `network_mode: host` e sem limite de CPU |
 
 ---
 
@@ -422,3 +459,9 @@ exaustiva: vale repetir no Scopus/IEEE Xplore com termos como
     3.6.3). <https://github.com/espressif/esp-idf/releases/tag/v5.5>
 42. microsoft/WSL, *issue* #6065: `tc qdisc netem` indisponível no WSL 2.
     <https://github.com/microsoft/WSL/issues/6065>
+
+**Computação paralela**
+
+43. Amdahl, G. M. (1967). Validity of the single processor approach to
+    achieving large scale computing capabilities. *AFIPS Spring Joint Computer
+    Conference*, 483–485. doi:10.1145/1465482.1465560
