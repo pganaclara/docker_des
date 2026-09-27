@@ -21,7 +21,7 @@ mesmo sistema** que o hardware.
 ## O resultado principal
 
 Todos os cenários foram executados com o código deste repositório. Detalhes em
-[`docs/resultados/`](docs/resultados/).
+[`docs/resultados/` no commit `b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775/docs/resultados).
 
 | o que se verifica | hardware (ESP32-S3) | containers | |
 |---|---|---|---|
@@ -68,7 +68,7 @@ O argumento completo está em [`docs/arquitetura.md`](docs/arquitetura.md) §5.
   a perda acerta depois do ponto de commit (2 nós, 30 %), passos pulados
   quando acerta antes (7 nós, 40 %).
 
-Os cenários de perda, unicast, `netem` e `extended_small_factory` citados acima foram retirados do repositório para deixar só a varredura de 1 a 7 containers; as execuções deles continuam registradas em [`docs/resultados/`](docs/resultados/) e [`docs/resultados-wsl/`](docs/resultados-wsl/).
+Os cenários de perda, unicast, `netem` e `extended_small_factory` citados acima foram retirados para deixar só a varredura de 1 a 7 containers; as execuções deles estão no histórico do git ([commit `b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775/docs)).
 
 Detalhes e ressalvas em [`docs/arquitetura.md`](docs/arquitetura.md) §6–§7.
 A revisão de literatura, com como isso costuma ser feito, a lacuna e onde cada
@@ -183,7 +183,7 @@ No arquivo de cenário (ou no ambiente):
 
 | variável | padrão | o que faz |
 |---|---|---|
-| `DES_PROBLEM` | `fms` | `fms`, `extended_small_factory` ou `small_factory` |
+| `DES_PROBLEM` | `fms` | o problema (só o cabeçalho do FMS está em `engine/`) |
 | `DES_NUM_NODES` | `7` | número de containers (1–7 com a `compose.yaml` atual) |
 | `DES_FAMILY` | `LMOD` | `LMOD` (modular local), `LMOD_RED` (reduzida) ou `MONO` |
 | `DES_ROUNDS` | `5` | ciclos de produção |
@@ -224,7 +224,7 @@ docker_des/
 └── docs/
     ├── arquitetura.md      ESP32 → container, por que C++, prova de equivalência, achados
     ├── literatura.md       revisão de literatura com referências conferidas
-    └── resultados/         execuções de referência
+    └── resultados/escala/  varredura de referência (1 a 7 containers)
 ```
 
 ---

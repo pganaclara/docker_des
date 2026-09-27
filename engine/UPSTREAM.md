@@ -13,7 +13,7 @@ bf0efe60003200111fb71f822b9f1605fc8f9feb   (2026-09-25)
 |---|---|
 | `des_generic.h` | o motor: criptografia EC-ElGamal, protocolo (2PC / NOTIFY), roteamento, oráculo |
 | `des_transport.h` | transporte UDP/IP multicast (RFC 1112) |
-| `supervisor_data_*.h` | supervisores gerados pelo notebook UltraDES |
+| `supervisor_data_fms.h` | os 7 supervisores do FMS, gerados pelo notebook UltraDES (os outros problemas do `esp32_crypto` não são usados aqui) |
 
 **Nada aqui é editado.** Tudo o que é específico de container fica em `../src/`
 (ponto de entrada, transporte unicast, chave em tempo de execução). É isso que

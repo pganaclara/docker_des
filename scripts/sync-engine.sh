@@ -18,10 +18,9 @@ up=${1:?usage: scripts/sync-engine.sh [--check] <path-to-esp32_crypto-clone>}
 src="$up/des_distributed"
 [[ -f $src/des_generic.h ]] || { echo "$src/des_generic.h not found" >&2; exit 2; }
 
-files=(des_generic.h des_transport.h
-       supervisor_data_small_factory.h
-       supervisor_data_extended_small_factory.h
-       supervisor_data_fms.h)
+# Only the FMS supervisors are used here; add another generated header to this
+# list (and to a scenario's DES_PROBLEM) to run a different problem.
+files=(des_generic.h des_transport.h supervisor_data_fms.h)
 
 changed=0
 for f in "${files[@]}"; do

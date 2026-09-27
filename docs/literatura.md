@@ -215,7 +215,7 @@ Wi-Fi ou WAN sobre uma rede virtual.
 - **`netem` no WSL 2.** Kernels antigos do WSL 2 não traziam `sch_netem`
   ([microsoft/WSL#6065](https://github.com/microsoft/WSL/issues/6065)); um
   kernel WSL 2 atual (setembro de 2026) o traz como módulo, e o cenário
-  `fms-7-wifi` rodou nele (`resultados-wsl/`). O kernel do ambiente de
+  `fms-7-wifi` rodou nele ([`docs/resultados-wsl/` no commit `b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775/docs/resultados-wsl)). O kernel do ambiente de
   referência na nuvem não tem. Por isso os cenários de perda principais usam a
   injeção de perda do próprio motor (`DES_SIMULATE_LOSS_PCT`), que funciona em
   qualquer kernel.

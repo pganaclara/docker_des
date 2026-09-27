@@ -1,5 +1,10 @@
 # Arquitetura: do ESP32 ao container
 
+> **Nota.** As seções 5–6 descrevem experimentos com cenários que depois foram
+> retirados do repositório, que hoje tem só a varredura de 1 a 7 containers.
+> Os resultados dessas execuções estão no histórico do git, no commit
+> [`b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775/docs).
+
 Este documento explica como o sistema distribuído do
 [`esp32_crypto`](https://github.com/pganaclara/esp32_crypto) (supervisores
 homomórficos do FMS em duas placas ESP32-S3) virou **um container Docker por
@@ -201,7 +206,7 @@ na memória, não Wi-Fi. Tempos medidos aqui não são tempos de placa (ver §7)
 
 ## 6. Resultados e achados
 
-Números das execuções de referência em [`resultados/`](resultados/), uma
+Números das execuções de referência em [`docs/resultados/` no commit `b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775/docs/resultados), uma
 execução por cenário.
 
 ### 6.1 Um supervisor por container maximiza o compartilhamento
@@ -233,7 +238,7 @@ sequência e não reaplicadas). Distribuir **divide** o trabalho, não o soma.
 | RTT de aplicação | — | 13,9–18,2 ms | — | 2,3 ms | 3,4 ms |
 
 (ESP32: `esp32_crypto`, família modular local, `DES_WORK_MS 0`. Containers:
-[`resultados/`](resultados/).)
+[`docs/resultados/` no commit `b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775/docs/resultados).)
 
 No ESP32 o tempo é `decifrações × multiplicação escalar`, e distribuir em 2
 placas **acelera** (296,9 contra 346,0 ms), porque divide as decifrações. No
@@ -254,7 +259,7 @@ faz cada **decifração** levar pelo menos 69 ms, o custo medido de uma
 multiplicação escalar no ESP32-S3. O motor não é alterado: o ponto de entrada
 intercepta a chamada a `mbedtls_ecp_mul` com `-Wl,--wrap` e só dorme o que
 falta quando o escalar é a chave privada negada. Cenários `fms-{1,2,7}-esp32`,
-resultados em [`resultados/emulacao-esp32/`](resultados/emulacao-esp32/).
+resultados em [`docs/resultados/emulacao-esp32/` no commit `b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775/docs/resultados/emulacao-esp32).
 
 | nós | sem emulação, ciclo 1 | **com emulação**, ciclo 1 | com emulação, ciclos 2–5 | limite inferior (nó mais carregado) |
 |---|---|---|---|---|
@@ -309,7 +314,7 @@ RTT da rede.
   vivacidade sacrificada.
 - **7 nós, 40 % de perda** (execução interrompida à mão depois de alguns
   minutos; logs parciais em
-  [`resultados/observacoes/fms-7-loss40-parcial/`](resultados/observacoes/fms-7-loss40-parcial/)):
+  [`observacoes/fms-7-loss40-parcial/` no commit `b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775/docs/resultados/observacoes/fms-7-loss40-parcial)):
   **não há SAFE HALT**. A fase de votação precisa que o
   REQ chegue aos 6 participantes e os 6 votos voltem, com probabilidade
   ≈ 0,6¹² ≈ 0,2 % por tentativa. Ela quase nunca completa, então o dono
@@ -338,7 +343,7 @@ mas numa rede física a conta muda.
 - **A rede é uma *bridge* na memória.** Perda e atraso são injetados (motor ou
   `netem`), não medidos num enlace real. O `netem` não existe no kernel do
   ambiente de referência, mas o cenário `fms-7-wifi` rodou e passou num WSL 2
-  atual (`resultados-wsl/`).
+  atual ([`docs/resultados-wsl/` no commit `b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775/docs/resultados-wsl)).
 - **Controlabilidade inferida.** Como no `esp32_crypto`, o cabeçalho não diz
   quais eventos são controláveis e o motor infere pelo rótulo (dígito final
   ímpar = controlável). Para um artigo, fixe `DES_CONTROLLABLE_MASK`
