@@ -1,0 +1,241 @@
+des_container: node 1 of 5, LOCAL MODULAR, data supervisor_data_fms.h, transport UDP/IP multicast (RFC 1112)
+des_container: EMULATING the ESP32 — every decryption takes at least 69.0 ms (DES_EMU_SCALARMUL_MS)
+
+============================================================
+  Distributed Homomorphic DES — generic engine
+  node 1/5   family LOCAL MODULAR   7 supervisors   31 events
+  data: supervisor_data_fms.h
+============================================================
+--- event routing (DERIVED from the header, not hardcoded) ---
+  event  ctrl  nodes      owner  class
+  11     yes   1          1      local — no network
+  12     no    1          1      local — no network
+  21     yes   1          1      local — no network
+  22     no    1          1      local — no network
+  30     no    1 2 3 4 5  1      SHARED — needs network
+  31     yes   1 2 3 4 5  1      SHARED — needs network
+  32     no    1 2 3 4 5  1      SHARED — needs network
+  33     yes   1 2 3 4 5  1      SHARED — needs network
+  34     no    1 2 3 4 5  1      SHARED — needs network
+  35     yes   1 2 3 4 5  1      SHARED — needs network
+  36     no    1 2 3 4 5  1      SHARED — needs network
+  37     yes   1 2 3 4 5  1      SHARED — needs network
+  38     no    1 2 3 4 5  1      SHARED — needs network
+  39     yes   1 2 3 4 5  1      SHARED — needs network
+  41     yes   2          2      local — no network
+  42     no    2          2      local — no network
+  51     yes   3          3      local — no network
+  52     no    3          3      local — no network
+  53     yes   3          3      local — no network
+  54     no    3          3      local — no network
+  61     yes   3 4 5      3      SHARED — needs network
+  63     yes   3 4 5      3      SHARED — needs network
+  64     no    3 4 5      3      SHARED — needs network
+  65     yes   3 4 5      3      SHARED — needs network
+  66     no    3 4 5      3      SHARED — needs network
+  71     yes   5          5      local — no network
+  72     no    5          5      local — no network
+  73     yes   5          5      local — no network
+  74     no    5          5      local — no network
+  81     yes   5          5      local — no network
+  82     no    5          5      local — no network
+  => 15/31 events shared; 16/31 need ZERO network traffic; 14 concern this node
+  NOTE controllability was INFERRED from event labels (the header
+       does not carry it). Check the 'ctrl' column above; if it is
+       wrong, set DES_CONTROLLABLE_MASK explicitly.
+
+[init] config fingerprint 6f43d6b9 — every node must print the same
+
+[net] UDP multicast 239.192.7.1:5077  ttl=1  frame=44 B
+--- crypto self-test ---
+  Enc(0)->0 Enc(1)->1                PASS
+  Enc(1)+Enc(1)->1 homomorphic OR   PASS
+  Enc(0)+Enc(0)->0                  PASS
+  curve secp192r1, ciphertext 50 B    PASS
+  frame tag HMAC-SHA256/128: 3.6 us, 1-bit tamper caught  PASS
+
+--- encrypting my supervisors' initial states ---
+[load] S0         idx 0   18 states  12 constraining ev     900 B ciphertext
+[load] S1         idx 1   18 states  12 constraining ev     900 B ciphertext
+[init] my keypair is mine alone; no ciphertext ever leaves this node
+[init] my enablement: 11=1 12=0 21=1 22=0 30=0 31=0 32=0 33=0 34=0 35=1 36=0 37=1 38=0 39=1 41=1 42=1 51=1 52=1 53=1 54=1 61=1 63=1 64=1 65=1 66=1 71=1 72=1 73=1 74=1 81=1 82=1
+
+[net] waiting for 4 peer(s)..... all present.
+
+--- transport round-trip probe (UDP/IP multicast (RFC 1112)) ---
+  20 probes: avg 3.85 ms  min 2.38 ms  max 4.96 ms
+
+============================================================
+  RUN — SIM_SEQ driver — 5 cycles x 44 steps — LOCAL MODULAR
+  columns: cN sNN = cycle/step of MY walk; · = a peer caused this
+  'done at': run clock, common to all nodes; a cycle is over at the
+  LATEST node's print, machine time (DES_WORK_MS 0) included
+============================================================
+
+-- cycle 1/5 --
+c1  s0   local  21       139.4 ms HE    2 dec  0 frames
+c1  s1   local  11       140.2 ms HE    2 dec  0 frames
+c1  s2   local  12        69.6 ms HE    1 dec  0 frames
+c1  s3   2pc    31       139.3 ms HE    2 dec  10 frames  + 6.4 ms peer-wait  (seq 1)
+c1  s4   notify 32       139.7 ms HE    2 dec  5 frames  + 1.6 ms peer-wait  (seq 2)
+c1  s6   local  22        69.6 ms HE    1 dec  0 frames
+c1  s8   2pc    33       139.4 ms HE    2 dec  10 frames  + 5.9 ms peer-wait  (seq 3)
+c1  s9   notify 34       140.4 ms HE    2 dec  5 frames  + 2.7 ms peer-wait  (seq 4)
+c1  s10  2pc    35       139.5 ms HE    2 dec  10 frames  + 6.5 ms peer-wait  (seq 5)
+c1  s13  notify 36       140.0 ms HE    2 dec  5 frames  + 1.5 ms peer-wait  (seq 6)
+c1  s14  2pc    39       139.3 ms HE    2 dec  10 frames  + 5.2 ms peer-wait  (seq 7)
+c1  s16  notify 30       139.4 ms HE    2 dec  5 frames  + 1.9 ms peer-wait  (seq 8)
+c1  s25  local  11        69.6 ms HE    1 dec  0 frames
+c1  s26  local  21        69.7 ms HE    1 dec  0 frames
+c1  s27  local  12        69.8 ms HE    1 dec  0 frames
+c1  s28  2pc    31       139.4 ms HE    2 dec  10 frames  + 7.0 ms peer-wait  (seq 9)
+c1  s29  notify 32       140.0 ms HE    2 dec  5 frames  + 1.6 ms peer-wait  (seq 10)
+c1  s32  2pc    35       140.1 ms HE    2 dec  10 frames  + 6.8 ms peer-wait  (seq 11)
+c1  s33  notify 36       139.7 ms HE    2 dec  5 frames  + 1.6 ms peer-wait  (seq 12)
+c1  s34  local  22        69.8 ms HE    1 dec  0 frames
+c1  s36  2pc    33       139.5 ms HE    2 dec  10 frames  + 5.9 ms peer-wait  (seq 13)
+c1  s37  notify 34       139.5 ms HE    2 dec  5 frames  + 1.9 ms peer-wait  (seq 14)
+c1  s40  2pc    37       139.9 ms HE    2 dec  10 frames  + 7.6 ms peer-wait  (seq 15)
+c1  s41  notify 38       140.0 ms HE    2 dec  5 frames  + 1.8 ms peer-wait  (seq 16)
+-- cycle 1/5 done at 4638.9 ms --
+
+-- cycle 2/5 --
+c2  s0   local  21        69.9 ms HE    1 dec  0 frames
+c2  s1   local  11        70.2 ms HE    1 dec  0 frames
+c2  s2   local  12        69.8 ms HE    1 dec  0 frames
+c2  s3   2pc    31       139.2 ms HE    2 dec  10 frames  + 5.9 ms peer-wait  (seq 17)
+c2  s4   notify 32       139.3 ms HE    2 dec  5 frames  + 1.5 ms peer-wait  (seq 18)
+c2  s6   local  22        69.8 ms HE    1 dec  0 frames
+c2  s8   2pc    33       139.9 ms HE    2 dec  10 frames  + 5.8 ms peer-wait  (seq 19)
+c2  s9   notify 34       139.6 ms HE    2 dec  5 frames  + 1.8 ms peer-wait  (seq 20)
+c2  s10  2pc    35       139.5 ms HE    2 dec  10 frames  + 5.3 ms peer-wait  (seq 21)
+c2  s13  notify 36       140.1 ms HE    2 dec  5 frames  + 1.7 ms peer-wait  (seq 22)
+c2  s14  2pc    39       139.6 ms HE    2 dec  10 frames  + 4.6 ms peer-wait  (seq 23)
+c2  s16  notify 30       139.3 ms HE    2 dec  5 frames  + 2.1 ms peer-wait  (seq 24)
+c2  s25  local  11        69.8 ms HE    1 dec  0 frames
+c2  s26  local  21        70.3 ms HE    1 dec  0 frames
+c2  s27  local  12        69.7 ms HE    1 dec  0 frames
+c2  s28  2pc    31       139.2 ms HE    2 dec  10 frames  + 6.1 ms peer-wait  (seq 25)
+c2  s29  notify 32       139.5 ms HE    2 dec  5 frames  + 1.4 ms peer-wait  (seq 26)
+c2  s32  2pc    35       140.0 ms HE    2 dec  10 frames  + 6.4 ms peer-wait  (seq 27)
+c2  s33  notify 36       139.7 ms HE    2 dec  5 frames  + 1.8 ms peer-wait  (seq 28)
+c2  s34  local  22        70.1 ms HE    1 dec  0 frames
+c2  s36  2pc    33       139.8 ms HE    2 dec  10 frames  + 6.0 ms peer-wait  (seq 29)
+c2  s37  notify 34       139.4 ms HE    2 dec  5 frames  + 1.4 ms peer-wait  (seq 30)
+c2  s40  2pc    37       139.6 ms HE    2 dec  10 frames  + 6.1 ms peer-wait  (seq 31)
+c2  s41  notify 38       139.9 ms HE    2 dec  5 frames  + 1.4 ms peer-wait  (seq 32)
+-- cycle 2/5 done at 8295.7 ms --
+
+-- cycle 3/5 --
+c3  s0   local  21        69.8 ms HE    1 dec  0 frames
+c3  s1   local  11        69.7 ms HE    1 dec  0 frames
+c3  s2   local  12        69.5 ms HE    1 dec  0 frames
+c3  s3   2pc    31       139.4 ms HE    2 dec  10 frames  + 5.2 ms peer-wait  (seq 33)
+c3  s4   notify 32       139.8 ms HE    2 dec  5 frames  + 1.7 ms peer-wait  (seq 34)
+c3  s6   local  22        69.7 ms HE    1 dec  0 frames
+c3  s8   2pc    33       139.8 ms HE    2 dec  10 frames  + 4.8 ms peer-wait  (seq 35)
+c3  s9   notify 34       140.2 ms HE    2 dec  5 frames  + 1.8 ms peer-wait  (seq 36)
+c3  s10  2pc    35       139.9 ms HE    2 dec  10 frames  + 4.9 ms peer-wait  (seq 37)
+c3  s13  notify 36       140.3 ms HE    2 dec  5 frames  + 1.6 ms peer-wait  (seq 38)
+c3  s14  2pc    39       139.5 ms HE    2 dec  10 frames  + 6.2 ms peer-wait  (seq 39)
+c3  s16  notify 30       139.3 ms HE    2 dec  5 frames  + 1.6 ms peer-wait  (seq 40)
+c3  s25  local  11        69.2 ms HE    1 dec  0 frames
+c3  s26  local  21        69.3 ms HE    1 dec  0 frames
+c3  s27  local  12        69.3 ms HE    1 dec  0 frames
+c3  s28  2pc    31       139.7 ms HE    2 dec  10 frames  + 6.3 ms peer-wait  (seq 41)
+c3  s29  notify 32       139.5 ms HE    2 dec  5 frames  + 1.8 ms peer-wait  (seq 42)
+c3  s32  2pc    35       139.2 ms HE    2 dec  10 frames  + 5.4 ms peer-wait  (seq 43)
+c3  s33  notify 36       139.2 ms HE    2 dec  5 frames  + 1.3 ms peer-wait  (seq 44)
+c3  s34  local  22        69.6 ms HE    1 dec  0 frames
+c3  s36  2pc    33       140.2 ms HE    2 dec  10 frames  + 5.8 ms peer-wait  (seq 45)
+c3  s37  notify 34       139.6 ms HE    2 dec  5 frames  + 1.8 ms peer-wait  (seq 46)
+c3  s40  2pc    37       139.3 ms HE    2 dec  10 frames  + 5.1 ms peer-wait  (seq 47)
+c3  s41  notify 38       140.0 ms HE    2 dec  5 frames  + 1.8 ms peer-wait  (seq 48)
+-- cycle 3/5 done at 11937.2 ms --
+
+-- cycle 4/5 --
+c4  s0   local  21        70.2 ms HE    1 dec  0 frames
+c4  s1   local  11        70.1 ms HE    1 dec  0 frames
+c4  s2   local  12        69.6 ms HE    1 dec  0 frames
+c4  s3   2pc    31       139.9 ms HE    2 dec  10 frames  + 6.2 ms peer-wait  (seq 49)
+c4  s4   notify 32       139.5 ms HE    2 dec  5 frames  + 1.6 ms peer-wait  (seq 50)
+c4  s6   local  22        69.7 ms HE    1 dec  0 frames
+c4  s8   2pc    33       138.9 ms HE    2 dec  10 frames  + 6.9 ms peer-wait  (seq 51)
+c4  s9   notify 34       139.9 ms HE    2 dec  5 frames  + 1.4 ms peer-wait  (seq 52)
+c4  s10  2pc    35       139.5 ms HE    2 dec  10 frames  + 5.8 ms peer-wait  (seq 53)
+c4  s13  notify 36       139.9 ms HE    2 dec  5 frames  + 2.3 ms peer-wait  (seq 54)
+c4  s14  2pc    39       140.0 ms HE    2 dec  10 frames  + 5.8 ms peer-wait  (seq 55)
+c4  s16  notify 30       139.8 ms HE    2 dec  5 frames  + 1.5 ms peer-wait  (seq 56)
+c4  s25  local  11        69.4 ms HE    1 dec  0 frames
+c4  s26  local  21        69.8 ms HE    1 dec  0 frames
+c4  s27  local  12        69.5 ms HE    1 dec  0 frames
+c4  s28  2pc    31       140.0 ms HE    2 dec  10 frames  + 5.9 ms peer-wait  (seq 57)
+c4  s29  notify 32       139.9 ms HE    2 dec  5 frames  + 1.7 ms peer-wait  (seq 58)
+c4  s32  2pc    35       139.8 ms HE    2 dec  10 frames  + 7.8 ms peer-wait  (seq 59)
+c4  s33  notify 36       140.1 ms HE    2 dec  5 frames  + 2.0 ms peer-wait  (seq 60)
+c4  s34  local  22        69.7 ms HE    1 dec  0 frames
+c4  s36  2pc    33       139.6 ms HE    2 dec  10 frames  + 6.0 ms peer-wait  (seq 61)
+c4  s37  notify 34       139.1 ms HE    2 dec  5 frames  + 1.5 ms peer-wait  (seq 62)
+c4  s40  2pc    37       139.7 ms HE    2 dec  10 frames  + 6.5 ms peer-wait  (seq 63)
+c4  s41  notify 38       140.7 ms HE    2 dec  5 frames  + 1.5 ms peer-wait  (seq 64)
+-- cycle 4/5 done at 15595.0 ms --
+
+-- cycle 5/5 --
+c5  s0   local  21        69.9 ms HE    1 dec  0 frames
+c5  s1   local  11        69.7 ms HE    1 dec  0 frames
+c5  s2   local  12        69.7 ms HE    1 dec  0 frames
+c5  s3   2pc    31       139.6 ms HE    2 dec  10 frames  + 6.6 ms peer-wait  (seq 65)
+c5  s4   notify 32       139.6 ms HE    2 dec  5 frames  + 1.6 ms peer-wait  (seq 66)
+c5  s6   local  22        69.4 ms HE    1 dec  0 frames
+c5  s8   2pc    33       139.8 ms HE    2 dec  10 frames  + 5.1 ms peer-wait  (seq 67)
+c5  s9   notify 34       139.7 ms HE    2 dec  5 frames  + 1.6 ms peer-wait  (seq 68)
+c5  s10  2pc    35       139.5 ms HE    2 dec  10 frames  + 5.8 ms peer-wait  (seq 69)
+c5  s13  notify 36       140.0 ms HE    2 dec  5 frames  + 1.9 ms peer-wait  (seq 70)
+c5  s14  2pc    39       139.5 ms HE    2 dec  10 frames  + 7.4 ms peer-wait  (seq 71)
+c5  s16  notify 30       140.1 ms HE    2 dec  5 frames  + 1.6 ms peer-wait  (seq 72)
+c5  s25  local  11        69.7 ms HE    1 dec  0 frames
+c5  s26  local  21        69.6 ms HE    1 dec  0 frames
+c5  s27  local  12        69.9 ms HE    1 dec  0 frames
+c5  s28  2pc    31       139.8 ms HE    2 dec  10 frames  + 5.2 ms peer-wait  (seq 73)
+c5  s29  notify 32       139.5 ms HE    2 dec  5 frames  + 1.6 ms peer-wait  (seq 74)
+c5  s32  2pc    35       140.2 ms HE    2 dec  10 frames  + 6.3 ms peer-wait  (seq 75)
+c5  s33  notify 36       140.5 ms HE    2 dec  5 frames  + 1.8 ms peer-wait  (seq 76)
+c5  s34  local  22        69.9 ms HE    1 dec  0 frames
+c5  s36  2pc    33       139.7 ms HE    2 dec  10 frames  + 6.1 ms peer-wait  (seq 77)
+c5  s37  notify 34       139.8 ms HE    2 dec  5 frames  + 1.8 ms peer-wait  (seq 78)
+c5  s40  2pc    37       140.1 ms HE    2 dec  10 frames  + 5.9 ms peer-wait  (seq 79)
+c5  s41  notify 38       139.9 ms HE    2 dec  5 frames  + 1.9 ms peer-wait  (seq 80)
+-- cycle 5/5 done at 19245.6 ms --
+
+============================================================
+  SUMMARY — node 1/5 — LOCAL MODULAR — UDP/IP multicast (RFC 1112)
+============================================================
+  events this node FIRED:
+  local (no network)     n=40   avg    73.42 ms  (HE   73.22 + net    0.00)  min   69.21  max   140.35   20.3%
+  shared controllable    n=40   avg   145.84 ms  (HE  139.65 + net    6.02)  min  144.45  max   147.79   40.4%
+  shared uncontroll.     n=40   avg   141.69 ms  (HE  139.78 + net    1.71)  min  140.61  max   143.35   39.3%
+  events this node APPLIED for a peer (participant side):
+  shared, applied              (none on this node)
+  sync-wait (peers reaching a shared step): n=80 avg 60.07 ms, 4.8 s total
+     not protocol cost — the plant catching up; kept out of the rows above
+  run clock, end of cycles 1..5 (ms): 4638.9 8295.7 11937.2 15595.0 19245.6
+     a cycle is over at the LATEST node's value; DES_WORK_MS 0 included
+  ----------------------------------------------------------
+  all events            n=120  avg   120.32 ms  (HE  117.55 + net    2.57)
+  PEER-WAIT + WIRE      2.1 % of total step time
+     (compare against the round-trip probe above: the excess is
+      the peer's own HE work, not the link.)
+  frames: tx=158 rx=1169 retransmits=0
+  authentication: HMAC-SHA256/128, 3.6 us per frame; 0 rejected (bad tag), 0 stale/replayed dropped, 4 epoch challenges
+  rx queue: peak 8/64 frames
+  plant check: 0 event reports rejected as physically impossible
+     (these supervisors carry the plant: an impossible uncontrollable event is caught)
+  ----------------------------------------------------------
+  homomorphic vs cleartext oracle : PASS — every encrypted bit matched
+     (PASS certifies the cryptography: each node's encrypted bits
+      match its own clear model for the events it applied. It does
+      not certify the distributed run — read the skips for that.)
+  distributed vs MONOLITHIC sup.  : off — this header has no monolithic supervisor
+  safe halt                       : no — ran to completion
+============================================================
+@@RESULT {"node":1,"nodes":5,"family":"LOCAL MODULAR","data":"supervisor_data_fms.h","transport":"UDP/IP multicast (RFC 1112)","fingerprint":"6f43d6b9","supervisors":["S0","S1"],"fired":{"local":40,"ctrl":40,"unctrl":40},"applied_for_peers":0,"skips":0,"impossible":0,"tx":158,"rx":1180,"retx":0,"auth_bad":0,"replays":0,"challenges":4,"mac_us":3.57,"rxq_peak":8,"rxq_drops":0,"sync_wait_ms":4805.9,"oracle":"PASS","safe_halt":false,"halt_reason":"","cycle_end_ms":[4638.9,8295.7,11937.2,15595.0,19245.6],"rounds":5,"work_ms":0,"emu_scalarmul_ms":69.0,"exit":0}
