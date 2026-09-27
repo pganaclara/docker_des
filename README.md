@@ -12,63 +12,97 @@ eventos controláveis e notificação confiável para os não controláveis, com
 quadros assinados por HMAC-SHA256.
 
 **O motor é o mesmo arquivo das placas, byte a byte** (`engine/`, conferido
-por SHA-256). Só o ponto de entrada e um transporte opcional são novos
-(`src/`). Por isso dá para afirmar, e verificar, que o container executa **o
-mesmo sistema** que o hardware.
+por SHA-256). Só o ponto de entrada é novo (`src/`). Por isso dá para afirmar,
+e verificar, que o container executa **o mesmo sistema** que o hardware.
+
+Os supervisores são os **modulares locais completos** do FMS (família
+`LMOD`), que carregam a planta local e por isso rejeitam eventos não
+controláveis fisicamente impossíveis. Cada decifração leva **69 ms**, como no
+ESP32-S3 (emulado; `DES_EMU_SCALARMUL_MS`).
 
 ---
 
 ## O resultado principal
 
-Todos os cenários foram executados com o código deste repositório. Detalhes em
-[`docs/resultados/` no commit `b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775/docs/resultados).
+### 1. Escala: de 1 a 7 containers
 
-| o que se verifica | hardware (ESP32-S3) | containers | |
+`REPEAT=5 scripts/run-all.sh` no WSL 2, 35 execuções, **35/35 PASS**. Tempo
+por passo em ms, média ± intervalo de confiança de 95 % (n = 5):
+
+| containers | supervisores por container | ciclo 1 | aceleração | ciclos 2–5 | aceleração | limite (nó mais carregado) |
+|---|---|---|---|---|---|---|
+| 1 | S0–S6 | 303,1 ± 1,3 | 1,00× | 240,8 ± 0,2 | 1,00× | 298,0 |
+| 2 | S0–S3 · S4–S6 | 195,2 ± 0,6 | 1,55× | 148,9 ± 0,2 | 1,62× | 164,7 |
+| 3 | S0–S2 · S3–S4 · S5–S6 | 149,2 ± 0,6 | 2,03× | 112,4 ± 0,2 | 2,14× | 123,9 |
+| 4 | S0–S1 · S2–S3 · S4–S5 · S6 | 133,2 ± 0,3 | 2,28× | 93,6 ± 0,3 | 2,57× | 105,1 |
+| 5 | S0–S1 · S2 · S3–S4 · S5 · S6 | 108,2 ± 1,3 | 2,80× | 82,7 ± 0,3 | 2,91× | 76,8 |
+| 6 | S0–S1 · S2 · S3 · S4 · S5 · S6 | 98,8 ± 1,1 | 3,07× | 77,2 ± 0,2 | 3,12× | 65,9 |
+| 7 | um por container | 90,1 ± 1,0 | 3,37× | 61,5 ± 0,3 | 3,92× | 64,3 |
+
+- **Cada container a mais reduz o tempo por passo**, e toda a curva é
+  estatisticamente distinguível: os intervalos (≤ 1,3 ms) são bem menores que
+  as diferenças entre configurações vizinhas (≥ 8,7 ms). A variação entre
+  repetições fica abaixo de 1 %.
+- **A aceleração é limitada pelo nó mais carregado.** Os nós só trabalham em
+  paralelo entre dois eventos compartilhados, então a célula nunca é mais
+  rápida que *decifrações do nó mais carregado × 69 ms ÷ 44 passos*. O tempo
+  medido fica 25–33 ms acima desse limite, e essa diferença é o custo de
+  coordenação. De 6 para 7 containers o ganho é pequeno porque o supervisor
+  S5 sozinho concentra 41 das 190 decifrações do ciclo 1.
+- **Reprodutível entre máquinas:** a mesma varredura na nuvem
+  ([`docs/resultados/escala/`](docs/resultados/escala/escala.md)) deu tempos
+  1,2–3,3 % menores e exatamente os mesmos invariantes.
+
+Análise completa em [`docs/resultados-wsl/20260927-170420-varredura/README.md`](docs/resultados-wsl/20260927-170420-varredura/README.md).
+
+### 2. Equivalência com as placas ESP32
+
+Em todas as 35 execuções, cada configuração repetiu exatamente o mesmo
+resultado lógico, e com 2 containers ele coincide com o das placas:
+
+| o que se verifica | ESP32-S3 | containers | |
 |---|---|---|---|
 | impressão digital da configuração, FMS em 2 nós | `edbd7971` | `edbd7971` | ✅ |
-| decifrações, FMS em 2 nós, 5 ciclos | 405 + 393 | 405 + 393 | ✅ |
-| decifrações no ciclo 1, por nó | 85 + 105 | 85 + 105 | ✅ |
-| decifrações no ciclo 1, FMS em 1 nó (placa única) | 190 | 190 | ✅ |
-| FMS com **7 containers, um por supervisor**: passos executados | — | 220/220, 0 pulados | ✅ |
-| decifrações com 7 containers | — | 798 (= 405 + 393), 190 no ciclo 1 | ✅ |
+| decifrações por nó, 2 nós, 5 ciclos | 405 + 393 | 405 + 393 | ✅ |
+| decifrações por nó, 2 nós, ciclo 1 | 85 + 105 | 85 + 105 | ✅ |
+| decifrações no ciclo 1, 1 nó (placa única) | 190 | 190 | ✅ |
+| decifrações da célula, qualquer número de nós | — | 798 (190 no ciclo 1) | ✅ |
+| passos executados | 220/220 | 220/220 em todas as configurações | ✅ |
 | bits homomórficos × oráculo em texto claro, em todo nó | PASS | PASS | ✅ |
-| execução distribuída × supervisor monolítico (ESF) | — ¹ | PASS | ✅ |
-| 5 % de perda: completa sem divergência | — | 220/220, mesmas 798 decifrações | ✅ |
-| 30 % de perda: para com segurança (SAFE HALT) | — ¹ | SAFE HALT nos 2 nós | ✅ |
-
-¹ O `esp32_crypto` documenta esses dois casos só no teste em Linux (com um
-*test double* no lugar da criptografia), não nas placas.
 
 A mesma impressão digital e as mesmas contagens de decifração, na unidade,
-são a evidência de que se trata do mesmo sistema. A contagem é função
+são a evidência de que se trata do mesmo sistema: a contagem é função
 determinística do supervisor, do roteiro e do padrão de textos cifrados, e o
 modelo estático do `esp32_crypto` previu o hardware passo a passo com ela.
-O argumento completo está em [`docs/arquitetura.md`](docs/arquitetura.md) §5.
+Argumento completo em [`docs/arquitetura.md`](docs/arquitetura.md) §5.
 
-### O que os experimentos mostraram
+**Para citar:** *com o custo de decifração do ESP32-S3 emulado, distribuir os
+7 supervisores modulares locais do FMS em 7 containers reduz o tempo por passo
+de 303,1 ± 1,3 ms para 90,1 ± 1,0 ms (3,37×; IC 95 %, n = 5), com aceleração
+limitada pelo supervisor mais carregado.*
 
-- **Um supervisor por container maximiza a coordenação.** Os eventos 30–39
-  aparecem nos 7 supervisores, então cada um vira um commit em duas fases com
-  6 participantes (14 quadros). Com 2 nós são 10 eventos compartilhados; com 7,
-  são 15.
-- **Distribuir não soma trabalho criptográfico:** são 798 decifrações com 1, 2
-  ou 7 nós, com ou sem perda.
-- **O gargalo muda de lugar.** No ESP32 a decifração custa 69–100 ms e
-  distribuir acelera (2 placas: 296,9 ms/passo contra 346,0 numa só). No
-  container ela custa ≈ 0,55 ms, a coordenação domina (88 % do passo) e
-  distribuir atrasa (1 nó: 2,4 ms/passo; 7 nós: 4,7).
-- **Testado: emulando o custo de decifração do ESP32 (69 ms), distribuir
-  volta a acelerar.** 1 → 2 → 7 containers: 299,5 → 192,7 → 87,2 ms/passo,
-  perto do limite "decifrações do nó mais carregado × 69 ms"
-  (`DES_EMU_SCALARMUL_MS`, hoje o padrão).
-- **Os *timeouts* do protocolo estão calibrados para o ESP32.** Com 5 % de
-  perda, o passo vai a 511 ms com os *timeouts* de 1,5 s e a 85 ms com
-  *timeouts* de 100 ms, sem mudar o resultado.
-- **Sob perda pesada a segurança se mantém, de dois jeitos:** SAFE HALT quando
-  a perda acerta depois do ponto de commit (2 nós, 30 %), passos pulados
-  quando acerta antes (7 nós, 40 %).
+### 3. Experimentos anteriores
 
-Os cenários de perda, unicast, `netem` e `extended_small_factory` citados acima foram retirados para deixar só a varredura de 1 a 7 containers; as execuções deles estão no histórico do git ([commit `b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775/docs)).
+Antes de fixar a varredura, outros cenários foram testados e depois retirados
+do repositório; código e resultados estão no
+[commit `b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775/docs). O que eles mostraram:
+
+- **Sem a emulação, distribuir atrasa.** Na velocidade de um PC a decifração
+  custa ≈ 0,55 ms, a coordenação domina (88 % do passo) e 1 → 7 nós vai de
+  2,4 para 4,7 ms/passo. No ESP32, onde a decifração custa 69–100 ms,
+  distribuir acelera. Foi isso que motivou tornar a emulação o padrão.
+- **Distribuir não soma trabalho criptográfico:** 798 decifrações com 1, 2 ou 7
+  nós, com ou sem perda de quadros.
+- **Os *timeouts* do protocolo estão calibrados para o ESP32:** com 5 % de
+  perda, 511 ms/passo com *timeouts* de 1,5 s e 85 ms com 100 ms, sem mudar o
+  resultado.
+- **Sob perda pesada a segurança se mantém:** SAFE HALT quando a perda acerta
+  depois do ponto de commit (2 nós, 30 %), passos pulados quando acerta antes
+  (7 nós, 40 %).
+- **Transporte unicast e rede com `netem`** (atraso de Wi-Fi) deram os mesmos
+  resultados lógicos.
+- **Verificação contra o supervisor monolítico** (`extended_small_factory`):
+  PASS.
 
 Detalhes e ressalvas em [`docs/arquitetura.md`](docs/arquitetura.md) §6–§7.
 A revisão de literatura, com como isso costuma ser feito, a lacuna e onde cada
@@ -142,21 +176,7 @@ motor distribui os 7 supervisores do FMS em blocos contíguos:
 Em todos, o resumo confere sozinho os invariantes (`EXPECT_*`): 798
 decifrações (190 no ciclo 1), oráculo PASS em todo nó e nenhum passo pulado.
 
-### Resultado de referência
-
-| containers | ms/passo, ciclo 1 | aceleração | limite (nó mais carregado) |
-|---|---|---|---|
-| 1 | 299,6 | 1,00× | 298,0 |
-| 2 | 192,8 | 1,55× | 164,7 |
-| 3 | 146,8 | 2,04× | 123,9 |
-| 4 | 130,7 | 2,29× | 105,1 |
-| 5 | 106,0 | 2,83× | 76,8 |
-| 6 | 96,3 | 3,11× | 65,9 |
-| 7 | 87,2 | 3,44× | 64,3 |
-
-Tabela completa em [`docs/resultados/escala/escala.md`](docs/resultados/escala/escala.md).
-De 6 para 7 containers o ganho é pequeno porque o supervisor S5 sozinho já é
-o nó mais carregado (41 das 190 decifrações do ciclo 1).
+O resultado da varredura está na seção "O resultado principal", acima.
 
 ---
 
@@ -185,7 +205,7 @@ No arquivo de cenário (ou no ambiente):
 |---|---|---|
 | `DES_PROBLEM` | `fms` | o problema (só o cabeçalho do FMS está em `engine/`) |
 | `DES_NUM_NODES` | `7` | número de containers (1–7 com a `compose.yaml` atual) |
-| `DES_FAMILY` | `LMOD` | `LMOD` (modular local), `LMOD_RED` (reduzida) ou `MONO` |
+| `DES_FAMILY` | `LMOD` | `LMOD`, modular local completo (carrega a planta). O motor também aceita `LMOD_RED` (reduzida), que **não** é usada aqui porque não carrega a planta e pode aceitar um evento impossível |
 | `DES_ROUNDS` | `5` | ciclos de produção |
 | `DES_WORK_MS` | `0` | tempo de máquina simulado antes de cada evento não controlável |
 | `DES_EXTRA_FLAGS` | vazio | qualquer macro do motor, ex. `-DDES_SIMULATE_LOSS_PCT=5`, `"-DDES_SUP_NODE_MAP={1,1,2,2,3,3,4}"`, `-DDES_CONTROLLABLE_MASK=...` |
@@ -221,7 +241,8 @@ docker_des/
 └── docs/
     ├── arquitetura.md      ESP32 → container, por que C++, prova de equivalência, achados
     ├── literatura.md       revisão de literatura com referências conferidas
-    └── resultados/escala/  varredura de referência (1 a 7 containers)
+    ├── resultados/escala/  varredura de referência na nuvem (1 a 7 containers)
+    └── resultados-wsl/     varreduras no WSL (a com 5 repetições é o resultado principal)
 ```
 
 ---
@@ -254,9 +275,10 @@ Rust, Go, Python e C está em [`docs/arquitetura.md`](docs/arquitetura.md) §4.
 | | `esp32_crypto` | `docker_des` |
 |---|---|---|
 | motor (`des_generic.h`, `des_transport.h`) | original | cópia fiel, commit `bf0efe6` |
-| supervisores (`supervisor_data_*.h`) | gerados pelo notebook UltraDES | cópia fiel |
+| supervisores | `supervisor_data_*.h`, gerados pelo notebook UltraDES | `supervisor_data_fms.h`, cópia fiel |
 | plataforma | ESP32-S3, Wi-Fi | containers Linux, rede Docker |
 | nós | 2 placas | 1 a 7 containers (7 = um por supervisor do FMS) |
+| custo de uma decifração | 69 ms (medido) | 69 ms (emulado) |
 | criptografia validada em Linux | com *test double* | com **mbedTLS 3.6.5 real** |
 
 Os dois podem até formar uma célula mista: um ESP32 e containers com a mesma
