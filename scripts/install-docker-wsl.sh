@@ -114,7 +114,8 @@ say "versions"
 sudo docker version --format 'engine {{.Server.Version}}  client {{.Client.Version}}' \
     || die "the Docker daemon is not answering — see: sudo systemctl status docker"
 sudo docker compose version
-if zcat /proc/config.gz 2>/dev/null | grep -q '^CONFIG_NET_SCH_NETEM=[ym]'; then
+if zcat /proc/config.gz 2>/dev/null | grep -q '^CONFIG_NET_SCH_NETEM=[ym]' ||
+   modinfo sch_netem >/dev/null 2>&1; then   # built in, or shipped as a module
     say "this kernel has netem: scenarios/fms-7-wifi.env will work"
 else
     warn "this WSL kernel has no netem: use scenarios/fms-7-loss5.env for loss;"

@@ -212,11 +212,13 @@ Wi-Fi ou WAN sobre uma rede virtual.
   redes *overlay* (Swarm/Kubernetes), onde o VXLAN não replica multicast
   ([moby/libnetwork#552](https://github.com/moby/libnetwork/issues/552)). Por
   isso o `docker_des` traz um segundo transporte, UDP *unicast*.
-- **`netem` no WSL 2.** O kernel padrão do WSL 2 historicamente não traz
-  `sch_netem` ([microsoft/WSL#6065](https://github.com/microsoft/WSL/issues/6065)),
-  e o kernel do ambiente em que este repositório foi validado também não. Por
-  isso os cenários de perda usam a injeção de perda do próprio motor
-  (`DES_SIMULATE_LOSS_PCT`), que funciona em qualquer kernel.
+- **`netem` no WSL 2.** Kernels antigos do WSL 2 não traziam `sch_netem`
+  ([microsoft/WSL#6065](https://github.com/microsoft/WSL/issues/6065)); um
+  kernel WSL 2 atual (setembro de 2026) o traz como módulo, e o cenário
+  `fms-7-wifi` rodou nele (`resultados-wsl/`). O kernel do ambiente de
+  referência na nuvem não tem. Por isso os cenários de perda principais usam a
+  injeção de perda do próprio motor (`DES_SIMULATE_LOSS_PCT`), que funciona em
+  qualquer kernel.
 
 ---
 

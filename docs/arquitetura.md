@@ -299,9 +299,9 @@ mas numa rede física a conta muda.
   (sem variância). Os tempos servem para comparar cenários *entre si* nesta
   máquina, não para afirmar prazos [6], [9], [11].
 - **A rede é uma *bridge* na memória.** Perda e atraso são injetados (motor ou
-  `netem`), não medidos num enlace real. O `netem` não pôde ser validado no
-  ambiente de referência (kernel sem `sch_netem`), então o cenário
-  `fms-7-wifi` fica como está, não verificado.
+  `netem`), não medidos num enlace real. O `netem` não existe no kernel do
+  ambiente de referência, mas o cenário `fms-7-wifi` rodou e passou num WSL 2
+  atual (`resultados-wsl/`).
 - **Controlabilidade inferida.** Como no `esp32_crypto`, o cabeçalho não diz
   quais eventos são controláveis e o motor infere pelo rótulo (dígito final
   ímpar = controlável). Para um artigo, fixe `DES_CONTROLLABLE_MASK`

@@ -128,7 +128,7 @@ Cada arquivo em `scenarios/` é um experimento, com os valores esperados
 | `fms-7-loss5` | 7 | 5 % de perda de quadros: retransmissão, sem divergência |
 | `fms-7-loss5-fast` | 7 | idem, com *timeouts* ajustados para container (100 ms em vez de 1,5 s) |
 | `fms-2-loss30` | 2 | teste negativo: 30 % de perda leva ao **SAFE HALT** propagado |
-| `fms-7-wifi` | 7 | atraso de 7 ± 3 ms e 1 % de perda via `netem`; exige kernel com `sch_netem`, que o WSL 2 padrão não tem |
+| `fms-7-wifi` | 7 | atraso de 7 ± 3 ms e 1 % de perda via `netem` (exige `sch_netem` no kernel; kernels WSL 2 recentes trazem como módulo, os antigos não) |
 
 ---
 
@@ -214,7 +214,7 @@ Rust, Go, Python e C está em [`docs/arquitetura.md`](docs/arquitetura.md) §4.
 |---|---|
 | `429 Too Many Requests` ao baixar `ubuntu:26.04` | limite de pulls anônimos do Docker Hub. Faça `docker login` ou use um espelho: `UBUNTU_IMAGE=mirror.gcr.io/library/ubuntu:26.04 scripts/run.sh ...` |
 | `apt-get` falha no build atrás de proxy corporativo | `DES_BUILD_NETWORK=host` e configure o proxy do Docker (`~/.docker/config.json`, seção `proxies`) |
-| `[netem] could not shape eth0` | o kernel do WSL 2 não tem `sch_netem`. Use `fms-7-loss5` (a perda é injetada no próprio motor) |
+| `[netem] could not shape eth0` | o kernel não tem `sch_netem` (kernels WSL 2 antigos). Atualize com `wsl --update` no PowerShell, ou use `fms-7-loss5` (perda injetada no próprio motor) |
 | nós esperando para sempre `waiting for N peer(s)` | multicast bloqueado na sua rede Docker. Use `DES_TRANSPORT=unicast` |
 | `this image has no binary for node K` | a imagem foi compilada para menos nós; confira `DES_NUM_NODES` no cenário |
 | `[key] cannot open /run/secrets/des_auth_key` | rode `scripts/gen-key.sh` |
