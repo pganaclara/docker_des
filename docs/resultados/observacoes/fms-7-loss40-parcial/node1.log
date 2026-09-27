@@ -1,0 +1,97 @@
+des_container: node 1 of 7, LOCAL MODULAR, data supervisor_data_fms.h, transport UDP/IP multicast (RFC 1112)
+
+============================================================
+  Distributed Homomorphic DES — generic engine
+  node 1/7   family LOCAL MODULAR   7 supervisors   31 events
+  data: supervisor_data_fms.h
+============================================================
+--- event routing (DERIVED from the header, not hardcoded) ---
+  event  ctrl  nodes      owner  class
+  11     yes   1          1      local — no network
+  12     no    1          1      local — no network
+  21     yes   2          2      local — no network
+  22     no    2          2      local — no network
+  30     no    1 2 3 4 5 6 7  1      SHARED — needs network
+  31     yes   1 2 3 4 5 6 7  1      SHARED — needs network
+  32     no    1 2 3 4 5 6 7  1      SHARED — needs network
+  33     yes   1 2 3 4 5 6 7  1      SHARED — needs network
+  34     no    1 2 3 4 5 6 7  1      SHARED — needs network
+  35     yes   1 2 3 4 5 6 7  1      SHARED — needs network
+  36     no    1 2 3 4 5 6 7  1      SHARED — needs network
+  37     yes   1 2 3 4 5 6 7  1      SHARED — needs network
+  38     no    1 2 3 4 5 6 7  1      SHARED — needs network
+  39     yes   1 2 3 4 5 6 7  1      SHARED — needs network
+  41     yes   3          3      local — no network
+  42     no    3          3      local — no network
+  51     yes   4          4      local — no network
+  52     no    4          4      local — no network
+  53     yes   4          4      local — no network
+  54     no    4          4      local — no network
+  61     yes   5 6 7      5      SHARED — needs network
+  63     yes   5 6 7      5      SHARED — needs network
+  64     no    5 6 7      5      SHARED — needs network
+  65     yes   5 6 7      5      SHARED — needs network
+  66     no    5 6 7      5      SHARED — needs network
+  71     yes   7          7      local — no network
+  72     no    7          7      local — no network
+  73     yes   7          7      local — no network
+  74     no    7          7      local — no network
+  81     yes   7          7      local — no network
+  82     no    7          7      local — no network
+  => 15/31 events shared; 16/31 need ZERO network traffic; 12 concern this node
+  NOTE controllability was INFERRED from event labels (the header
+       does not carry it). Check the 'ctrl' column above; if it is
+       wrong, set DES_CONTROLLABLE_MASK explicitly.
+
+[init] config fingerprint 04511541 — every node must print the same
+
+[net] UDP multicast 239.192.7.1:5077  ttl=1  frame=44 B
+--- crypto self-test ---
+  Enc(0)->0 Enc(1)->1                PASS
+  Enc(1)+Enc(1)->1 homomorphic OR   PASS
+  Enc(0)+Enc(0)->0                  PASS
+  curve secp192r1, ciphertext 50 B    PASS
+  frame tag HMAC-SHA256/128: 1.4 us, 1-bit tamper caught  PASS
+
+--- encrypting my supervisors' initial states ---
+[load] S0         idx 0   18 states  12 constraining ev     900 B ciphertext
+[init] my keypair is mine alone; no ciphertext ever leaves this node
+[init] my enablement: 11=1 12=0 21=1 22=1 30=0 31=0 32=0 33=1 34=0 35=1 36=0 37=1 38=0 39=1 41=1 42=1 51=1 52=1 53=1 54=1 61=1 63=1 64=1 65=1 66=1 71=1 72=1 73=1 74=1 81=1 82=1
+
+[net] waiting for 6 peer(s).............. all present.
+
+--- transport round-trip probe (UDP/IP multicast (RFC 1112)) ---
+  no reply — are the other nodes running?
+
+============================================================
+  RUN — SIM_SEQ driver — 5 cycles x 44 steps — LOCAL MODULAR
+  columns: cN sNN = cycle/step of MY walk; · = a peer caused this
+  'done at': run clock, common to all nodes; a cycle is over at the
+  LATEST node's print, machine time (DES_WORK_MS 0) included
+============================================================
+
+-- cycle 1/5 --
+c1  s1   local  11         1.3 ms HE    2 dec  0 frames
+c1  s2   local  12         0.4 ms HE    1 dec  0 frames
+c1  s3   retry  31    no quorum after 4 tries — nothing applied anywhere
+c1  s3   retry  31    no quorum after 4 tries — nothing applied anywhere
+c1  s3   SKIP   31    no quorum — a peer never answered
+c1  s4   sync   32    waiting for peers to reach this step (10 s)
+c1  s4   sync   32    waiting for peers to reach this step (20 s)
+c1  s4   sync   32    waiting for peers to reach this step (30 s)
+c1  s4   sync   32    waiting for peers to reach this step (40 s)
+c1  s4   sync   32    waiting for peers to reach this step (50 s)
+c1  s4   SKIP   32    a peer never reached this step
+c1  s8   sync   33    waiting for peers to reach this step (10 s)
+c1  s8   sync   33    waiting for peers to reach this step (20 s)
+c1  s8   sync   33    waiting for peers to reach this step (30 s)
+c1  s8   sync   33    waiting for peers to reach this step (40 s)
+c1  s8   retry  33    no quorum after 4 tries — nothing applied anywhere
+c1  s8   retry  33    no quorum after 4 tries — nothing applied anywhere
+c1  s8   SKIP   33    no quorum — a peer never answered
+c1  s9   [!!]   34    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+c1  s9   SKIP   34    physically impossible here — rejected
+c1  s10  retry  35    no quorum after 4 tries — nothing applied anywhere
+c1  s10  retry  35    no quorum after 4 tries — nothing applied anywhere
+c1  s10  SKIP   35    no quorum — a peer never answered
+c1  s13  sync   36    waiting for peers to reach this step (10 s)

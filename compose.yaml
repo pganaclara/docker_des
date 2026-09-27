@@ -1,0 +1,70 @@
+# =============================================================================
+# docker_des — distributed homomorphic DES supervisors, one per container
+# =============================================================================
+# Every node is a container on one bridge network ("cell"), the software
+# equivalent of the ESP32 boards on one Wi-Fi access point. They talk UDP only:
+# multicast to 239.192.7.1:5077 by default, or unicast to each peer by name.
+#
+# Normally driven by scripts/run.sh, which picks a scenario file:
+#   scripts/run.sh scenarios/fms-7.env      # FMS, one container per supervisor
+#
+# By hand (start ONLY node1..nodeN, N = DES_NUM_NODES of the scenario):
+#   docker compose --env-file scenarios/fms-2.env build
+#   docker compose --env-file scenarios/fms-2.env up node1 node2
+#
+# Services node1..node7 exist so that any N up to 7 can be started; the image
+# only carries binaries for 1..DES_NUM_NODES and refuses the others. For more
+# than 7 nodes, add services following the same pattern.
+# =============================================================================
+name: docker-des
+
+x-node: &node
+  image: docker-des:${DES_PROBLEM:-fms}-${DES_NUM_NODES:-7}n-${DES_FAMILY:-LMOD}-r${DES_ROUNDS:-5}-w${DES_WORK_MS:-0}${DES_TAG_SUFFIX:-}
+  build:
+    context: .
+    # "host" lets apt reach a proxy on 127.0.0.1 during the build; the default
+    # is fine on a normal WSL / Linux machine.
+    network: ${DES_BUILD_NETWORK:-default}
+    args:
+      UBUNTU_IMAGE: ${UBUNTU_IMAGE:-ubuntu:26.04}
+      DES_PROBLEM: ${DES_PROBLEM:-fms}
+      DES_NUM_NODES: ${DES_NUM_NODES:-7}
+      DES_FAMILY: ${DES_FAMILY:-LMOD}
+      DES_ROUNDS: ${DES_ROUNDS:-5}
+      DES_WORK_MS: ${DES_WORK_MS:-0}
+      DES_EXTRA_FLAGS: ${DES_EXTRA_FLAGS:-}
+  environment:
+    DES_TRANSPORT: ${DES_TRANSPORT:-multicast}
+    # unicast only: every node, in node-id order (Docker DNS resolves the names)
+    DES_PEERS: node1,node2,node3,node4,node5,node6,node7
+    DES_NETEM: ${DES_NETEM:-}
+    DES_LINGER_MS: ${DES_LINGER_MS:-10000}
+    DES_RUN_TIMEOUT_S: ${DES_RUN_TIMEOUT_S:-900}
+  secrets:
+    - des_auth_key
+  networks:
+    - cell
+  # tc netem needs it; the node itself drops every capability (entrypoint).
+  cap_add:
+    - NET_ADMIN
+  # One CPU per node, like one core per board in the ESP32 testbed.
+  cpus: ${DES_CPUS:-1.0}
+  restart: "no"
+
+services:
+  node1: { <<: *node, hostname: node1, command: ["1"] }
+  node2: { <<: *node, hostname: node2, command: ["2"] }
+  node3: { <<: *node, hostname: node3, command: ["3"] }
+  node4: { <<: *node, hostname: node4, command: ["4"] }
+  node5: { <<: *node, hostname: node5, command: ["5"] }
+  node6: { <<: *node, hostname: node6, command: ["6"] }
+  node7: { <<: *node, hostname: node7, command: ["7"] }
+
+networks:
+  cell:
+    driver: bridge
+
+secrets:
+  des_auth_key:
+    # 64 hex characters; scripts/gen-key.sh creates it. Never committed.
+    file: ./secrets/des_auth_key
