@@ -90,18 +90,17 @@ def main():
           "| containers | ms/passo, ciclo 1 | aceleração | ms/passo, ciclos 2–5 | aceleração "
           "| limite (nó mais carregado) | acima do limite | verificações |",
           "|---|---|---|---|---|---|---|---|"]
+    def x(v):
+        return "—" if v is None else f"{v:.2f}×"
+
     for r in rows:
         k = r["runs"]
-        over = (f"{r['c1_mean'] - r['bound_ms']:.1f}"
-                if r["bound_ms"] is not None and r["c1_mean"] is not None else "—")
-        md.append(
-            f"| {r['nodes']} | {show(r['c1_mean'], r['c1_sd'], k)} "
-            f"| {r['speedup_c1']:.2f}× | {show(r['ss_mean'], r['ss_sd'], k)} "
-            f"| {r['speedup_ss']:.2f}× "
-            f"| {'—' if r['bound_ms'] is None else f'{r[chr(98)+chr(111)+chr(117)+chr(110)+chr(100)+chr(95)+chr(109)+chr(115)]:.1f}'} "
-            f"| {over} | {r['checks_ok']}/{k} |" if base else
-            f"| {r['nodes']} | {show(r['c1_mean'], r['c1_sd'], k)} | — "
-            f"| {show(r['ss_mean'], r['ss_sd'], k)} | — | — | — | {r['checks_ok']}/{k} |")
+        bound = "—" if r["bound_ms"] is None else f"{r['bound_ms']:.1f}"
+        over = ("—" if r["bound_ms"] is None or r["c1_mean"] is None
+                else f"{r['c1_mean'] - r['bound_ms']:.1f}")
+        md.append(f"| {r['nodes']} | {show(r['c1_mean'], r['c1_sd'], k)} | {x(r['speedup_c1'])} "
+                  f"| {show(r['ss_mean'], r['ss_sd'], k)} | {x(r['speedup_ss'])} "
+                  f"| {bound} | {over} | {r['checks_ok']}/{k} |")
     md.append("\nAceleração = tempo com 1 container ÷ tempo com N. Limite = decifrações "
               "do nó mais carregado no ciclo 1 × custo de uma decifração ÷ passos do "
               "ciclo: os nós só trabalham em paralelo entre dois eventos compartilhados, "

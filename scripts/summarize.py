@@ -158,8 +158,7 @@ def main():
     md = []
     md.append(f"# Execução `{run.name}`\n")
     md.append(f"- problema `{env.get('DES_PROBLEM', '?')}`, família `{env.get('DES_FAMILY', '?')}`, "
-              f"**{len(nodes)} containers**, transporte `{env.get('DES_TRANSPORT', 'multicast')}`"
-              + (f", netem `{env['DES_NETEM']}`" if env.get("DES_NETEM") else ""))
+              f"**{len(nodes)} containers**, UDP multicast")
     if rounds and seq_len:
         rest = rounds * seq_len - fired - skips
         md.append(f"- {rounds} ciclos × {seq_len} passos = {rounds * seq_len} passos; "

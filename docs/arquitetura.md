@@ -37,7 +37,7 @@ os experimentos mostraram. A literatura citada `[n]` está em
   pelo UltraDES: **locais** (um só nó se importa, sem tráfego),
   **compartilhados controláveis** (commit em duas fases: `REQ → VOTE* →
   COMMIT → ACK*`) e **compartilhados não controláveis** (`NOTIFY → ACK*`).
-- O transporte é UDP puro: multicast (padrão) ou unicast (opcional).
+- O transporte é UDP multicast puro, o mesmo das placas.
 
 ---
 
@@ -52,7 +52,6 @@ os experimentos mostraram. A literatura citada `[n]` está em
 | Wi-Fi + ponto de acesso | rede Docker *bridge* `cell` | meio físico |
 | `secrets.h` compilado (chave no firmware) | chave lida no início de um *Docker secret* | forma de entregar a chave |
 | `des_distributed.ino` (entrada Arduino) | `src/des_container_main.cpp` (entrada POSIX) | **novo** |
-| — | `src/des_transport_unicast.h` (segundo transporte) | **novo** |
 | Serial Monitor | `docker compose logs` + linha `@@RESULT {json}` | saída |
 | RESET nas placas | `scripts/run.sh` (sobe, espera, coleta, resume) | operação |
 
@@ -80,9 +79,8 @@ quatro coisas que só existem num container:
    imagem**. Os 64 caracteres são os mesmos bytes que uma placa compilaria,
    então **um ESP32 e um container com a mesma chave são pares na mesma
    célula**.
-2. **Transporte escolhido no início**: `DES_TRANSPORT=multicast` (padrão) ou
-   `unicast`. A troca é uma atribuição à estrutura `DES_TRANSPORT_IMPL` do
-   motor, antes de `des_setup()`.
+2. **Custo de decifração do ESP32** (`DES_EMU_SCALARMUL_MS`, padrão 69 ms):
+   ver §6.3b.
 3. **Terminar.** Uma placa roda para sempre, um container precisa acabar.
    Depois do roteiro, o nó continua atendendo os pares por `DES_LINGER_MS`
    (padrão 10 s), porque um par pode estar retransmitindo um COMMIT cujo ACK se
@@ -93,23 +91,7 @@ quatro coisas que só existem num container:
    pares indefinidamente, o que é correto para placas gravadas uma de cada vez
    e errado para um lote de containers em que um deles nem subiu.
 
-### 3.2 `src/des_transport_unicast.h`
-
-Implementa o mesmo contrato de quatro funções (`begin/send/poll/service`) do
-`des_transport.h`, enviando o quadro de 44 B por UDP unicast a cada par. Os
-pares são **nomes** (`DES_PEERS=node1,...,node7`) resolvidos pelo DNS interno
-do Docker, com nova tentativa a cada 500 ms enquanto um par não subiu e
-atualização a cada 5 s (um container recriado muda de IP). Existe porque
-multicast não atravessa redes *overlay* (Swarm/Kubernetes) [39]. O endereço de
-origem nunca é confiável nem precisa ser: todo quadro é autenticado por HMAC
-no motor.
-
-É também uma demonstração do argumento fim a fim do motor [33]: como
-sequenciamento, confirmação, retransmissão e atomicidade estão no protocolo,
-qualquer transporte de melhor esforço serve, e trocá-lo não toca em uma linha
-de controle.
-
-### 3.3 `Dockerfile`
+### 3.2 `Dockerfile`
 
 - **Estágio de build** (Ubuntu 26.04 LTS): `g++` 15 + `libmbedtls-dev` 3.6.5,
   o mesmo ramo LTS que o ESP-IDF 5.5, e portanto o Arduino-ESP32 3.3, usa nas
@@ -118,18 +100,16 @@ de controle.
   cifrados. Compila `DES_NUM_NODES` binários em paralelo, cada um com seu
   `DES_NODE_ID`, com `-Wall -Wextra` e zero avisos, e com o mbedTLS ligado
   estaticamente. Grava `BUILD_INFO` com as versões.
-- **Estágio final**: só os binários, o `entrypoint` e o `iproute2` (para
-  `netem`). O nó roda como usuário sem privilégios, sem capacidades e com
-  `no_new_privs`. O root só existe no `entrypoint`, para aplicar o `tc`.
+- **Estágio final**: só os binários e o `entrypoint`, sem nenhum pacote
+  extra. O nó roda como o usuário sem privilégios `des`.
 
-### 3.4 `compose.yaml` e cenários
+### 3.3 `compose.yaml` e cenários
 
 - Serviços `node1`…`node7`, todos da mesma âncora YAML; o número do nó é o
   `command`. Sobe-se só `node1..nodeN`.
 - `cpus: 1.0` por container, como um núcleo por placa no ESP32.
-- `cap_add: NET_ADMIN` apenas para o `netem` opcional.
-- Cada `scenarios/*.env` é um experimento: problema, número de nós, família,
-  transporte, perda, e os **valores esperados** (`EXPECT_*`) que o
+- Os cenários são `scenarios/fms-1.env` a `fms-7.env`, um por número de
+  containers, com os **valores esperados** (`EXPECT_*`) que o
   `scripts/summarize.py` confere automaticamente.
 
 ---
@@ -369,7 +349,8 @@ mas numa rede física a conta muda.
   IP na LAN física), a mesma chave de 64 caracteres no `secrets.h` das placas
   e os mesmos parâmetros de build. A impressão digital tem que bater dos dois
   lados.
-- **Kubernetes/Swarm:** `DES_TRANSPORT=unicast` e `DES_PEERS` com os nomes DNS
-  dos *pods*/serviços.
+- **Kubernetes/Swarm:** multicast não atravessa redes *overlay* [39]. Um
+  transporte UDP unicast foi implementado e testado e depois retirado; está no
+  [commit `b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775/src) (`src/des_transport_unicast.h`).
 - **Tempo real:** host com PREEMPT_RT, `cpuset` dedicado por container e
   medição de percentis, como em [6], [11].

@@ -205,20 +205,14 @@ perda e reordenamento em interfaces, e é o que se usa para emular um enlace
 Wi-Fi ou WAN sobre uma rede virtual.
 
 **Para este trabalho:** a `compose.yaml` é uma bancada no mesmo espírito, com
-7 containers numa *bridge* e o `netem` opcional por container
-(`DES_NETEM`). Dois avisos práticos:
-
-- **Multicast.** Funciona entre containers na mesma rede *bridge*, mas não em
-  redes *overlay* (Swarm/Kubernetes), onde o VXLAN não replica multicast
-  ([moby/libnetwork#552](https://github.com/moby/libnetwork/issues/552)). Por
-  isso o `docker_des` traz um segundo transporte, UDP *unicast*.
-- **`netem` no WSL 2.** Kernels antigos do WSL 2 não traziam `sch_netem`
-  ([microsoft/WSL#6065](https://github.com/microsoft/WSL/issues/6065)); um
-  kernel WSL 2 atual (setembro de 2026) o traz como módulo, e o cenário
-  `fms-7-wifi` rodou nele ([`docs/resultados-wsl/` no commit `b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775/docs/resultados-wsl)). O kernel do ambiente de
-  referência na nuvem não tem. Por isso os cenários de perda principais usam a
-  injeção de perda do próprio motor (`DES_SIMULATE_LOSS_PCT`), que funciona em
-  qualquer kernel.
+até 7 containers numa *bridge*. Multicast funciona entre containers na mesma
+*bridge*, mas não em redes *overlay* (Swarm/Kubernetes), onde o VXLAN não
+replica multicast ([moby/libnetwork#552](https://github.com/moby/libnetwork/issues/552)).
+Um transporte UDP *unicast* e cenários com `netem` foram testados durante o
+desenvolvimento e depois retirados para manter o repositório enxuto; código e
+resultados estão no [commit `b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775). Kernels antigos do WSL 2 não
+trazem `sch_netem` ([microsoft/WSL#6065](https://github.com/microsoft/WSL/issues/6065)),
+e um kernel WSL 2 atual (setembro de 2026) o traz como módulo.
 
 ---
 
@@ -263,7 +257,7 @@ exaustiva: vale repetir no Scopus/IEEE Xplore com termos como
 | O protocolo preserva segurança sob perda | `fms-7-loss5` completa sem divergência; `fms-2-loss30` para em SAFE HALT | [20], [21], [23], [33] |
 | Concorrência entre iniciadores é tratada | *lock* + *wound-wait* | [22] (mutex), [35] |
 | A distribuição preserva o comportamento do supervisor monolítico | `esf-2-lockstep`: verificação cruzada com o monolítico PASS | [16], [26] |
-| UDP basta como transporte | confiabilidade fim a fim no protocolo; multicast e unicast testados | [33], [36] |
+| UDP basta como transporte | confiabilidade fim a fim no protocolo; multicast (e, no commit `b7f013b`, unicast) testados | [33], [36] |
 | Cifrar supervisores é viável fora do microcontrolador | autoteste EC-ElGamal + oráculo PASS em todos os nós, com mbedTLS real | [27]–[29] |
 
 ---
@@ -276,8 +270,7 @@ exaustiva: vale repetir no Scopus/IEEE Xplore com termos como
 | Escalabilidade no número de nós | TCS distribuída [18], [22] | mesmo FMS com 1, 2, 3, 4 e 7 nós (`DES_NUM_NODES`); comparar quadros e tempo |
 | Efeito da partição | localização [18] | `DES_EXTRA_FLAGS="-DDES_SUP_NODE_MAP={...}"` |
 | Robustez a perda | TCS em rede [20], [21] | varrer `DES_SIMULATE_LOSS_PCT` de 0 a 30 |
-| Robustez a atraso | [19], [22] | `DES_NETEM="delay Xms Yms"` (kernel com `sch_netem`) |
-| Custo do transporte | sistemas distribuídos | `multicast` × `unicast` (`DES_TRANSPORT`) |
+| Robustez a atraso | [19], [22] | `tc netem` nos containers (retirado; ver [commit `b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775)) |
 | Equivalência com o monolítico | TCS [16] | `esf-2-lockstep` (o FMS não tem monolítico, que não cabe na flash) |
 | Sobrecarga do container | [3], [12] | mesmo cenário com `network_mode: host` e sem limite de CPU |
 

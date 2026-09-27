@@ -16,9 +16,8 @@
 //      64 characters an ESP32 would compile in. A container and a board holding
 //      the same key are peers.
 //
-//   2. The transport is chosen at start-up: DES_TRANSPORT=multicast (default,
-//      the engine's own binding) or unicast (src/des_transport_unicast.h), for
-//      networks that drop multicast.
+//   2. Every decryption can be made to cost what it costs on an ESP32-S3
+//      (section 5 below; on by default).
 //
 //   3. A container has to END. After the scripted run the node keeps serving
 //      its peers for DES_LINGER_MS — they may still be retransmitting a COMMIT
@@ -79,7 +78,6 @@ static char g_des_auth_key[DES_KEY_CHARS + 1];
 #define DES_AUTH_KEY g_des_auth_key
 
 #include "des_generic.h"
-#include "des_transport_unicast.h"
 
 // ── 5. emulate the ESP32's cost of a decryption (ON by default) ─────────────
 // On an ESP32-S3 one blinded scalar multiplication costs ~69 ms; on a PC it
@@ -244,16 +242,6 @@ int main(int argc, char** argv) {
         }
     }
     if (!load_key()) return 3;
-
-    const char* tname = getenv("DES_TRANSPORT");
-    if (tname && *tname && strcmp(tname, "multicast") != 0) {
-        if (strcmp(tname, "unicast") == 0) {
-            DES_TRANSPORT_IMPL = des_unicast_transport;
-        } else {
-            fprintf(stderr, "DES_TRANSPORT=%s: use multicast or unicast\n", tname);
-            return 3;
-        }
-    }
 
     // Fractional milliseconds allowed (e.g. 69 or 68.6); unset or empty means
     // the default, 0 means off.

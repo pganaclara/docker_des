@@ -16,7 +16,7 @@ bf0efe60003200111fb71f822b9f1605fc8f9feb   (2026-09-25)
 | `supervisor_data_fms.h` | os 7 supervisores do FMS, gerados pelo notebook UltraDES (os outros problemas do `esp32_crypto` não são usados aqui) |
 
 **Nada aqui é editado.** Tudo o que é específico de container fica em `../src/`
-(ponto de entrada, transporte unicast, chave em tempo de execução). É isso que
+(ponto de entrada, chave em tempo de execução, emulação do custo de decifração). É isso que
 permite afirmar que o container executa *o mesmo código* que as placas ESP32:
 qualquer diferença de comportamento vem da plataforma, não de uma reescrita.
 

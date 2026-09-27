@@ -28,10 +28,6 @@ else
 fi
 repeat=${REPEAT:-1}
 
-has_netem=0
-if zcat /proc/config.gz 2>/dev/null | grep -q '^CONFIG_NET_SCH_NETEM=[ym]' ||
-   modinfo sch_netem >/dev/null 2>&1; then has_netem=1; fi
-
 batch="results/$(date +%Y%m%d-%H%M%S)-varredura"
 mkdir -p "$batch"
 echo "emulação: DES_EMU_SCALARMUL_MS=${DES_EMU_SCALARMUL_MS:-69} ms  ·  repetições: $repeat  ·  saída: $batch"
@@ -41,9 +37,6 @@ for ((r = 1; r <= repeat; ++r)); do
     for n in "${names[@]}"; do
         f="scenarios/$n.env"
         [[ -f $f ]] || { skip[$n]="no such scenario"; continue; }
-        if grep -qE '^DES_NETEM=.+' "$f" && ((!has_netem)); then
-            skip[$n]="skipped (kernel has no netem)"; continue
-        fi
         echo; echo "################ $n  (repetição $r/$repeat)"
         # Build each image once per sweep, not once per repetition.
         if [[ -n ${built[$n]:-} ]]; then sb=1; else sb=${DES_SKIP_BUILD:-0}; fi

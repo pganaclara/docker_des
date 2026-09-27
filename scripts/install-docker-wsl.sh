@@ -114,19 +114,12 @@ say "versions"
 sudo docker version --format 'engine {{.Server.Version}}  client {{.Client.Version}}' \
     || die "the Docker daemon is not answering — see: sudo systemctl status docker"
 sudo docker compose version
-if zcat /proc/config.gz 2>/dev/null | grep -q '^CONFIG_NET_SCH_NETEM=[ym]' ||
-   modinfo sch_netem >/dev/null 2>&1; then   # built in, or shipped as a module
-    say "this kernel has netem: scenarios/fms-7-wifi.env will work"
-else
-    warn "this WSL kernel has no netem: use scenarios/fms-7-loss5.env for loss;"
-    warn "fms-7-wifi.env (delay + loss via tc) needs a custom WSL kernel"
-fi
 
 cat <<EOF
 
 Done. $( [[ ${newgroup:-0} == 1 ]] && echo "Open a NEW terminal (or run: newgrp docker) so the docker group applies, then:" || echo "Next:")
 
     docker run --rm hello-world
-    scripts/run.sh scenarios/fms-7.env
+    scripts/run-all.sh
 
 EOF

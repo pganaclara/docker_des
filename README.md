@@ -188,8 +188,6 @@ No arquivo de cenário (ou no ambiente):
 | `DES_FAMILY` | `LMOD` | `LMOD` (modular local), `LMOD_RED` (reduzida) ou `MONO` |
 | `DES_ROUNDS` | `5` | ciclos de produção |
 | `DES_WORK_MS` | `0` | tempo de máquina simulado antes de cada evento não controlável |
-| `DES_TRANSPORT` | `multicast` | `multicast` ou `unicast` |
-| `DES_NETEM` | vazio | argumentos do `netem`, ex. `"delay 7ms 3ms loss 1%"` |
 | `DES_EXTRA_FLAGS` | vazio | qualquer macro do motor, ex. `-DDES_SIMULATE_LOSS_PCT=5`, `"-DDES_SUP_NODE_MAP={1,1,2,2,3,3,4}"`, `-DDES_CONTROLLABLE_MASK=...` |
 | `DES_EMU_SCALARMUL_MS` | `69` | custo emulado de uma decifração, em ms (ESP32-S3). `0` desliga e roda na velocidade do PC; só muda o tempo, não a lógica |
 | `DES_SKIP_BUILD` | `0` | `1` reaproveita a imagem já compilada (sem internet) |
@@ -207,9 +205,8 @@ No arquivo de cenário (ou no ambiente):
 docker_des/
 ├── engine/                 motor do ESP32, cópia fiel (SHA256SUMS, UPSTREAM.md)
 ├── src/
-│   ├── des_container_main.cpp   ponto de entrada do container
-│   └── des_transport_unicast.h  transporte UDP unicast (alternativa ao multicast)
-├── docker/entrypoint.sh    escolhe o binário do nó, aplica netem, larga o root
+│   └── des_container_main.cpp   ponto de entrada do container
+├── docker/entrypoint.sh    escolhe o binário do nó
 ├── Dockerfile              build (um binário por nó) + imagem final
 ├── compose.yaml            node1..node7 numa rede bridge "cell"
 ├── scenarios/*.env         experimentos com valores esperados
@@ -245,8 +242,7 @@ Rust, Go, Python e C está em [`docs/arquitetura.md`](docs/arquitetura.md) §4.
 |---|---|
 | `429 Too Many Requests` ao baixar `ubuntu:26.04` | limite de pulls anônimos do Docker Hub. Faça `docker login` ou use um espelho: `UBUNTU_IMAGE=mirror.gcr.io/library/ubuntu:26.04 scripts/run.sh ...` |
 | `apt-get` falha no build atrás de proxy corporativo | `DES_BUILD_NETWORK=host` e configure o proxy do Docker (`~/.docker/config.json`, seção `proxies`) |
-| `[netem] could not shape eth0` | o kernel não tem `sch_netem` (kernels WSL 2 antigos). Atualize com `wsl --update` no PowerShell, ou deixe `DES_NETEM` vazio |
-| nós esperando para sempre `waiting for N peer(s)` | multicast bloqueado na sua rede Docker. Use `DES_TRANSPORT=unicast` |
+| nós esperando para sempre `waiting for N peer(s)` | multicast bloqueado na rede Docker (acontece em redes *overlay*/Kubernetes; na *bridge* local funciona) |
 | `this image has no binary for node K` | a imagem foi compilada para menos nós; confira `DES_NUM_NODES` no cenário |
 | `[key] cannot open /run/secrets/des_auth_key` | rode `scripts/gen-key.sh` |
 | lentidão ou permissões estranhas | o repositório está em `/mnt/c/...`; clone em `~/` dentro do WSL |

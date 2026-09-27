@@ -61,13 +61,12 @@ RUN set -eu; mkdir -p /out; pids=""; \
 
 # ---- runtime ----------------------------------------------------------------
 FROM ${UBUNTU_IMAGE}
-# iproute2 only for the optional netem link emulation (tc).
-RUN apt-get update \
- && apt-get install -y --no-install-recommends iproute2 \
- && rm -rf /var/lib/apt/lists/* \
- && useradd --system --no-create-home --shell /usr/sbin/nologin des
+# Nothing to install: the binaries link mbedTLS statically.
+RUN useradd --system --no-create-home --shell /usr/sbin/nologin des
 COPY --from=build /out/ /opt/des/bin/
 COPY --chmod=0755 docker/entrypoint.sh /usr/local/bin/des-entrypoint
-# The multicast group port (engine/des_transport.h); unicast uses it too.
+# The node needs no privilege at all.
+USER des
+# The multicast group port (engine/des_transport.h).
 EXPOSE 5077/udp
 ENTRYPOINT ["des-entrypoint"]

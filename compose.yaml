@@ -3,7 +3,7 @@
 # =============================================================================
 # Every node is a container on one bridge network ("cell"), the software
 # equivalent of the ESP32 boards on one Wi-Fi access point. They talk UDP only:
-# multicast to 239.192.7.1:5077 by default, or unicast to each peer by name.
+# multicast to 239.192.7.1:5077 (RFC 1112), as the boards do.
 #
 # Normally driven by scripts/run.sh, which picks a scenario file:
 #   scripts/run.sh scenarios/fms-7.env      # FMS, one container per supervisor
@@ -34,10 +34,6 @@ x-node: &node
       DES_WORK_MS: ${DES_WORK_MS:-0}
       DES_EXTRA_FLAGS: ${DES_EXTRA_FLAGS:-}
   environment:
-    DES_TRANSPORT: ${DES_TRANSPORT:-multicast}
-    # unicast only: every node, in node-id order (Docker DNS resolves the names)
-    DES_PEERS: node1,node2,node3,node4,node5,node6,node7
-    DES_NETEM: ${DES_NETEM:-}
     DES_LINGER_MS: ${DES_LINGER_MS:-10000}
     DES_RUN_TIMEOUT_S: ${DES_RUN_TIMEOUT_S:-900}
     # Every decryption takes what it takes on an ESP32-S3 (69 ms) unless
@@ -47,9 +43,6 @@ x-node: &node
     - des_auth_key
   networks:
     - cell
-  # tc netem needs it; the node itself drops every capability (entrypoint).
-  cap_add:
-    - NET_ADMIN
   # One CPU per node, like one core per board in the ESP32 testbed.
   cpus: ${DES_CPUS:-1.0}
   restart: "no"
