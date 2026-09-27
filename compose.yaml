@@ -40,8 +40,9 @@ x-node: &node
     DES_NETEM: ${DES_NETEM:-}
     DES_LINGER_MS: ${DES_LINGER_MS:-10000}
     DES_RUN_TIMEOUT_S: ${DES_RUN_TIMEOUT_S:-900}
-    # e.g. 69 to make every decryption cost what it costs on an ESP32-S3
-    DES_EMU_SCALARMUL_MS: ${DES_EMU_SCALARMUL_MS:-}
+    # Every decryption takes what it takes on an ESP32-S3 (69 ms) unless
+    # overridden; 0 = the PC's own speed.
+    DES_EMU_SCALARMUL_MS: ${DES_EMU_SCALARMUL_MS:-69}
   secrets:
     - des_auth_key
   networks:

@@ -81,12 +81,13 @@ static char g_des_auth_key[DES_KEY_CHARS + 1];
 #include "des_generic.h"
 #include "des_transport_unicast.h"
 
-// ── 5. optional: emulate the ESP32's cost of a decryption ───────────────────
+// ── 5. emulate the ESP32's cost of a decryption (ON by default) ─────────────
 // On an ESP32-S3 one blinded scalar multiplication costs ~69 ms; on a PC it
 // costs well under a millisecond, which moves the bottleneck from cryptography
 // to coordination and turns "distributing is faster" around (docs/arquitetura
-// §6.3). To test that explanation, DES_EMU_SCALARMUL_MS=<ms> makes every
-// DECRYPTION take at least that long, by sleeping out the difference.
+// §6.3). So every DECRYPTION is made to take at least DES_EMU_SCALARMUL_MS
+// (default 69 ms, the ESP32-S3 figure), by sleeping out the difference.
+// DES_EMU_SCALARMUL_MS=0 turns it off and runs at the PC's own speed.
 //
 // The engine is not touched. The Dockerfile links with
 // -Wl,--wrap=mbedtls_ecp_mul, so the engine's calls land here and are passed
@@ -98,6 +99,7 @@ static char g_des_auth_key[DES_KEY_CHARS + 1];
 // Sleeping, not spinning: each board has a core of its own, and seven
 // spinning containers on a laptop with fewer free cores would measure CPU
 // contention instead of the ESP32.
+#define DES_EMU_DEFAULT_MS 69.0      // ESP32-S3, measured in esp32_crypto
 static uint32_t g_emu_mul_us = 0;
 
 extern "C" int __real_mbedtls_ecp_mul(mbedtls_ecp_group* grp, mbedtls_ecp_point* R,
@@ -253,9 +255,13 @@ int main(int argc, char** argv) {
         }
     }
 
-    // Fractional milliseconds allowed (e.g. 69 or 68.6).
-    if (const char* e = getenv("DES_EMU_SCALARMUL_MS"))
-        if (*e) g_emu_mul_us = (uint32_t)(atof(e) * 1000.0 + 0.5);
+    // Fractional milliseconds allowed (e.g. 69 or 68.6); unset or empty means
+    // the default, 0 means off.
+    {
+        const char* e = getenv("DES_EMU_SCALARMUL_MS");
+        double ms = (e && *e) ? atof(e) : DES_EMU_DEFAULT_MS;
+        g_emu_mul_us = ms > 0 ? (uint32_t)(ms * 1000.0 + 0.5) : 0;
+    }
 
     uint32_t timeout_s = env_u32("DES_RUN_TIMEOUT_S", 900);
     if (timeout_s) { signal(SIGALRM, on_watchdog); alarm(timeout_s); }
@@ -266,6 +272,9 @@ int main(int argc, char** argv) {
     if (g_emu_mul_us)
         printf("des_container: EMULATING the ESP32 — every decryption takes at "
                "least %.1f ms (DES_EMU_SCALARMUL_MS)\n", g_emu_mul_us / 1000.0);
+    else
+        printf("des_container: ESP32 emulation OFF (DES_EMU_SCALARMUL_MS=0) — "
+               "decryptions run at this machine's own speed\n");
 
     des_setup();          // rendezvous, probe, the scripted run, the summary
 

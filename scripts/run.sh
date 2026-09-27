@@ -6,6 +6,7 @@
 #   scripts/run.sh scenarios/fms-2.env
 #   QUIET=1 scripts/run.sh scenarios/fms-7.env  no live log, summary only
 #   DES_SKIP_BUILD=1 scripts/run.sh ...          reuse the image already built
+#   DES_RESULTS_DIR=dir scripts/run.sh ...       write under dir/ instead of results/
 #
 # Starts node1..nodeN (N = DES_NUM_NODES of the scenario), waits for every
 # container to exit, then writes to results/<timestamp>-<scenario>/:
@@ -31,7 +32,7 @@ nodes=$(sed -n 's/^DES_NUM_NODES=["]*\([0-9]\+\).*/\1/p' "$scenario")
 [[ -s secrets/des_auth_key ]] || scripts/gen-key.sh
 
 name=$(basename "$scenario" .env)
-out="results/$(date +%Y%m%d-%H%M%S)-$name"
+out="${DES_RESULTS_DIR:-results}/$(date +%Y%m%d-%H%M%S)-$name"
 mkdir -p "$out"
 cp "$scenario" "$out/scenario.env"
 

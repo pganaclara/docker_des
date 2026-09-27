@@ -60,13 +60,15 @@ O argumento completo está em [`docs/arquitetura.md`](docs/arquitetura.md) §5.
 - **Testado: emulando o custo de decifração do ESP32 (69 ms), distribuir
   volta a acelerar.** 1 → 2 → 7 containers: 299,5 → 192,7 → 87,2 ms/passo,
   perto do limite "decifrações do nó mais carregado × 69 ms"
-  (`fms-*-esp32`, `DES_EMU_SCALARMUL_MS`).
+  (`DES_EMU_SCALARMUL_MS`, hoje o padrão).
 - **Os *timeouts* do protocolo estão calibrados para o ESP32.** Com 5 % de
   perda, o passo vai a 511 ms com os *timeouts* de 1,5 s e a 85 ms com
   *timeouts* de 100 ms, sem mudar o resultado.
 - **Sob perda pesada a segurança se mantém, de dois jeitos:** SAFE HALT quando
   a perda acerta depois do ponto de commit (2 nós, 30 %), passos pulados
   quando acerta antes (7 nós, 40 %).
+
+Os cenários de perda, unicast, `netem` e `extended_small_factory` citados acima foram retirados do repositório para deixar só a varredura de 1 a 7 containers; as execuções deles continuam registradas em [`docs/resultados/`](docs/resultados/) e [`docs/resultados-wsl/`](docs/resultados-wsl/).
 
 Detalhes e ressalvas em [`docs/arquitetura.md`](docs/arquitetura.md) §6–§7.
 A revisão de literatura, com como isso costuma ser feito, a lacuna e onde cada
@@ -98,42 +100,63 @@ Se ele ligar o systemd, vai pedir para reiniciar o WSL uma vez (no PowerShell:
 > Prefere o Docker Desktop? Também funciona: instale-o no Windows com a
 > integração WSL 2 ligada e **não** rode o script acima. Não instale os dois.
 
-**3. Rode o FMS com um container por supervisor:**
-
-```bash
-scripts/run.sh scenarios/fms-7.env
-```
-
-O script cria a chave da célula se ela não existir (`secrets/des_auth_key`),
-compila a imagem, sobe `node1`…`node7`, mostra os logs intercalados, espera
-todos terminarem e imprime o resumo com as verificações. Tudo fica em
-`results/<data>-fms-7/`.
-
-**4. Rode todos os cenários e veja o veredito:**
+**3. Rode a varredura de 1 a 7 containers:**
 
 ```bash
 scripts/run-all.sh
+```
+
+O script cria a chave da célula se ela não existir (`secrets/des_auth_key`),
+compila uma imagem para cada número de containers e roda o FMS com 1, 2, 3,
+4, 5, 6 e 7 containers, um cenário depois do outro. **Cada decifração leva
+69 ms, como no ESP32-S3.** No fim imprime o veredito de cada configuração e a
+tabela de escala (tempo por passo, aceleração sobre 1 container e o limite
+imposto pelo nó mais carregado). Leva uns 8 minutos. Tudo fica em
+`results/<data>-varredura/`, incluindo `escala.md`.
+
+Variações:
+
+```bash
+REPEAT=5 scripts/run-all.sh          # 5 vezes cada configuração (média ± desvio)
+scripts/run-all.sh 1 2 7             # só algumas configurações
+scripts/run.sh scenarios/fms-7.env   # uma configuração, com os logs ao vivo
 ```
 
 ---
 
 ## Cenários
 
-Cada arquivo em `scenarios/` é um experimento, com os valores esperados
-(`EXPECT_*`) que o resumo confere sozinho.
+Um por número de containers, `scenarios/fms-1.env` a `scenarios/fms-7.env`. O
+motor distribui os 7 supervisores do FMS em blocos contíguos:
 
-| cenário | containers | o que mostra |
+| cenário | supervisores por container | observação |
 |---|---|---|
-| `fms-7` | 7 | **um supervisor por container**, UDP multicast |
-| `fms-7-unicast` | 7 | o mesmo sobre UDP unicast (para redes sem multicast) |
-| `fms-2` | 2 | a mesma partição das 2 placas ESP32: deve reproduzir `edbd7971` e 405 + 393 |
-| `fms-1` | 1 | os 7 supervisores num container só, o equivalente da placa única: 190 no ciclo 1 |
-| `esf-2-lockstep` | 2 | `extended_small_factory` conferida evento a evento contra o supervisor monolítico |
-| `fms-7-loss5` | 7 | 5 % de perda de quadros: retransmissão, sem divergência |
-| `fms-7-loss5-fast` | 7 | idem, com *timeouts* ajustados para container (100 ms em vez de 1,5 s) |
-| `fms-2-loss30` | 2 | teste negativo: 30 % de perda leva ao **SAFE HALT** propagado |
-| `fms-1-esp32`, `fms-2-esp32`, `fms-7-esp32` | 1, 2, 7 | cada decifração leva 69 ms como no ESP32-S3: distribuir volta a acelerar |
-| `fms-7-wifi` | 7 | atraso de 7 ± 3 ms e 1 % de perda via `netem` (exige `sch_netem` no kernel; kernels WSL 2 recentes trazem como módulo, os antigos não) |
+| `fms-1` | S0–S6 | equivalente da placa única |
+| `fms-2` | S0–S3 · S4–S6 | mesma partição das 2 placas ESP32: tem de reproduzir `edbd7971` e 405 + 393 decifrações |
+| `fms-3` | S0–S2 · S3–S4 · S5–S6 | |
+| `fms-4` | S0–S1 · S2–S3 · S4–S5 · S6 | |
+| `fms-5` | S0–S1 · S2 · S3–S4 · S5 · S6 | |
+| `fms-6` | S0–S1 · S2 · S3 · S4 · S5 · S6 | |
+| `fms-7` | um supervisor por container | |
+
+Em todos, o resumo confere sozinho os invariantes (`EXPECT_*`): 798
+decifrações (190 no ciclo 1), oráculo PASS em todo nó e nenhum passo pulado.
+
+### Resultado de referência
+
+| containers | ms/passo, ciclo 1 | aceleração | limite (nó mais carregado) |
+|---|---|---|---|
+| 1 | 299,6 | 1,00× | 298,0 |
+| 2 | 192,8 | 1,55× | 164,7 |
+| 3 | 146,8 | 2,04× | 123,9 |
+| 4 | 130,7 | 2,29× | 105,1 |
+| 5 | 106,0 | 2,83× | 76,8 |
+| 6 | 96,3 | 3,11× | 65,9 |
+| 7 | 87,2 | 3,44× | 64,3 |
+
+Tabela completa em [`docs/resultados/escala/escala.md`](docs/resultados/escala/escala.md).
+De 6 para 7 containers o ganho é pequeno porque o supervisor S5 sozinho já é
+o nó mais carregado (41 das 190 decifrações do ciclo 1).
 
 ---
 
@@ -168,7 +191,7 @@ No arquivo de cenário (ou no ambiente):
 | `DES_TRANSPORT` | `multicast` | `multicast` ou `unicast` |
 | `DES_NETEM` | vazio | argumentos do `netem`, ex. `"delay 7ms 3ms loss 1%"` |
 | `DES_EXTRA_FLAGS` | vazio | qualquer macro do motor, ex. `-DDES_SIMULATE_LOSS_PCT=5`, `"-DDES_SUP_NODE_MAP={1,1,2,2,3,3,4}"`, `-DDES_CONTROLLABLE_MASK=...` |
-| `DES_EMU_SCALARMUL_MS` | vazio | emula o custo de decifração de uma placa, ex. `69` (ESP32-S3); só tempo, a lógica não muda |
+| `DES_EMU_SCALARMUL_MS` | `69` | custo emulado de uma decifração, em ms (ESP32-S3). `0` desliga e roda na velocidade do PC; só muda o tempo, não a lógica |
 | `DES_SKIP_BUILD` | `0` | `1` reaproveita a imagem já compilada (sem internet) |
 | `DES_CPUS` | `1.0` | CPUs por container |
 | `DES_LINGER_MS` | `10000` | quanto o nó ainda atende os pares depois de terminar |
@@ -194,7 +217,8 @@ docker_des/
 │   ├── install-docker-wsl.sh    instala Docker Engine no WSL 2
 │   ├── gen-key.sh               cria a chave da célula (Docker secret)
 │   ├── run.sh                   roda um cenário e resume
-│   ├── run-all.sh               roda todos
+│   ├── run-all.sh               varredura de 1 a 7 containers
+│   ├── scaling.py               tabela de escala da varredura
 │   ├── summarize.py             tabela + verificações a partir dos logs
 │   └── sync-engine.sh           atualiza engine/ a partir do esp32_crypto
 └── docs/
@@ -221,7 +245,7 @@ Rust, Go, Python e C está em [`docs/arquitetura.md`](docs/arquitetura.md) §4.
 |---|---|
 | `429 Too Many Requests` ao baixar `ubuntu:26.04` | limite de pulls anônimos do Docker Hub. Faça `docker login` ou use um espelho: `UBUNTU_IMAGE=mirror.gcr.io/library/ubuntu:26.04 scripts/run.sh ...` |
 | `apt-get` falha no build atrás de proxy corporativo | `DES_BUILD_NETWORK=host` e configure o proxy do Docker (`~/.docker/config.json`, seção `proxies`) |
-| `[netem] could not shape eth0` | o kernel não tem `sch_netem` (kernels WSL 2 antigos). Atualize com `wsl --update` no PowerShell, ou use `fms-7-loss5` (perda injetada no próprio motor) |
+| `[netem] could not shape eth0` | o kernel não tem `sch_netem` (kernels WSL 2 antigos). Atualize com `wsl --update` no PowerShell, ou deixe `DES_NETEM` vazio |
 | nós esperando para sempre `waiting for N peer(s)` | multicast bloqueado na sua rede Docker. Use `DES_TRANSPORT=unicast` |
 | `this image has no binary for node K` | a imagem foi compilada para menos nós; confira `DES_NUM_NODES` no cenário |
 | `[key] cannot open /run/secrets/des_auth_key` | rode `scripts/gen-key.sh` |
