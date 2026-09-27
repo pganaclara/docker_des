@@ -13,7 +13,9 @@ escala.md / escala.json next to them:
     emulated cost of one decryption ÷ steps per cycle. Nodes only work in
     parallel between two shared events, so the cell can never beat its most
     loaded node; the distance to the bound is coordination;
-  * the partition (which supervisors on which node) and the checks.
+  * the partition (which supervisors on which node) and the checks;
+  * when the directory also holds fms-N-<tag> runs (another partition of the
+    same N, e.g. fms-4-s5), a table comparing them with the block partition.
 
 Exit status 1 if any run failed its checks.
 """
@@ -48,14 +50,20 @@ def main():
     for j in sorted(root.glob("*/summary.json")):
         name = re.sub(r"^\d{8}-\d{6}-", "", j.parent.name)
         groups.setdefault(name, []).append(json.loads(j.read_text()))
-    sweep = sorted((int(m.group(1)), runs) for name, runs in groups.items()
-                   if (m := re.fullmatch(r"fms-(\d+)", name)))
-    if not sweep:
+    # fms-N is the default block partition; fms-N-<tag> is another partition
+    # of the same N (e.g. fms-4-s5: S5 isolated), compared at the end.
+    series = {}
+    for name, runs in groups.items():
+        if (m := re.fullmatch(r"fms-(\d+)(?:-([\w]+))?", name)):
+            series.setdefault(m.group(2), {})[int(m.group(1))] = runs
+    if None not in series:
         print(f"nenhuma execução fms-N em {root}")
         return 2
 
-    rows, bad = [], 0
-    for n, runs in sweep:
+    bad = 0
+
+    def row(n, runs):
+        nonlocal bad
         bad += sum(not r["all_checks_ok"] for r in runs)
         first = runs[0]
         emu = first["nodes"][0]["result"].get("emu_scalarmul_ms", 0) or 0
@@ -63,7 +71,7 @@ def main():
         busiest = max(x["dec_by_cycle"].get("1", 0) for x in first["nodes"])
         c1 = mean_sd([r["per_step_ms_cycle1"] for r in runs])
         ss = mean_sd([r["per_step_ms_steady"] for r in runs])
-        rows.append({
+        return {
             "nodes": n, "runs": len(runs),
             "checks_ok": sum(r["all_checks_ok"] for r in runs),
             "fingerprint": ",".join(sorted({",".join(r["fingerprints"]) for r in runs})),
@@ -73,7 +81,11 @@ def main():
             "emu_ms": emu,
             "bound_ms": busiest * emu / seq if emu and seq else None,
             "c1_mean": c1[0], "c1_sd": c1[1], "ss_mean": ss[0], "ss_sd": ss[1],
-        })
+        }
+
+    rows = [row(n, runs) for n, runs in sorted(series[None].items())]
+    others = {tag: {n: row(n, runs) for n, runs in by_n.items()}
+              for tag, by_n in series.items() if tag is not None}
 
     base = next((r for r in rows if r["nodes"] == 1), None)
     for r in rows:
@@ -112,9 +124,42 @@ def main():
     for r in rows:
         md.append(f"| {r['nodes']} | {' · '.join(r['partition'])} | {r['busiest_cycle1_dec']} "
                   f"| {', '.join(map(str, r['decryptions']))} | `{r['fingerprint']}` |")
+    for tag, by_n in sorted(others.items()):
+        blocks = {r["nodes"]: r for r in rows}
+        md.append(f"\n## Comparação: partição `{tag}` × blocos contíguos\n")
+        md.append("Mesmo número de containers, outra distribuição dos supervisores. "
+                  "Δ = variação do tempo por passo em relação aos blocos "
+                  "(negativo = mais rápido).\n")
+        md.append("| containers | partição `" + tag + "` | ciclo 1: blocos | ciclo 1: `" + tag +
+                  "` | Δ | ciclos 2–5: blocos | ciclos 2–5: `" + tag + "` | Δ "
+                  "| limite: blocos | limite: `" + tag + "` | verificações |")
+        md.append("|---|---|---|---|---|---|---|---|---|---|---|")
+        for n in sorted(by_n):
+            o, b = by_n[n], blocks.get(n)
+            if not b:
+                continue
+
+            def ms(v):
+                return "—" if v is None else f"{v:.1f}"
+
+            def d(a, c):
+                return "—" if a is None or c is None else f"{100 * (a / c - 1):+.1f} %"
+            md.append(
+                f"| {n} | {' · '.join(o['partition'])} "
+                f"| {show(b['c1_mean'], b['c1_sd'], b['runs'])} "
+                f"| {show(o['c1_mean'], o['c1_sd'], o['runs'])} | {d(o['c1_mean'], b['c1_mean'])} "
+                f"| {show(b['ss_mean'], b['ss_sd'], b['runs'])} "
+                f"| {show(o['ss_mean'], o['ss_sd'], o['runs'])} | {d(o['ss_mean'], b['ss_mean'])} "
+                f"| {ms(b['bound_ms'])} | {ms(o['bound_ms'])} "
+                f"| {o['checks_ok']}/{o['runs']} |")
+        md.append("\nCom 1 e com 7 containers as duas partições coincidem "
+                  "(1 container: todos juntos; 7: um por container).")
+
     text = "\n".join(md) + "\n"
     (root / "escala.md").write_text(text)
-    (root / "escala.json").write_text(json.dumps(rows, indent=2, ensure_ascii=False) + "\n")
+    (root / "escala.json").write_text(json.dumps(
+        {"blocos": rows, **{tag: [by_n[n] for n in sorted(by_n)] for tag, by_n in others.items()}}
+        if others else rows, indent=2, ensure_ascii=False) + "\n")
     print(text)
     return 1 if bad else 0
 

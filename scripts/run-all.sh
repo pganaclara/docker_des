@@ -5,7 +5,8 @@
 #   scripts/run-all.sh                     the sweep, once
 #   REPEAT=5 scripts/run-all.sh            the sweep, 5 times (mean ± sd)
 #   scripts/run-all.sh 1 2 7               only these node counts
-#   scripts/run-all.sh extras/fms-7-loss5  any other scenario, by path
+#   scripts/run-all.sh s5                  S5 isolated vs block partition, N = 1..7
+#   scripts/run-all.sh 4 4-s5              any scenario fms-<arg>
 #
 # Every decryption takes 69 ms, as on an ESP32-S3 (compose.yaml default);
 # DES_EMU_SCALARMUL_MS=0 scripts/run-all.sh runs at the PC's own speed.
@@ -21,7 +22,13 @@ cd "$(dirname "$0")/.." || exit 2
 names=()
 if (($#)); then
     for a in "$@"; do
-        if [[ $a =~ ^[0-9]+$ ]]; then names+=("fms-$a"); else names+=("${a%.env}"); fi
+        if [[ $a == s5 ]]; then
+            # S5 isolated against the block partition, same N side by side.
+            names+=(fms-1)
+            for n in 2 3 4 5 6; do names+=("fms-$n" "fms-$n-s5"); done
+            names+=(fms-7)
+        elif [[ $a =~ ^[0-9]+(-[a-z0-9]+)?$ ]]; then names+=("fms-$a")
+        else names+=("${a%.env}"); fi
     done
 else
     for n in 1 2 3 4 5 6 7; do names+=("fms-$n"); done

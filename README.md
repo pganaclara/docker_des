@@ -153,6 +153,7 @@ Variações:
 ```bash
 REPEAT=5 scripts/run-all.sh          # 5 vezes cada configuração (média ± desvio)
 scripts/run-all.sh 1 2 7             # só algumas configurações
+scripts/run-all.sh s5                # partição com S5 isolado × blocos, de 1 a 7
 scripts/run.sh scenarios/fms-7.env   # uma configuração, com os logs ao vivo
 ```
 
@@ -175,6 +176,17 @@ motor distribui os 7 supervisores do FMS em blocos contíguos:
 
 Em todos, o resumo confere sozinho os invariantes (`EXPECT_*`): 798
 decifrações (190 no ciclo 1), oráculo PASS em todo nó e nenhum passo pulado.
+
+### Partição alternativa: S5 isolado
+
+`scenarios/fms-2-s5.env` a `fms-6-s5.env` põem o supervisor S5 (o mais
+carregado no ciclo 1) sozinho num container, e os outros 6 nos demais,
+minimizando a carga do container mais carregado (`DES_SUP_NODE_MAP`).
+`scripts/run-all.sh s5` roda as duas partições lado a lado e a tabela de
+escala ganha uma comparação. Primeira execução (nuvem, n = 1): isolar o S5
+só compensa com **4 containers** (−11,6 % no ciclo 1, −6,6 % nos seguintes);
+com 2 é bem pior (+23,5 %), e com 3, 5 e 6 a diferença é pequena ou nula.
+Detalhes em [`docs/resultados/escala-s5/`](docs/resultados/escala-s5/README.md).
 
 O resultado da varredura está na seção "O resultado principal", acima.
 
@@ -229,12 +241,12 @@ docker_des/
 ├── docker/entrypoint.sh    escolhe o binário do nó
 ├── Dockerfile              build (um binário por nó) + imagem final
 ├── compose.yaml            node1..node7 numa rede bridge "cell"
-├── scenarios/*.env         experimentos com valores esperados
+├── scenarios/*.env         fms-1..7 (blocos) e fms-2..6-s5 (S5 isolado)
 ├── scripts/
 │   ├── install-docker-wsl.sh    instala Docker Engine no WSL 2
 │   ├── gen-key.sh               cria a chave da célula (Docker secret)
 │   ├── run.sh                   roda um cenário e resume
-│   ├── run-all.sh               varredura de 1 a 7 containers
+│   ├── run-all.sh               varredura de 1 a 7 containers (e a série s5)
 │   ├── scaling.py               tabela de escala da varredura
 │   ├── summarize.py             tabela + verificações a partir dos logs
 │   └── sync-engine.sh           atualiza engine/ a partir do esp32_crypto
@@ -242,6 +254,7 @@ docker_des/
     ├── arquitetura.md      ESP32 → container, por que C++, prova de equivalência, achados
     ├── literatura.md       revisão de literatura com referências conferidas
     ├── resultados/escala/  varredura de referência na nuvem (1 a 7 containers)
+    ├── resultados/escala-s5/  S5 isolado × blocos (nuvem, n = 1)
     └── resultados-wsl/     varreduras no WSL (a com 5 repetições é o resultado principal)
 ```
 
