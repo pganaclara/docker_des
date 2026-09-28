@@ -328,6 +328,25 @@ Mesma varredura, 5 repetições, agora com os logs carimbados pelo Docker
   conclusões, 11 de 175 ciclos). A latência de eventos usa o relógio
   monotônico do motor e não é afetada.
 
+### 6.6 Sobrecarga do container
+
+Os mesmos binários (estáticos, com loop de multicast) em três lugares:
+- **ponte**: containers na *bridge* `cell`;
+- **host**: containers na rede do host (`compose.host.yaml`);
+- **nativo**: processos sem Docker.
+
+Com N = 1, 2, 4 e 7 e 5 repetições
+([`docs/resultados-wsl/20260928-002448-varredura`](resultados-wsl/20260928-002448-varredura/README.md),
+55/55 PASS), **nenhuma diferença é significativa**: os 18 IC 95 % de
+Welch (modo − ponte) contêm o zero, e as médias diferem no máximo 0,7 ms. O
+limite superior da sobrecarga da ponte sobre o nativo é 1,6 % do tempo por
+passo nos ciclos 2–5 e 2,1 % no ciclo 1. O RTT de aplicação (~4 ms; ~10 ms
+com 7 nós) e a espera pelos pares (~5,5 ms no 2PC, ~1,6 ms no NOTIFY) também
+são iguais nos três modos. Logo, o custo de rede é do laço do motor, não do
+par veth + bridge. Isso concorda com [12]: o isolamento por namespaces não
+interpõe um hipervisor. Ressalva: a decifração emulada é espera, e o teste
+não foi repetido com a emulação desligada, quando o protocolo pesaria mais.
+
 **Para citar:** *com o custo de decifração do ESP32-S3 emulado, distribuir os
 7 supervisores modulares locais do FMS em 7 containers reduz o tempo por passo
 de 303,1 ± 1,3 ms para 90,1 ± 1,0 ms (3,37×; IC 95 %, n = 5), com aceleração

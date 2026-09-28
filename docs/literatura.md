@@ -293,6 +293,7 @@ indicado, de experimentos anteriores (§7 da arquitetura, [commit `b7f013b`](htt
 | **A aceleração é limitada pelo supervisor mais carregado** | o tempo medido acompanha o limite "decifrações do nó mais carregado × 69 ms ÷ 44", 25–33 ms acima dele | [43] |
 | Sem a emulação, distribuir atrasa | experimento anterior: 2,4 → 4,7 ms/passo de 1 para 7 nós na velocidade de um PC | [43]; [9]–[11] (custo de rede em containers) |
 | Distribuir reduz o pior caso e o *jitter* é pequeno | varredura com percentis (n = 5): 2PC p99 − p50 ≤ 3,1 ms; intervalo máximo da célula 498 → 84 ms de 1 para 7 containers (5,9×, contra 3,9× na média) | [9]–[11] (latência e *jitter* de vPLC) |
+| O container não custa desempenho mensurável | ponte × host × nativo com os mesmos binários: 18/18 IC 95 % contêm zero; sobrecarga < 1,6 % por passo (ciclos 2–5), < 2,1 % (ciclo 1); RTT e espera pelos pares iguais | [3], [12] |
 | A decomposição modular local é a partição natural | roteamento derivado do cabeçalho; eventos locais não geram tráfego | [16], [18] |
 | O protocolo preserva segurança sob perda | experimento anterior: 5 % de perda completa sem divergência; 30 % para em SAFE HALT | [20], [21], [23], [33] |
 | Concorrência entre iniciadores é tratada | *lock* + *wound-wait* | [22] (mutex), [35] |
@@ -312,7 +313,7 @@ indicado, de experimentos anteriores (§7 da arquitetura, [commit `b7f013b`](htt
 | Robustez a perda | TCS em rede [20], [21] | feito antes (arquitetura §7.5–§7.6), cenários retirados | `DES_EXTRA_FLAGS=-DDES_SIMULATE_LOSS_PCT=<p>` |
 | Robustez a atraso | [19], [22] | feito antes com `netem`, retirado | ver [commit `b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775) |
 | Equivalência com o monolítico | TCS [16] | feito antes (`extended_small_factory`), retirado; o FMS não tem monolítico | ver [commit `b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775) |
-| Sobrecarga do container | [3], [12] | **preparado, falta rodar**: mesmos binários como containers na *bridge*, containers na rede do host e processos nativos, N = 1, 2, 4, 7 | `REPEAT=5 scripts/run-all.sh sobrecarga` (`sobrecarga.md`) |
+| Sobrecarga do container | [3], [12] | **feito**: mesmos binários na *bridge*, na rede do host e como processos nativos, N = 1, 2, 4, 7, n = 5; nenhuma diferença significativa, sobrecarga < 1,6 % (ciclos 2–5) com 95 % de confiança (arquitetura §6.6) | `REPEAT=5 scripts/run-all.sh sobrecarga` (`sobrecarga.md`) |
 
 ---
 
