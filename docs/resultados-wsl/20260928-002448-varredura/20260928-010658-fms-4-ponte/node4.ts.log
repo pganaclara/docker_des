@@ -1,0 +1,315 @@
+2026-09-28T04:07:00.100628627Z des_container: node 4 of 4, LOCAL MODULAR, data supervisor_data_fms.h, transport UDP/IP multicast (RFC 1112)
+2026-09-28T04:07:00.100668932Z des_container: EMULATING the ESP32 — every decryption takes at least 69.0 ms (DES_EMU_SCALARMUL_MS)
+2026-09-28T04:07:00.100672232Z 
+2026-09-28T04:07:00.100673533Z ============================================================
+2026-09-28T04:07:00.100674933Z   Distributed Homomorphic DES — generic engine
+2026-09-28T04:07:00.100676133Z   node 4/4   family LOCAL MODULAR   7 supervisors   31 events
+2026-09-28T04:07:00.100677533Z   data: supervisor_data_fms.h
+2026-09-28T04:07:00.100678733Z ============================================================
+2026-09-28T04:07:00.101392423Z --- event routing (DERIVED from the header, not hardcoded) ---
+2026-09-28T04:07:00.101402824Z   event  ctrl  nodes      owner  class
+2026-09-28T04:07:00.101404624Z   11     yes   1          1      local — no network
+2026-09-28T04:07:00.101406325Z   12     no    1          1      local — no network
+2026-09-28T04:07:00.101407625Z   21     yes   1          1      local — no network
+2026-09-28T04:07:00.101409025Z   22     no    1          1      local — no network
+2026-09-28T04:07:00.101410225Z   30     no    1 2 3 4    1      SHARED — needs network
+2026-09-28T04:07:00.101411525Z   31     yes   1 2 3 4    1      SHARED — needs network
+2026-09-28T04:07:00.101412825Z   32     no    1 2 3 4    1      SHARED — needs network
+2026-09-28T04:07:00.101414126Z   33     yes   1 2 3 4    1      SHARED — needs network
+2026-09-28T04:07:00.101415326Z   34     no    1 2 3 4    1      SHARED — needs network
+2026-09-28T04:07:00.101416626Z   35     yes   1 2 3 4    1      SHARED — needs network
+2026-09-28T04:07:00.101417826Z   36     no    1 2 3 4    1      SHARED — needs network
+2026-09-28T04:07:00.101419126Z   37     yes   1 2 3 4    1      SHARED — needs network
+2026-09-28T04:07:00.101420426Z   38     no    1 2 3 4    1      SHARED — needs network
+2026-09-28T04:07:00.101421726Z   39     yes   1 2 3 4    1      SHARED — needs network
+2026-09-28T04:07:00.101422927Z   41     yes   2          2      local — no network
+2026-09-28T04:07:00.101424527Z   42     no    2          2      local — no network
+2026-09-28T04:07:00.101425827Z   51     yes   2          2      local — no network
+2026-09-28T04:07:00.101427127Z   52     no    2          2      local — no network
+2026-09-28T04:07:00.101428327Z   53     yes   2          2      local — no network
+2026-09-28T04:07:00.101429627Z   54     no    2          2      local — no network
+2026-09-28T04:07:00.101430928Z   61     yes   3 4        3      SHARED — needs network
+2026-09-28T04:07:00.101432228Z   63     yes   3 4        3      SHARED — needs network
+2026-09-28T04:07:00.101433428Z   64     no    3 4        3      SHARED — needs network
+2026-09-28T04:07:00.101446030Z   65     yes   3 4        3      SHARED — needs network
+2026-09-28T04:07:00.101448930Z   66     no    3 4        3      SHARED — needs network
+2026-09-28T04:07:00.101450930Z   71     yes   4          4      local — no network
+2026-09-28T04:07:00.101453030Z   72     no    4          4      local — no network
+2026-09-28T04:07:00.101455131Z   73     yes   4          4      local — no network
+2026-09-28T04:07:00.101457031Z   74     no    4          4      local — no network
+2026-09-28T04:07:00.101458931Z   81     yes   4          4      local — no network
+2026-09-28T04:07:00.101460931Z   82     no    4          4      local — no network
+2026-09-28T04:07:00.101463032Z   => 15/31 events shared; 16/31 need ZERO network traffic; 21 concern this node
+2026-09-28T04:07:00.101465432Z   NOTE controllability was INFERRED from event labels (the header
+2026-09-28T04:07:00.101468032Z        does not carry it). Check the 'ctrl' column above; if it is
+2026-09-28T04:07:00.101470233Z        wrong, set DES_CONTROLLABLE_MASK explicitly.
+2026-09-28T04:07:00.101472433Z 
+2026-09-28T04:07:00.101474433Z [init] config fingerprint 457cc268 — every node must print the same
+2026-09-28T04:07:00.101476633Z 
+2026-09-28T04:07:00.101594048Z [net] UDP multicast 239.192.7.1:5077  ttl=1  frame=44 B
+2026-09-28T04:07:00.101603449Z --- crypto self-test ---
+2026-09-28T04:07:00.104183873Z   Enc(0)->0 Enc(1)->1                PASS
+2026-09-28T04:07:00.105808977Z   Enc(1)+Enc(1)->1 homomorphic OR   PASS
+2026-09-28T04:07:00.107011228Z   Enc(0)+Enc(0)->0                  PASS
+2026-09-28T04:07:00.107043132Z   curve secp192r1, ciphertext 50 B    PASS
+2026-09-28T04:07:00.107045833Z   frame tag HMAC-SHA256/128: 2.0 us, 1-bit tamper caught  PASS
+2026-09-28T04:07:00.107047933Z 
+2026-09-28T04:07:00.107049733Z --- encrypting my supervisors' initial states ---
+2026-09-28T04:07:00.107052034Z [load] S6         idx 6  164 states  21 constraining ev    8200 B ciphertext
+2026-09-28T04:07:01.820300309Z [init] my keypair is mine alone; no ciphertext ever leaves this node
+2026-09-28T04:07:01.820348715Z [init] my enablement: 11=1 12=1 21=1 22=1 30=0 31=1 32=0 33=1 34=0 35=1 36=0 37=1 38=0 39=1 41=1 42=1 51=1 52=1 53=1 54=1 61=1 63=0 64=0 65=0 66=0 71=0 72=0 73=0 74=0 81=0 82=0
+2026-09-28T04:07:01.820356916Z 
+2026-09-28T04:07:02.221872038Z [net] waiting for 3 peer(s).. all present.
+2026-09-28T04:07:03.726694914Z 
+2026-09-28T04:07:03.726773224Z ============================================================
+2026-09-28T04:07:03.726785025Z   RUN — SIM_SEQ driver — 5 cycles x 44 steps — LOCAL MODULAR
+2026-09-28T04:07:03.726794626Z   columns: cN sNN = cycle/step of MY walk; · = a peer caused this
+2026-09-28T04:07:03.726849833Z   'done at': run clock, common to all nodes; a cycle is over at the
+2026-09-28T04:07:03.726858034Z   LATEST node's print, machine time (DES_WORK_MS 0) included
+2026-09-28T04:07:03.726865035Z ============================================================
+2026-09-28T04:07:03.726871736Z 
+2026-09-28T04:07:03.726878037Z -- cycle 1/5 --
+2026-09-28T04:07:04.672146243Z     ·     vote   31    YES to node 1          (seq 1)
+2026-09-28T04:07:04.831076702Z     ·     apply  31       155.9 ms HE    2 dec  from node 1  (seq 1)
+2026-09-28T04:07:05.119333201Z     ·     apply  32       222.3 ms HE    3 dec  from node 1  (seq 2)
+2026-09-28T04:07:05.391710306Z     ·     vote   33    YES to node 1          (seq 3)
+2026-09-28T04:07:05.542172201Z     ·     apply  33       147.4 ms HE    2 dec  from node 1  (seq 3)
+2026-09-28T04:07:05.840841108Z     ·     apply  34       225.3 ms HE    3 dec  from node 1  (seq 4)
+2026-09-28T04:07:05.978428986Z     ·     vote   35    YES to node 1          (seq 5)
+2026-09-28T04:07:06.134881133Z     ·     apply  35       151.3 ms HE    2 dec  from node 1  (seq 5)
+2026-09-28T04:07:17.975792528Z     ·     apply  36       222.8 ms HE    3 dec  from node 1  (seq 6)
+2026-09-28T04:07:18.113346702Z     ·     vote   39    YES to node 1          (seq 7)
+2026-09-28T04:07:06.780680299Z     ·     apply  39       140.1 ms HE    2 dec  from node 1  (seq 7)
+2026-09-28T04:07:06.929373872Z     ·     vote   61    YES to node 3          (seq 1)
+2026-09-28T04:07:07.001755362Z     ·     apply  61        69.7 ms HE    1 dec  from node 3  (seq 1)
+2026-09-28T04:07:07.216106380Z     ·     apply  30        69.7 ms HE    1 dec  from node 1  (seq 8)
+2026-09-28T04:07:07.288384657Z c1  s17  local  71        69.8 ms HE    1 dec  0 frames
+2026-09-28T04:07:07.357812076Z c1  s18  local  72        69.6 ms HE    1 dec  0 frames
+2026-09-28T04:07:07.427421917Z c1  s19  local  81        69.4 ms HE    1 dec  0 frames
+2026-09-28T04:07:07.497524721Z c1  s20  local  82        69.6 ms HE    1 dec  0 frames
+2026-09-28T04:07:07.567430799Z c1  s21  local  73        69.6 ms HE    1 dec  0 frames
+2026-09-28T04:07:07.637869145Z c1  s22  local  74        70.2 ms HE    1 dec  0 frames
+2026-09-28T04:07:07.641212565Z     ·     vote   65    YES to node 3          (seq 2)
+2026-09-28T04:07:07.713620658Z     ·     apply  65        69.7 ms HE    1 dec  from node 3  (seq 2)
+2026-09-28T04:07:07.924237607Z     ·     apply  66        69.4 ms HE    1 dec  from node 3  (seq 3)
+2026-09-28T04:07:08.069006887Z     ·     vote   31    YES to node 1          (seq 9)
+2026-09-28T04:07:08.141510392Z     ·     apply  31        69.7 ms HE    1 dec  from node 1  (seq 9)
+2026-09-28T04:07:08.289196139Z     ·     apply  32        69.8 ms HE    1 dec  from node 1  (seq 10)
+2026-09-28T04:07:08.503430942Z     ·     vote   35    YES to node 1          (seq 11)
+2026-09-28T04:07:08.576307194Z     ·     apply  35        69.7 ms HE    1 dec  from node 1  (seq 11)
+2026-09-28T04:07:08.726263225Z     ·     apply  36        70.1 ms HE    1 dec  from node 1  (seq 12)
+2026-09-28T04:07:08.869153170Z     ·     vote   61    YES to node 3          (seq 4)
+2026-09-28T04:07:08.941587366Z     ·     apply  61        69.7 ms HE    1 dec  from node 3  (seq 4)
+2026-09-28T04:07:09.156632171Z     ·     vote   33    YES to node 1          (seq 13)
+2026-09-28T04:07:09.229814361Z     ·     apply  33        69.9 ms HE    1 dec  from node 1  (seq 13)
+2026-09-28T04:07:09.377904358Z     ·     apply  34        69.8 ms HE    1 dec  from node 1  (seq 14)
+2026-09-28T04:07:09.592970466Z     ·     vote   37    YES to node 1          (seq 15)
+2026-09-28T04:07:09.665871721Z     ·     apply  37        69.7 ms HE    1 dec  from node 1  (seq 15)
+2026-09-28T04:07:09.810446377Z     ·     apply  38        69.9 ms HE    1 dec  from node 1  (seq 16)
+2026-09-28T04:07:09.886365011Z     ·     vote   63    YES to node 3          (seq 5)
+2026-09-28T04:07:09.959136949Z     ·     apply  63        69.7 ms HE    1 dec  from node 3  (seq 5)
+2026-09-28T04:07:10.102139908Z     ·     apply  64        69.6 ms HE    1 dec  from node 3  (seq 6)
+2026-09-28T04:07:10.104689328Z -- cycle 1/5 done at 5800.7 ms --
+2026-09-28T04:07:10.104749435Z 
+2026-09-28T04:07:10.104759337Z -- cycle 2/5 --
+2026-09-28T04:07:10.176367029Z     ·     vote   31    YES to node 1          (seq 17)
+2026-09-28T04:07:10.249251382Z     ·     apply  31        69.8 ms HE    1 dec  from node 1  (seq 17)
+2026-09-28T04:07:10.395017387Z     ·     apply  32        70.5 ms HE    1 dec  from node 1  (seq 18)
+2026-09-28T04:07:10.609978182Z     ·     vote   33    YES to node 1          (seq 19)
+2026-09-28T04:07:10.683161572Z     ·     apply  33        69.9 ms HE    1 dec  from node 1  (seq 19)
+2026-09-28T04:07:10.826818713Z     ·     apply  34        69.3 ms HE    1 dec  from node 1  (seq 20)
+2026-09-28T04:07:10.905490092Z     ·     vote   35    YES to node 1          (seq 21)
+2026-09-28T04:07:10.977995898Z     ·     apply  35        69.8 ms HE    1 dec  from node 1  (seq 21)
+2026-09-28T04:07:11.267180013Z     ·     apply  36        69.8 ms HE    1 dec  from node 1  (seq 22)
+2026-09-28T04:07:11.343379082Z     ·     vote   39    YES to node 1          (seq 23)
+2026-09-28T04:07:11.416521168Z     ·     apply  39        69.9 ms HE    1 dec  from node 1  (seq 23)
+2026-09-28T04:07:22.965254134Z     ·     vote   61    YES to node 3          (seq 7)
+2026-09-28T04:07:23.040562391Z     ·     apply  61        69.9 ms HE    1 dec  from node 3  (seq 7)
+2026-09-28T04:07:11.698322226Z     ·     apply  30        69.4 ms HE    1 dec  from node 1  (seq 24)
+2026-09-28T04:07:11.769960823Z c2  s17  local  71        69.3 ms HE    1 dec  0 frames
+2026-09-28T04:07:11.839955713Z c2  s18  local  72        69.6 ms HE    1 dec  0 frames
+2026-09-28T04:07:11.910229938Z c2  s19  local  81        69.7 ms HE    1 dec  0 frames
+2026-09-28T04:07:11.980611076Z c2  s20  local  82        70.0 ms HE    1 dec  0 frames
+2026-09-28T04:07:12.050825894Z c2  s21  local  73        70.1 ms HE    1 dec  0 frames
+2026-09-28T04:07:12.120880891Z c2  s22  local  74        69.7 ms HE    1 dec  0 frames
+2026-09-28T04:07:12.123551926Z     ·     vote   65    YES to node 3          (seq 8)
+2026-09-28T04:07:12.196562395Z     ·     apply  65        69.8 ms HE    1 dec  from node 3  (seq 8)
+2026-09-28T04:07:12.337120146Z     ·     apply  66        69.6 ms HE    1 dec  from node 3  (seq 9)
+2026-09-28T04:07:12.411918039Z     ·     vote   31    YES to node 1          (seq 25)
+2026-09-28T04:07:12.484794991Z     ·     apply  31        69.9 ms HE    1 dec  from node 1  (seq 25)
+2026-09-28T04:07:12.629720591Z     ·     apply  32        69.9 ms HE    1 dec  from node 1  (seq 26)
+2026-09-28T04:07:12.842556219Z     ·     vote   35    YES to node 1          (seq 27)
+2026-09-28T04:07:12.914362036Z     ·     apply  35        69.3 ms HE    1 dec  from node 1  (seq 27)
+2026-09-28T04:07:13.057769845Z     ·     apply  36        69.3 ms HE    1 dec  from node 1  (seq 28)
+2026-09-28T04:07:13.129348534Z     ·     vote   61    YES to node 3          (seq 10)
+2026-09-28T04:07:13.200943125Z     ·     apply  61        69.3 ms HE    1 dec  from node 3  (seq 10)
+2026-09-28T04:07:13.273761770Z     ·     vote   33    YES to node 1          (seq 29)
+2026-09-28T04:07:13.347540835Z     ·     apply  33        69.2 ms HE    1 dec  from node 1  (seq 29)
+2026-09-28T04:07:13.490880535Z     ·     apply  34        69.5 ms HE    1 dec  from node 1  (seq 30)
+2026-09-28T04:07:13.707766772Z     ·     vote   37    YES to node 1          (seq 31)
+2026-09-28T04:07:13.780107056Z     ·     apply  37        69.6 ms HE    1 dec  from node 1  (seq 31)
+2026-09-28T04:07:13.925274186Z     ·     apply  38        69.6 ms HE    1 dec  from node 1  (seq 32)
+2026-09-28T04:07:14.000806672Z     ·     vote   63    YES to node 3          (seq 11)
+2026-09-28T04:07:14.073759333Z     ·     apply  63        69.6 ms HE    1 dec  from node 3  (seq 11)
+2026-09-28T04:07:14.216517461Z     ·     apply  64        69.6 ms HE    1 dec  from node 3  (seq 12)
+2026-09-28T04:07:14.218797947Z -- cycle 2/5 done at 9925.0 ms --
+2026-09-28T04:07:14.219034477Z 
+2026-09-28T04:07:14.219077282Z -- cycle 3/5 --
+2026-09-28T04:07:14.287863820Z     ·     vote   31    YES to node 1          (seq 33)
+2026-09-28T04:07:14.362707819Z     ·     apply  31        69.7 ms HE    1 dec  from node 1  (seq 33)
+2026-09-28T04:07:14.510179339Z     ·     apply  32        69.8 ms HE    1 dec  from node 1  (seq 34)
+2026-09-28T04:07:14.723706453Z     ·     vote   33    YES to node 1          (seq 35)
+2026-09-28T04:07:14.798904597Z     ·     apply  33        69.7 ms HE    1 dec  from node 1  (seq 35)
+2026-09-28T04:07:14.946008470Z     ·     apply  34        69.7 ms HE    1 dec  from node 1  (seq 36)
+2026-09-28T04:07:15.022718903Z     ·     vote   35    YES to node 1          (seq 37)
+2026-09-28T04:07:15.095312720Z     ·     apply  35        69.6 ms HE    1 dec  from node 1  (seq 37)
+2026-09-28T04:07:15.380439226Z     ·     apply  36        69.7 ms HE    1 dec  from node 1  (seq 38)
+2026-09-28T04:07:15.457644521Z     ·     vote   39    YES to node 1          (seq 39)
+2026-09-28T04:07:15.532720849Z     ·     apply  39        69.8 ms HE    1 dec  from node 1  (seq 39)
+2026-09-28T04:07:15.603443231Z     ·     vote   61    YES to node 3          (seq 13)
+2026-09-28T04:07:15.677978191Z     ·     apply  61        69.4 ms HE    1 dec  from node 3  (seq 13)
+2026-09-28T04:07:15.821261984Z     ·     apply  30        69.6 ms HE    1 dec  from node 1  (seq 40)
+2026-09-28T04:07:15.893569965Z c3  s17  local  71        69.8 ms HE    1 dec  0 frames
+2026-09-28T04:07:15.963929200Z c3  s18  local  72        69.6 ms HE    1 dec  0 frames
+2026-09-28T04:07:16.033734066Z c3  s19  local  81        69.8 ms HE    1 dec  0 frames
+2026-09-28T04:07:16.103460323Z c3  s20  local  82        69.5 ms HE    1 dec  0 frames
+2026-09-28T04:07:16.172709119Z c3  s21  local  73        69.5 ms HE    1 dec  0 frames
+2026-09-28T04:07:16.243281281Z c3  s22  local  74        69.8 ms HE    1 dec  0 frames
+2026-09-28T04:07:16.245954317Z     ·     vote   65    YES to node 3          (seq 14)
+2026-09-28T04:07:16.317780337Z     ·     apply  65        69.5 ms HE    1 dec  from node 3  (seq 14)
+2026-09-28T04:07:27.945703539Z     ·     apply  66        69.9 ms HE    1 dec  from node 3  (seq 15)
+2026-09-28T04:07:28.014670800Z     ·     vote   31    YES to node 1          (seq 41)
+2026-09-28T04:07:28.089719325Z     ·     apply  31        69.8 ms HE    1 dec  from node 1  (seq 41)
+2026-09-28T04:07:16.749269492Z     ·     apply  32        69.2 ms HE    1 dec  from node 1  (seq 42)
+2026-09-28T04:07:16.968472919Z     ·     vote   35    YES to node 1          (seq 43)
+2026-09-28T04:07:17.041250659Z     ·     apply  35        69.7 ms HE    1 dec  from node 1  (seq 43)
+2026-09-28T04:07:17.188704976Z     ·     apply  36        69.7 ms HE    1 dec  from node 1  (seq 44)
+2026-09-28T04:07:17.262789479Z     ·     vote   61    YES to node 3          (seq 16)
+2026-09-28T04:07:17.338166745Z     ·     apply  61        69.7 ms HE    1 dec  from node 3  (seq 16)
+2026-09-28T04:07:17.411136809Z     ·     vote   33    YES to node 1          (seq 45)
+2026-09-28T04:07:17.483912048Z     ·     apply  33        69.9 ms HE    1 dec  from node 1  (seq 45)
+2026-09-28T04:07:17.630209520Z     ·     apply  34        69.6 ms HE    1 dec  from node 1  (seq 46)
+2026-09-28T04:07:17.846460977Z     ·     vote   37    YES to node 1          (seq 47)
+2026-09-28T04:07:17.919426640Z     ·     apply  37        69.7 ms HE    1 dec  from node 1  (seq 47)
+2026-09-28T04:07:18.062457301Z     ·     apply  38        69.7 ms HE    1 dec  from node 1  (seq 48)
+2026-09-28T04:07:18.136508701Z     ·     vote   63    YES to node 3          (seq 17)
+2026-09-28T04:07:18.211540923Z     ·     apply  63        69.7 ms HE    1 dec  from node 3  (seq 17)
+2026-09-28T04:07:18.353009389Z     ·     apply  64        69.7 ms HE    1 dec  from node 3  (seq 18)
+2026-09-28T04:07:18.355233268Z -- cycle 3/5 done at 14059.8 ms --
+2026-09-28T04:07:18.355287875Z 
+2026-09-28T04:07:18.355297776Z -- cycle 4/5 --
+2026-09-28T04:07:18.427032985Z     ·     vote   31    YES to node 1          (seq 49)
+2026-09-28T04:07:18.499626701Z     ·     apply  31        69.7 ms HE    1 dec  from node 1  (seq 49)
+2026-09-28T04:07:18.643518971Z     ·     apply  32        69.6 ms HE    1 dec  from node 1  (seq 50)
+2026-09-28T04:07:18.861158002Z     ·     vote   33    YES to node 1          (seq 51)
+2026-09-28T04:07:18.934294387Z     ·     apply  33        69.8 ms HE    1 dec  from node 1  (seq 51)
+2026-09-28T04:07:19.082389084Z     ·     apply  34        70.1 ms HE    1 dec  from node 1  (seq 52)
+2026-09-28T04:07:19.158058187Z     ·     vote   35    YES to node 1          (seq 53)
+2026-09-28T04:07:19.232818875Z     ·     apply  35        69.7 ms HE    1 dec  from node 1  (seq 53)
+2026-09-28T04:07:19.520131956Z     ·     apply  36        69.9 ms HE    1 dec  from node 1  (seq 54)
+2026-09-28T04:07:19.594859340Z     ·     vote   39    YES to node 1          (seq 55)
+2026-09-28T04:07:19.666817177Z     ·     apply  39        69.4 ms HE    1 dec  from node 1  (seq 55)
+2026-09-28T04:07:19.740805168Z     ·     vote   61    YES to node 3          (seq 19)
+2026-09-28T04:07:19.815510050Z     ·     apply  61        69.7 ms HE    1 dec  from node 3  (seq 19)
+2026-09-28T04:07:19.959997594Z     ·     apply  30        70.0 ms HE    1 dec  from node 1  (seq 56)
+2026-09-28T04:07:20.032453993Z c4  s17  local  71        69.7 ms HE    1 dec  0 frames
+2026-09-28T04:07:20.102279162Z c4  s18  local  72        69.6 ms HE    1 dec  0 frames
+2026-09-28T04:07:20.172346161Z c4  s19  local  81        69.7 ms HE    1 dec  0 frames
+2026-09-28T04:07:20.242073817Z c4  s20  local  82        69.6 ms HE    1 dec  0 frames
+2026-09-28T04:07:20.312131815Z c4  s21  local  73        69.6 ms HE    1 dec  0 frames
+2026-09-28T04:07:20.381085474Z c4  s22  local  74        69.4 ms HE    1 dec  0 frames
+2026-09-28T04:07:20.385801567Z     ·     vote   65    YES to node 3          (seq 20)
+2026-09-28T04:07:20.458572205Z     ·     apply  65        69.6 ms HE    1 dec  from node 3  (seq 20)
+2026-09-28T04:07:20.599687026Z     ·     apply  66        69.5 ms HE    1 dec  from node 3  (seq 21)
+2026-09-28T04:07:20.674411010Z     ·     vote   31    YES to node 1          (seq 57)
+2026-09-28T04:07:20.746811502Z     ·     apply  31        69.7 ms HE    1 dec  from node 1  (seq 57)
+2026-09-28T04:07:20.893823964Z     ·     apply  32        69.8 ms HE    1 dec  from node 1  (seq 58)
+2026-09-28T04:07:21.106817212Z     ·     vote   35    YES to node 1          (seq 59)
+2026-09-28T04:07:21.180155922Z     ·     apply  35        70.0 ms HE    1 dec  from node 1  (seq 59)
+2026-09-28T04:07:21.326965258Z     ·     apply  36        69.8 ms HE    1 dec  from node 1  (seq 60)
+2026-09-28T04:07:21.400069438Z     ·     vote   61    YES to node 3          (seq 22)
+2026-09-28T04:07:32.954218649Z     ·     apply  61        69.6 ms HE    1 dec  from node 3  (seq 22)
+2026-09-28T04:07:33.027660972Z     ·     vote   33    YES to node 1          (seq 61)
+2026-09-28T04:07:33.100064964Z     ·     apply  33        69.6 ms HE    1 dec  from node 1  (seq 61)
+2026-09-28T04:07:21.761116458Z     ·     apply  34        69.3 ms HE    1 dec  from node 1  (seq 62)
+2026-09-28T04:07:21.979147538Z     ·     vote   37    YES to node 1          (seq 63)
+2026-09-28T04:07:22.051607038Z     ·     apply  37        69.7 ms HE    1 dec  from node 1  (seq 63)
+2026-09-28T04:07:22.199933165Z     ·     apply  38        69.7 ms HE    1 dec  from node 1  (seq 64)
+2026-09-28T04:07:22.273365086Z     ·     vote   63    YES to node 3          (seq 23)
+2026-09-28T04:07:22.345831387Z     ·     apply  63        69.8 ms HE    1 dec  from node 3  (seq 23)
+2026-09-28T04:07:22.488606416Z     ·     apply  64        69.7 ms HE    1 dec  from node 3  (seq 24)
+2026-09-28T04:07:22.491179839Z -- cycle 4/5 done at 18195.7 ms --
+2026-09-28T04:07:22.491225545Z 
+2026-09-28T04:07:22.491235446Z -- cycle 5/5 --
+2026-09-28T04:07:22.560654364Z     ·     vote   31    YES to node 1          (seq 65)
+2026-09-28T04:07:22.633864658Z     ·     apply  31        69.7 ms HE    1 dec  from node 1  (seq 65)
+2026-09-28T04:07:22.778877768Z     ·     apply  32        69.6 ms HE    1 dec  from node 1  (seq 66)
+2026-09-28T04:07:22.994546152Z     ·     vote   33    YES to node 1          (seq 67)
+2026-09-28T04:07:23.067559821Z     ·     apply  33        70.0 ms HE    1 dec  from node 1  (seq 67)
+2026-09-28T04:07:23.210543477Z     ·     apply  34        69.7 ms HE    1 dec  from node 1  (seq 68)
+2026-09-28T04:07:23.287389727Z     ·     vote   35    YES to node 1          (seq 69)
+2026-09-28T04:07:23.360589820Z     ·     apply  35        69.8 ms HE    1 dec  from node 1  (seq 69)
+2026-09-28T04:07:23.647809689Z     ·     apply  36        69.8 ms HE    1 dec  from node 1  (seq 70)
+2026-09-28T04:07:23.723583504Z     ·     vote   39    YES to node 1          (seq 71)
+2026-09-28T04:07:23.798277084Z     ·     apply  39        69.7 ms HE    1 dec  from node 1  (seq 71)
+2026-09-28T04:07:23.873230097Z     ·     vote   61    YES to node 3          (seq 25)
+2026-09-28T04:07:23.945542478Z     ·     apply  61        69.8 ms HE    1 dec  from node 3  (seq 25)
+2026-09-28T04:07:24.090226847Z     ·     apply  30        69.9 ms HE    1 dec  from node 1  (seq 72)
+2026-09-28T04:07:24.162384609Z c5  s17  local  71        69.6 ms HE    1 dec  0 frames
+2026-09-28T04:07:24.232237481Z c5  s18  local  72        69.8 ms HE    1 dec  0 frames
+2026-09-28T04:07:24.302130458Z c5  s19  local  81        69.6 ms HE    1 dec  0 frames
+2026-09-28T04:07:24.371956627Z c5  s20  local  82        69.6 ms HE    1 dec  0 frames
+2026-09-28T04:07:24.442080633Z c5  s21  local  73        70.0 ms HE    1 dec  0 frames
+2026-09-28T04:07:24.512558684Z c5  s22  local  74        69.9 ms HE    1 dec  0 frames
+2026-09-28T04:07:24.518138684Z     ·     vote   65    YES to node 3          (seq 26)
+2026-09-28T04:07:24.590428763Z     ·     apply  65        69.7 ms HE    1 dec  from node 3  (seq 26)
+2026-09-28T04:07:24.731358761Z     ·     apply  66        69.5 ms HE    1 dec  from node 3  (seq 27)
+2026-09-28T04:07:24.805479969Z     ·     vote   31    YES to node 1          (seq 73)
+2026-09-28T04:07:24.878392925Z     ·     apply  31        69.7 ms HE    1 dec  from node 1  (seq 73)
+2026-09-28T04:07:25.026039467Z     ·     apply  32        70.1 ms HE    1 dec  from node 1  (seq 74)
+2026-09-28T04:07:25.240824539Z     ·     vote   35    YES to node 1          (seq 75)
+2026-09-28T04:07:25.314164449Z     ·     apply  35        69.7 ms HE    1 dec  from node 1  (seq 75)
+2026-09-28T04:07:25.461962410Z     ·     apply  36        70.0 ms HE    1 dec  from node 1  (seq 76)
+2026-09-28T04:07:25.534189580Z     ·     vote   61    YES to node 3          (seq 28)
+2026-09-28T04:07:25.609122690Z     ·     apply  61        69.7 ms HE    1 dec  from node 3  (seq 28)
+2026-09-28T04:07:25.682847848Z     ·     vote   33    YES to node 1          (seq 77)
+2026-09-28T04:07:25.755680395Z     ·     apply  33        69.8 ms HE    1 dec  from node 1  (seq 77)
+2026-09-28T04:07:25.902154289Z     ·     apply  34        69.8 ms HE    1 dec  from node 1  (seq 78)
+2026-09-28T04:07:26.118645376Z     ·     vote   37    YES to node 1          (seq 79)
+2026-09-28T04:07:26.191848769Z     ·     apply  37        70.1 ms HE    1 dec  from node 1  (seq 79)
+2026-09-28T04:07:26.339257880Z     ·     apply  38        69.6 ms HE    1 dec  from node 1  (seq 80)
+2026-09-28T04:07:26.412545184Z     ·     vote   63    YES to node 3          (seq 29)
+2026-09-28T04:07:37.968607642Z     ·     apply  63        69.8 ms HE    1 dec  from node 3  (seq 29)
+2026-09-28T04:07:38.108943365Z     ·     apply  64        69.8 ms HE    1 dec  from node 3  (seq 30)
+2026-09-28T04:07:38.111310662Z -- cycle 5/5 done at 22335.0 ms --
+2026-09-28T04:07:38.111400474Z 
+2026-09-28T04:07:38.111412075Z ============================================================
+2026-09-28T04:07:38.111473183Z   SUMMARY — node 4/4 — LOCAL MODULAR — UDP/IP multicast (RFC 1112)
+2026-09-28T04:07:38.111484284Z ============================================================
+2026-09-28T04:07:38.111491085Z   events this node FIRED:
+2026-09-28T04:07:38.111498186Z   local (no network)     n=30   avg    69.90 ms  (HE   69.69 + net    0.00)  min   69.41  max    70.38  100.0%
+2026-09-28T04:07:38.111507187Z   shared controllable          (none on this node)
+2026-09-28T04:07:38.111513988Z   shared uncontroll.           (none on this node)
+2026-09-28T04:07:38.111520689Z   events this node APPLIED for a peer (participant side):
+2026-09-28T04:07:38.111527190Z   shared, applied        n=110  avg    76.78 ms  (HE   76.78 + net    0.00)  min   69.24  max   225.29
+2026-09-28T04:07:38.111534291Z   run clock, end of cycles 1..5 (ms): 5800.7 9925.0 14059.8 18195.7 22335.0
+2026-09-28T04:07:38.111540991Z      a cycle is over at the LATEST node's value; DES_WORK_MS 0 included
+2026-09-28T04:07:38.111547692Z   ----------------------------------------------------------
+2026-09-28T04:07:38.111554593Z   all events            n=30   avg    69.90 ms  (HE   69.69 + net    0.00)
+2026-09-28T04:07:38.111561394Z   PEER-WAIT + WIRE      0.0 % of total step time
+2026-09-28T04:07:38.111567795Z      (compare against the round-trip probe above: the excess is
+2026-09-28T04:07:38.111574396Z       the peer's own HE work, not the link.)
+2026-09-28T04:07:38.111580796Z   frames: tx=316 rx=688 retransmits=0
+2026-09-28T04:07:38.111587197Z   authentication: HMAC-SHA256/128, 2.0 us per frame; 0 rejected (bad tag), 0 stale/replayed dropped, 3 epoch challenges
+2026-09-28T04:07:38.111594198Z   rx queue: peak 4/64 frames
+2026-09-28T04:07:38.111600899Z   plant check: 0 event reports rejected as physically impossible
+2026-09-28T04:07:38.111608000Z      (these supervisors carry the plant: an impossible uncontrollable event is caught)
+2026-09-28T04:07:38.111614801Z   ----------------------------------------------------------
+2026-09-28T04:07:38.111621402Z   homomorphic vs cleartext oracle : PASS — every encrypted bit matched
+2026-09-28T04:07:38.111628402Z      (PASS certifies the cryptography: each node's encrypted bits
+2026-09-28T04:07:38.111634903Z       match its own clear model for the events it applied. It does
+2026-09-28T04:07:38.111641404Z       not certify the distributed run — read the skips for that.)
+2026-09-28T04:07:38.111648005Z   distributed vs MONOLITHIC sup.  : off — this header has no monolithic supervisor
+2026-09-28T04:07:38.111655006Z   safe halt                       : no — ran to completion
+2026-09-28T04:07:38.111697711Z ============================================================
+2026-09-28T04:07:48.112590610Z @@RESULT {"node":4,"nodes":4,"family":"LOCAL MODULAR","data":"supervisor_data_fms.h","transport":"UDP/IP multicast (RFC 1112)","fingerprint":"457cc268","supervisors":["S6"],"fired":{"local":30,"ctrl":0,"unctrl":0},"applied_for_peers":110,"skips":0,"impossible":0,"tx":316,"rx":688,"retx":0,"auth_bad":0,"replays":0,"challenges":3,"mac_us":2.03,"rxq_peak":4,"rxq_drops":0,"sync_wait_ms":0.0,"oracle":"PASS","safe_halt":false,"halt_reason":"","cycle_end_ms":[5800.7,9925.0,14059.8,18195.7,22335.0],"rounds":5,"work_ms":0,"emu_scalarmul_ms":69.0,"exit":0}

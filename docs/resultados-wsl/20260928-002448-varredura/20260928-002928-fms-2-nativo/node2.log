@@ -1,0 +1,297 @@
+des_container: node 2 of 2, LOCAL MODULAR, data supervisor_data_fms.h, transport UDP/IP multicast (RFC 1112)
+des_container: EMULATING the ESP32 — every decryption takes at least 69.0 ms (DES_EMU_SCALARMUL_MS)
+
+============================================================
+  Distributed Homomorphic DES — generic engine
+  node 2/2   family LOCAL MODULAR   7 supervisors   31 events
+  data: supervisor_data_fms.h
+============================================================
+--- event routing (DERIVED from the header, not hardcoded) ---
+  event  ctrl  nodes      owner  class
+  11     yes   1          1      local — no network
+  12     no    1          1      local — no network
+  21     yes   1          1      local — no network
+  22     no    1          1      local — no network
+  30     no    1 2        1      SHARED — needs network
+  31     yes   1 2        1      SHARED — needs network
+  32     no    1 2        1      SHARED — needs network
+  33     yes   1 2        1      SHARED — needs network
+  34     no    1 2        1      SHARED — needs network
+  35     yes   1 2        1      SHARED — needs network
+  36     no    1 2        1      SHARED — needs network
+  37     yes   1 2        1      SHARED — needs network
+  38     no    1 2        1      SHARED — needs network
+  39     yes   1 2        1      SHARED — needs network
+  41     yes   1          1      local — no network
+  42     no    1          1      local — no network
+  51     yes   1          1      local — no network
+  52     no    1          1      local — no network
+  53     yes   1          1      local — no network
+  54     no    1          1      local — no network
+  61     yes   2          2      local — no network
+  63     yes   2          2      local — no network
+  64     no    2          2      local — no network
+  65     yes   2          2      local — no network
+  66     no    2          2      local — no network
+  71     yes   2          2      local — no network
+  72     no    2          2      local — no network
+  73     yes   2          2      local — no network
+  74     no    2          2      local — no network
+  81     yes   2          2      local — no network
+  82     no    2          2      local — no network
+  => 10/31 events shared; 21/31 need ZERO network traffic; 21 concern this node
+  NOTE controllability was INFERRED from event labels (the header
+       does not carry it). Check the 'ctrl' column above; if it is
+       wrong, set DES_CONTROLLABLE_MASK explicitly.
+
+[init] config fingerprint edbd7971 — every node must print the same
+
+[net] UDP multicast 239.192.7.1:5077  ttl=1  frame=44 B
+--- crypto self-test ---
+  Enc(0)->0 Enc(1)->1                PASS
+  Enc(1)+Enc(1)->1 homomorphic OR   PASS
+  Enc(0)+Enc(0)->0                  PASS
+  curve secp192r1, ciphertext 50 B    PASS
+  frame tag HMAC-SHA256/128: 1.3 us, 1-bit tamper caught  PASS
+
+--- encrypting my supervisors' initial states ---
+[load] S4         idx 4   44 states  15 constraining ev    2200 B ciphertext
+[load] S5         idx 5   44 states  15 constraining ev    2200 B ciphertext
+[load] S6         idx 6  164 states  21 constraining ev    8200 B ciphertext
+[init] my keypair is mine alone; no ciphertext ever leaves this node
+[init] my enablement: 11=1 12=1 21=1 22=1 30=0 31=1 32=0 33=1 34=0 35=1 36=0 37=1 38=0 39=1 41=1 42=1 51=1 52=1 53=1 54=1 61=0 63=0 64=0 65=0 66=0 71=0 72=0 73=0 74=0 81=0 82=0
+
+[net] waiting for 1 peer(s). all present.
+
+============================================================
+  RUN — SIM_SEQ driver — 5 cycles x 44 steps — LOCAL MODULAR
+  columns: cN sNN = cycle/step of MY walk; · = a peer caused this
+  'done at': run clock, common to all nodes; a cycle is over at the
+  LATEST node's print, machine time (DES_WORK_MS 0) included
+============================================================
+
+-- cycle 1/5 --
+    ·     vote   31    YES to node 1          (seq 1)
+    ·     apply  31       351.2 ms HE    5 dec  from node 1  (seq 1)
+    ·     apply  32       559.0 ms HE    8 dec  from node 1  (seq 2)
+    ·     vote   33    YES to node 1          (seq 3)
+    ·     apply  33       350.3 ms HE    5 dec  from node 1  (seq 3)
+    ·     apply  34       558.2 ms HE    8 dec  from node 1  (seq 4)
+    ·     vote   35    YES to node 1          (seq 5)
+    ·     apply  35       349.7 ms HE    5 dec  from node 1  (seq 5)
+    ·     apply  36       557.6 ms HE    8 dec  from node 1  (seq 6)
+    ·     vote   39    YES to node 1          (seq 7)
+    ·     apply  39       416.2 ms HE    6 dec  from node 1  (seq 7)
+c1  s15  local  61       276.7 ms HE    4 dec  0 frames
+    ·     apply  30       277.2 ms HE    4 dec  from node 1  (seq 8)
+c1  s17  local  71        69.4 ms HE    1 dec  0 frames
+c1  s18  local  72        69.2 ms HE    1 dec  0 frames
+c1  s19  local  81        69.2 ms HE    1 dec  0 frames
+c1  s20  local  82        69.1 ms HE    1 dec  0 frames
+c1  s21  local  73        69.2 ms HE    1 dec  0 frames
+c1  s22  local  74        69.2 ms HE    1 dec  0 frames
+c1  s23  local  65       276.7 ms HE    4 dec  0 frames
+c1  s24  local  66       276.8 ms HE    4 dec  0 frames
+    ·     vote   31    YES to node 1          (seq 9)
+    ·     apply  31       207.9 ms HE    3 dec  from node 1  (seq 9)
+    ·     apply  32       277.0 ms HE    4 dec  from node 1  (seq 10)
+    ·     vote   35    YES to node 1          (seq 11)
+    ·     apply  35       207.7 ms HE    3 dec  from node 1  (seq 11)
+    ·     apply  36       276.7 ms HE    4 dec  from node 1  (seq 12)
+c1  s35  local  61       346.4 ms HE    5 dec  0 frames
+    ·     vote   33    YES to node 1          (seq 13)
+    ·     apply  33       207.7 ms HE    3 dec  from node 1  (seq 13)
+    ·     apply  34       277.5 ms HE    4 dec  from node 1  (seq 14)
+    ·     vote   37    YES to node 1          (seq 15)
+    ·     apply  37       207.5 ms HE    3 dec  from node 1  (seq 15)
+    ·     apply  38       207.5 ms HE    3 dec  from node 1  (seq 16)
+c1  s42  local  63       207.6 ms HE    3 dec  0 frames
+c1  s43  local  64       207.5 ms HE    3 dec  0 frames
+-- cycle 1/5 done at 8485.5 ms --
+
+-- cycle 2/5 --
+    ·     vote   31    YES to node 1          (seq 17)
+    ·     apply  31       207.5 ms HE    3 dec  from node 1  (seq 17)
+    ·     apply  32       207.5 ms HE    3 dec  from node 1  (seq 18)
+    ·     vote   33    YES to node 1          (seq 19)
+    ·     apply  33       207.5 ms HE    3 dec  from node 1  (seq 19)
+    ·     apply  34       207.6 ms HE    3 dec  from node 1  (seq 20)
+    ·     vote   35    YES to node 1          (seq 21)
+    ·     apply  35       207.5 ms HE    3 dec  from node 1  (seq 21)
+    ·     apply  36       207.7 ms HE    3 dec  from node 1  (seq 22)
+    ·     vote   39    YES to node 1          (seq 23)
+    ·     apply  39       207.6 ms HE    3 dec  from node 1  (seq 23)
+c2  s15  local  61       207.6 ms HE    3 dec  0 frames
+    ·     apply  30       207.6 ms HE    3 dec  from node 1  (seq 24)
+c2  s17  local  71        69.2 ms HE    1 dec  0 frames
+c2  s18  local  72        69.4 ms HE    1 dec  0 frames
+c2  s19  local  81        69.2 ms HE    1 dec  0 frames
+c2  s20  local  82        69.2 ms HE    1 dec  0 frames
+c2  s21  local  73        69.2 ms HE    1 dec  0 frames
+c2  s22  local  74        69.2 ms HE    1 dec  0 frames
+c2  s23  local  65       207.5 ms HE    3 dec  0 frames
+c2  s24  local  66       207.5 ms HE    3 dec  0 frames
+    ·     vote   31    YES to node 1          (seq 25)
+    ·     apply  31       207.5 ms HE    3 dec  from node 1  (seq 25)
+    ·     apply  32       207.6 ms HE    3 dec  from node 1  (seq 26)
+    ·     vote   35    YES to node 1          (seq 27)
+    ·     apply  35       207.5 ms HE    3 dec  from node 1  (seq 27)
+    ·     apply  36       207.5 ms HE    3 dec  from node 1  (seq 28)
+c2  s35  local  61       207.6 ms HE    3 dec  0 frames
+    ·     vote   33    YES to node 1          (seq 29)
+    ·     apply  33       207.6 ms HE    3 dec  from node 1  (seq 29)
+    ·     apply  34       207.5 ms HE    3 dec  from node 1  (seq 30)
+    ·     vote   37    YES to node 1          (seq 31)
+    ·     apply  37       207.5 ms HE    3 dec  from node 1  (seq 31)
+    ·     apply  38       207.5 ms HE    3 dec  from node 1  (seq 32)
+c2  s42  local  63       207.5 ms HE    3 dec  0 frames
+c2  s43  local  64       207.5 ms HE    3 dec  0 frames
+-- cycle 2/5 done at 14976.4 ms --
+
+-- cycle 3/5 --
+    ·     vote   31    YES to node 1          (seq 33)
+    ·     apply  31       207.6 ms HE    3 dec  from node 1  (seq 33)
+    ·     apply  32       207.6 ms HE    3 dec  from node 1  (seq 34)
+    ·     vote   33    YES to node 1          (seq 35)
+    ·     apply  33       207.6 ms HE    3 dec  from node 1  (seq 35)
+    ·     apply  34       207.6 ms HE    3 dec  from node 1  (seq 36)
+    ·     vote   35    YES to node 1          (seq 37)
+    ·     apply  35       207.5 ms HE    3 dec  from node 1  (seq 37)
+    ·     apply  36       207.6 ms HE    3 dec  from node 1  (seq 38)
+    ·     vote   39    YES to node 1          (seq 39)
+    ·     apply  39       207.7 ms HE    3 dec  from node 1  (seq 39)
+c3  s15  local  61       207.6 ms HE    3 dec  0 frames
+    ·     apply  30       207.6 ms HE    3 dec  from node 1  (seq 40)
+c3  s17  local  71        69.2 ms HE    1 dec  0 frames
+c3  s18  local  72        69.2 ms HE    1 dec  0 frames
+c3  s19  local  81        69.1 ms HE    1 dec  0 frames
+c3  s20  local  82        69.6 ms HE    1 dec  0 frames
+c3  s21  local  73        69.2 ms HE    1 dec  0 frames
+c3  s22  local  74        69.2 ms HE    1 dec  0 frames
+c3  s23  local  65       207.5 ms HE    3 dec  0 frames
+c3  s24  local  66       207.6 ms HE    3 dec  0 frames
+    ·     vote   31    YES to node 1          (seq 41)
+    ·     apply  31       207.5 ms HE    3 dec  from node 1  (seq 41)
+    ·     apply  32       207.5 ms HE    3 dec  from node 1  (seq 42)
+    ·     vote   35    YES to node 1          (seq 43)
+    ·     apply  35       207.6 ms HE    3 dec  from node 1  (seq 43)
+    ·     apply  36       207.6 ms HE    3 dec  from node 1  (seq 44)
+c3  s35  local  61       207.5 ms HE    3 dec  0 frames
+    ·     vote   33    YES to node 1          (seq 45)
+    ·     apply  33       207.7 ms HE    3 dec  from node 1  (seq 45)
+    ·     apply  34       207.6 ms HE    3 dec  from node 1  (seq 46)
+    ·     vote   37    YES to node 1          (seq 47)
+    ·     apply  37       207.6 ms HE    3 dec  from node 1  (seq 47)
+    ·     apply  38       207.5 ms HE    3 dec  from node 1  (seq 48)
+c3  s42  local  63       207.5 ms HE    3 dec  0 frames
+c3  s43  local  64       207.6 ms HE    3 dec  0 frames
+-- cycle 3/5 done at 21467.7 ms --
+
+-- cycle 4/5 --
+    ·     vote   31    YES to node 1          (seq 49)
+    ·     apply  31       207.6 ms HE    3 dec  from node 1  (seq 49)
+    ·     apply  32       208.0 ms HE    3 dec  from node 1  (seq 50)
+    ·     vote   33    YES to node 1          (seq 51)
+    ·     apply  33       207.6 ms HE    3 dec  from node 1  (seq 51)
+    ·     apply  34       207.7 ms HE    3 dec  from node 1  (seq 52)
+    ·     vote   35    YES to node 1          (seq 53)
+    ·     apply  35       207.5 ms HE    3 dec  from node 1  (seq 53)
+    ·     apply  36       207.6 ms HE    3 dec  from node 1  (seq 54)
+    ·     vote   39    YES to node 1          (seq 55)
+    ·     apply  39       207.6 ms HE    3 dec  from node 1  (seq 55)
+c4  s15  local  61       207.6 ms HE    3 dec  0 frames
+    ·     apply  30       207.6 ms HE    3 dec  from node 1  (seq 56)
+c4  s17  local  71        69.2 ms HE    1 dec  0 frames
+c4  s18  local  72        69.2 ms HE    1 dec  0 frames
+c4  s19  local  81        69.2 ms HE    1 dec  0 frames
+c4  s20  local  82        69.3 ms HE    1 dec  0 frames
+c4  s21  local  73        69.2 ms HE    1 dec  0 frames
+c4  s22  local  74        69.2 ms HE    1 dec  0 frames
+c4  s23  local  65       207.6 ms HE    3 dec  0 frames
+c4  s24  local  66       207.6 ms HE    3 dec  0 frames
+    ·     vote   31    YES to node 1          (seq 57)
+    ·     apply  31       207.5 ms HE    3 dec  from node 1  (seq 57)
+    ·     apply  32       207.8 ms HE    3 dec  from node 1  (seq 58)
+    ·     vote   35    YES to node 1          (seq 59)
+    ·     apply  35       207.9 ms HE    3 dec  from node 1  (seq 59)
+    ·     apply  36       207.9 ms HE    3 dec  from node 1  (seq 60)
+c4  s35  local  61       207.6 ms HE    3 dec  0 frames
+    ·     vote   33    YES to node 1          (seq 61)
+    ·     apply  33       207.5 ms HE    3 dec  from node 1  (seq 61)
+    ·     apply  34       207.5 ms HE    3 dec  from node 1  (seq 62)
+    ·     vote   37    YES to node 1          (seq 63)
+    ·     apply  37       207.5 ms HE    3 dec  from node 1  (seq 63)
+    ·     apply  38       207.5 ms HE    3 dec  from node 1  (seq 64)
+c4  s42  local  63       207.6 ms HE    3 dec  0 frames
+c4  s43  local  64       207.6 ms HE    3 dec  0 frames
+-- cycle 4/5 done at 27960.5 ms --
+
+-- cycle 5/5 --
+    ·     vote   31    YES to node 1          (seq 65)
+    ·     apply  31       207.6 ms HE    3 dec  from node 1  (seq 65)
+    ·     apply  32       207.4 ms HE    3 dec  from node 1  (seq 66)
+    ·     vote   33    YES to node 1          (seq 67)
+    ·     apply  33       207.5 ms HE    3 dec  from node 1  (seq 67)
+    ·     apply  34       207.6 ms HE    3 dec  from node 1  (seq 68)
+    ·     vote   35    YES to node 1          (seq 69)
+    ·     apply  35       207.5 ms HE    3 dec  from node 1  (seq 69)
+    ·     apply  36       207.5 ms HE    3 dec  from node 1  (seq 70)
+    ·     vote   39    YES to node 1          (seq 71)
+    ·     apply  39       207.5 ms HE    3 dec  from node 1  (seq 71)
+c5  s15  local  61       207.6 ms HE    3 dec  0 frames
+    ·     apply  30       207.5 ms HE    3 dec  from node 1  (seq 72)
+c5  s17  local  71        69.2 ms HE    1 dec  0 frames
+c5  s18  local  72        69.2 ms HE    1 dec  0 frames
+c5  s19  local  81        69.2 ms HE    1 dec  0 frames
+c5  s20  local  82        69.3 ms HE    1 dec  0 frames
+c5  s21  local  73        69.2 ms HE    1 dec  0 frames
+c5  s22  local  74        69.3 ms HE    1 dec  0 frames
+c5  s23  local  65       207.7 ms HE    3 dec  0 frames
+c5  s24  local  66       207.8 ms HE    3 dec  0 frames
+    ·     vote   31    YES to node 1          (seq 73)
+    ·     apply  31       207.6 ms HE    3 dec  from node 1  (seq 73)
+    ·     apply  32       207.5 ms HE    3 dec  from node 1  (seq 74)
+    ·     vote   35    YES to node 1          (seq 75)
+    ·     apply  35       207.8 ms HE    3 dec  from node 1  (seq 75)
+    ·     apply  36       207.7 ms HE    3 dec  from node 1  (seq 76)
+c5  s35  local  61       207.5 ms HE    3 dec  0 frames
+    ·     vote   33    YES to node 1          (seq 77)
+    ·     apply  33       207.6 ms HE    3 dec  from node 1  (seq 77)
+    ·     apply  34       207.7 ms HE    3 dec  from node 1  (seq 78)
+    ·     vote   37    YES to node 1          (seq 79)
+    ·     apply  37       207.6 ms HE    3 dec  from node 1  (seq 79)
+    ·     apply  38       207.7 ms HE    3 dec  from node 1  (seq 80)
+c5  s42  local  63       207.7 ms HE    3 dec  0 frames
+c5  s43  local  64       208.2 ms HE    3 dec  0 frames
+-- cycle 5/5 done at 34456.6 ms --
+
+============================================================
+  SUMMARY — node 2/2 — LOCAL MODULAR — UDP/IP multicast (RFC 1112)
+============================================================
+  events this node FIRED:
+  local (no network)     n=60   avg   144.22 ms  (HE  144.18 + net    0.00)  min   69.18  max   346.46  100.0%
+  shared controllable          (none on this node)
+  shared uncontroll.           (none on this node)
+  events this node APPLIED for a peer (participant side):
+  shared, applied        n=80   avg   232.18 ms  (HE  232.18 + net    0.00)  min  207.44  max   558.95
+  run clock, end of cycles 1..5 (ms): 8485.5 14976.4 21467.7 27960.5 34456.6
+     a cycle is over at the LATEST node's value; DES_WORK_MS 0 included
+  ----------------------------------------------------------
+  all events            n=60   avg   144.22 ms  (HE  144.18 + net    0.00)
+  PEER-WAIT + WIRE      0.0 % of total step time
+     (compare against the round-trip probe above: the excess is
+      the peer's own HE work, not the link.)
+  frames: tx=230 rx=149 retransmits=0
+  authentication: HMAC-SHA256/128, 1.3 us per frame; 0 rejected (bad tag), 0 stale/replayed dropped, 1 epoch challenges
+  rx queue: peak 1/64 frames
+  plant check: 0 event reports rejected as physically impossible
+     (these supervisors carry the plant: an impossible uncontrollable event is caught)
+  ----------------------------------------------------------
+  homomorphic vs cleartext oracle : PASS — every encrypted bit matched
+     (PASS certifies the cryptography: each node's encrypted bits
+      match its own clear model for the events it applied. It does
+      not certify the distributed run — read the skips for that.)
+  distributed vs MONOLITHIC sup.  : off — this header has no monolithic supervisor
+  safe halt                       : no — ran to completion
+============================================================
+@@RESULT {"node":2,"nodes":2,"family":"LOCAL MODULAR","data":"supervisor_data_fms.h","transport":"UDP/IP multicast (RFC 1112)","fingerprint":"edbd7971","supervisors":["S4","S5","S6"],"fired":{"local":60,"ctrl":0,"unctrl":0},"applied_for_peers":80,"skips":0,"impossible":0,"tx":230,"rx":149,"retx":0,"auth_bad":0,"replays":0,"challenges":1,"mac_us":1.34,"rxq_peak":1,"rxq_drops":0,"sync_wait_ms":0.0,"oracle":"PASS","safe_halt":false,"halt_reason":"","cycle_end_ms":[8485.5,14976.4,21467.7,27960.5,34456.6],"rounds":5,"work_ms":0,"emu_scalarmul_ms":69.0,"exit":0}
