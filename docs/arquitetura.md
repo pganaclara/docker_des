@@ -293,6 +293,41 @@ acontece entre eventos compartilhados, e um modelo pelo caminho crítico não
 foi feito. Não há uma partição melhor para todo N; a partição é um parâmetro
 de projeto a medir.
 
+### 6.5 Latência por passo e *jitter*
+
+Mesma varredura, 5 repetições, agora com os logs carimbados pelo Docker
+(`nodeK.ts.log`); `scripts/latency.py` extrai percentis
+([`docs/resultados-wsl/20260927-210233-varredura`](resultados-wsl/20260927-210233-varredura/README.md),
+35/35 PASS). Ciclos 2–5, ms:
+
+| containers | 2PC no dono p50 / p99 | NOTIFY no dono p50 / p99 | célula média / p99 / máx |
+|---|---|---|---|
+| 1 | — | — | 237,1 / 490,7 / 497,9 |
+| 2 | 284,6 / 287,2 | 281,1 / 282,7 | 151,7 / 288,3 / 289,3 |
+| 3 | 213,8 / 216,9 | 210,8 / 212,3 | 110,7 / 289,1 / 292,8 |
+| 4 | 145,3 / 147,4 | 141,3 / 142,3 | 96,1 / 151,4 / 152,8 |
+| 5 | 145,1 / 147,3 | 141,2 / 142,4 | 83,1 / 151,3 / 152,8 |
+| 6 | 144,8 / 147,6 | 141,3 / 142,8 | 77,2 / 150,9 / 152,9 |
+| 7 | 75,8 / 77,9 | 71,5 / 72,4 | 62,1 / 82,1 / 83,8 |
+
+- **Latência quantizada.** A decisão de um evento compartilhado custa k
+  decifrações no dono (k = supervisores do dono com o evento no alfabeto)
+  mais a rede: 4, 3, 2, 2, 2, 1 × 69 ms no 2PC, de 2 a 7 containers. A rede
+  (*bridge*) soma ~6 ms no 2PC e ~2 ms no NOTIFY.
+- **Jitter.** p99 − p50 ≤ 3,1 ms no 2PC e no NOTIFY, com n = 200–240 por
+  configuração. O que parece cauda em outras classes é bimodal (eventos com
+  mais supervisores no nó), não atraso.
+- **Pior caso.** O intervalo entre conclusões de passos na célula tem média
+  igual ao tempo por passo da §6.2 (diferença ≤ 4,4 ms, medido por outro
+  relógio). O máximo cai de 498 ms para 84 ms de 1 para 7 containers (5,9×),
+  mais que a média (3,9×). Para controle, é o pior caso que limita o período.
+- **Relógio do WSL.** O Docker carimba as linhas com o relógio de parede do
+  host, e no WSL 2 ele salta ~12 s de tempos em tempos, em todos os containers
+  ao mesmo tempo. O `latency.py` descarta as linhas fora de ordem e os ciclos
+  cuja duração pelos carimbos diverge do relógio do motor (352 de ~7 700
+  conclusões, 11 de 175 ciclos). A latência de eventos usa o relógio
+  monotônico do motor e não é afetada.
+
 **Para citar:** *com o custo de decifração do ESP32-S3 emulado, distribuir os
 7 supervisores modulares locais do FMS em 7 containers reduz o tempo por passo
 de 303,1 ± 1,3 ms para 90,1 ± 1,0 ms (3,37×; IC 95 %, n = 5), com aceleração
@@ -439,7 +474,9 @@ mas numa rede física a conta muda.
   compartilhadas entre até 7 containers num mesmo host. A varredura principal
   tem 5 repetições por configuração (variação < 1 %); os experimentos
   anteriores (§7), uma. Os tempos servem para comparar configurações *entre
-  si*, não para afirmar prazos [6], [9], [11].
+  si*, não para afirmar prazos [6], [9], [11]. O intervalo da célula (§6.5)
+  depende do relógio de parede do host, que no WSL 2 salta; as amostras
+  afetadas são descartadas, não corrigidas.
 - **A emulação cobre só a decifração.** `DES_EMU_SCALARMUL_MS` iguala a
   multiplicação escalar ao ESP32-S3 (69 ms). As somas de pontos (≈ 5 ms cada
   na placa), o HMAC, o Wi-Fi e o segundo núcleo da placa única não são

@@ -189,12 +189,31 @@ decifrações (190 no ciclo 1), oráculo PASS em todo nó e nenhum passo pulado.
   seguinte, em qualquer nó, no relógio comum. Vem dos logs com carimbo de
   tempo do Docker (`nodeK.ts.log`), que o `run.sh` passou a salvar.
 
-Na varredura de 1 a 7 com 5 repetições (só eventos; aquelas execuções não
-têm `.ts.log`), a decisão 2PC no dono cai em degraus de uma decifração
-(≈ 69 ms) conforme ele fica com menos supervisores: p50 de 283,5 → 214,1 →
-144,7 → 75,8 ms com 2, 3, 4 e 7 containers (ciclos 2–5). A dispersão é
-pequena: p99 − p50 ≤ 7 ms. Tabelas em
-[`docs/resultados-wsl/20260927-170420-varredura/latencia.md`](docs/resultados-wsl/20260927-170420-varredura/latencia.md).
+Na varredura de 1 a 7 com 5 repetições e `.ts.log`
+([`docs/resultados-wsl/20260927-210233-varredura`](docs/resultados-wsl/20260927-210233-varredura/README.md),
+35/35 PASS), ciclos 2–5:
+
+| containers | 2PC no dono p50 / p99 | intervalo da célula média / p99 / máx | ms/passo (escala) |
+|---|---|---|---|
+| 1 | — | 237,1 / 490,7 / 497,9 | 241,5 |
+| 2 | 284,6 / 287,2 | 151,7 / 288,3 / 289,3 | 149,2 |
+| 3 | 213,8 / 216,9 | 110,7 / 289,1 / 292,8 | 112,3 |
+| 4 | 145,3 / 147,4 | 96,1 / 151,4 / 152,8 | 93,8 |
+| 5 | 145,1 / 147,3 | 83,1 / 151,3 / 152,8 | 82,8 |
+| 6 | 144,8 / 147,6 | 77,2 / 150,9 / 152,9 | 77,2 |
+| 7 | 75,8 / 77,9 | 62,1 / 82,1 / 83,8 | 61,3 |
+
+- A latência de um evento vem em degraus de uma decifração (≈ 69 ms): o 2PC
+  no dono custa 4, 3, 2 e 1 decifrações com 2, 3, 4–6 e 7 containers. A rede
+  soma ~6 ms. O *jitter* é pequeno: p99 − p50 ≤ 3,1 ms no 2PC e no NOTIFY.
+- A média do intervalo da célula confere com o tempo por passo da escala
+  (diferença ≤ 4,4 ms), medido por outro caminho. **O pior caso cai mais que a
+  média:** o máximo vai de 498 ms (1 container) a 84 ms (7), 5,9×, contra 3,9×
+  na média.
+- No WSL o relógio do host salta ~12 s de vez em quando (sincronização com o
+  Windows), e isso corrompe os carimbos do Docker. O `latency.py` detecta e
+  descarta essas amostras conferindo com o relógio do motor. Detalhes no
+  README da pasta.
 
 ### Partição alternativa: S5 isolado
 

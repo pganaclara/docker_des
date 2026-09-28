@@ -105,9 +105,11 @@ isolamento por namespaces não interpõe um hipervisor.
   container a 90,1 ms com 7) são tempos com a decifração emulada a 69 ms, num
   kernel genérico. Eles se repetem bem: o coeficiente de variação entre
   execuções fica abaixo de 1 %, e duas máquinas diferentes discordam em só
-  1,2–3,3 %. Mas não são tempos de ESP32 nem de CLP. Para afirmar algo de
-  tempo real seria preciso PREEMPT_RT, CPU isolada e medição de percentis
-  [6], [9], [11]. O que o `docker_des` prova sem ressalvas é outra coisa:
+  1,2–3,3 %. Os percentis também foram medidos (arquitetura §6.5): o
+  *jitter* da decisão 2PC fica em p99 − p50 ≤ 3,1 ms, e o pior intervalo entre
+  passos da célula cai de 498 ms para 84 ms de 1 para 7 containers. Mas não
+  são tempos de ESP32 nem de CLP. Para afirmar algo de tempo real seria
+  preciso PREEMPT_RT e CPU isolada [6], [9], [11]. O que o `docker_des` prova sem ressalvas é outra coisa:
   **equivalência lógica e criptográfica** com o hardware (ver
   [`arquitetura.md`](arquitetura.md) §5), e a **forma** da curva de escala.
 
@@ -290,6 +292,7 @@ indicado, de experimentos anteriores (§7 da arquitetura, [commit `b7f013b`](htt
 | **Com o custo de decifração do ESP32, distribuir acelera** | 303,1 ± 1,3 → 90,1 ± 1,0 ms/passo de 1 para 7 containers (3,37×; IC 95 %, n = 5); curva estatisticamente distinguível | [18], [22] (distribuir); [43] (limite da aceleração) |
 | **A aceleração é limitada pelo supervisor mais carregado** | o tempo medido acompanha o limite "decifrações do nó mais carregado × 69 ms ÷ 44", 25–33 ms acima dele | [43] |
 | Sem a emulação, distribuir atrasa | experimento anterior: 2,4 → 4,7 ms/passo de 1 para 7 nós na velocidade de um PC | [43]; [9]–[11] (custo de rede em containers) |
+| Distribuir reduz o pior caso e o *jitter* é pequeno | varredura com percentis (n = 5): 2PC p99 − p50 ≤ 3,1 ms; intervalo máximo da célula 498 → 84 ms de 1 para 7 containers (5,9×, contra 3,9× na média) | [9]–[11] (latência e *jitter* de vPLC) |
 | A decomposição modular local é a partição natural | roteamento derivado do cabeçalho; eventos locais não geram tráfego | [16], [18] |
 | O protocolo preserva segurança sob perda | experimento anterior: 5 % de perda completa sem divergência; 30 % para em SAFE HALT | [20], [21], [23], [33] |
 | Concorrência entre iniciadores é tratada | *lock* + *wound-wait* | [22] (mutex), [35] |
@@ -304,7 +307,7 @@ indicado, de experimentos anteriores (§7 da arquitetura, [commit `b7f013b`](htt
 | pergunta | linha que a faz | situação | como medir com este repositório |
 |---|---|---|---|
 | Escalabilidade no número de nós | TCS distribuída [18], [22] | **feito**: 1 a 7 containers, 5 repetições (arquitetura §6) | `REPEAT=5 scripts/run-all.sh` |
-| Latência e *jitter* por passo | vPLC [9]–[11] | **feito para eventos**: p50–p99 de decisão e aplicação por classe (varredura 1–7, n = 5); intervalo da célula pronto, falta rodar | `python3 scripts/latency.py <varredura>` (`latencia.md`, `latencia.csv`) |
+| Latência e *jitter* por passo | vPLC [9]–[11] | **feito**: p50–p99 de decisão e aplicação por classe e intervalo da célula (varredura 1–7, n = 5; arquitetura §6.5); sem PREEMPT_RT | `REPEAT=5 scripts/run-all.sh` (`latencia.md`, `latencia.csv`) |
 | Efeito da partição | localização [18] | **parcial**: blocos × S5 isolado, 2 a 6 containers, 5 repetições (arquitetura §6.4) | `scripts/run-all.sh s5`; outras partições com `DES_SUP_NODE_MAP` |
 | Robustez a perda | TCS em rede [20], [21] | feito antes (arquitetura §7.5–§7.6), cenários retirados | `DES_EXTRA_FLAGS=-DDES_SIMULATE_LOSS_PCT=<p>` |
 | Robustez a atraso | [19], [22] | feito antes com `netem`, retirado | ver [commit `b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775) |

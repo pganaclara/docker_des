@@ -23,7 +23,9 @@ scenario, pooling cycles and repetitions. Two kinds of latency:
    exists). Every step of the trace completes on exactly one node, the owner's
    driver line; sorting those completions on the common clock gives the time
    between one step finishing anywhere in the cell and the next. Runs without
-   .ts.log files are skipped for this part.
+   .ts.log files are skipped for this part. Docker stamps with the host wall
+   clock, which WSL 2 steps by ~11 s now and then; samples the step would
+   corrupt are dropped (see run_samples) and the count is reported.
 
 Reported per scenario and class: n, mean, p50, p90, p95, p99, max (ms),
 separately for cycle 1 and cycles 2..R (cycle 1 does more decryptions).
@@ -45,6 +47,7 @@ DRIVER = re.compile(r"^c(\d+)\s+s(\d+)\s+(local|2pc|notify)\s+(\S+)\s+([\d.]+) m
                     r"(?:.*?\+ ([\d.]+) ms peer-wait)?")
 APPLY = re.compile(r"^\s+·\s+apply\s+(\S+)\s+([\d.]+) ms HE")
 CYCLE = re.compile(r"^-- cycle (\d+)/\d+ --$")
+DONE = re.compile(r"^-- cycle \d+/\d+ done at ([\d.]+) ms --$")
 TS = re.compile(r"^(\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d)(?:\.(\d+))?(Z|[+-]\d\d:\d\d)\s(.*)$")
 PCTS = (50, 90, 95, 99)
 
@@ -74,6 +77,10 @@ def parse_ts(stamp, frac, tz):
     return datetime.fromisoformat(f"{stamp}.{frac}{tz}").timestamp()
 
 
+cell_dropped = [0, 0, 0]                     # intervals, completions, cycles
+CLOCK_TOL_MS = 200.0
+
+
 def run_samples(run):
     """(event samples, cell interval samples) for one run folder."""
     events, cell = [], []
@@ -91,19 +98,80 @@ def run_samples(run):
             elif (m := APPLY.match(line)):
                 events.append((cycle, "apply", float(m.group(2)), log.stem))
 
-    completions = []                        # (time, cycle)
+    # Docker stamps each line with the host's wall clock when it reads it. On
+    # WSL 2 that clock is occasionally stepped (Hyper-V time sync): a handful
+    # of lines, on every node at once, come out ~11 s in the future and the
+    # next ones are back in the past. A line cannot be stamped later than one
+    # the same container printed after it, nor earlier than one it printed
+    # before, so such lines are marked invalid, and so is every interval that
+    # would span one of them (by trace position), instead of inventing a gap.
+    completions, bad_keys, done_marks = [], set(), []   # (time, cycle, step)
     for ts in sorted(run.glob("node*.ts.log")):
+        rows = []
         for line in ts.read_text(errors="replace").splitlines():
             m = TS.match(line)
-            if not m:
+            if m:
+                done = DONE.match(m.group(4))
+                rows.append((parse_ts(m.group(1), m.group(2), m.group(3)),
+                             float(done.group(1)) if done else DRIVER.match(m.group(4))))
+        ok = [True] * len(rows)
+        low = math.inf                      # forward jumps: later than a successor
+        for i in range(len(rows) - 1, -1, -1):
+            if rows[i][0] > low:
+                ok[i] = False
+            low = min(low, rows[i][0])
+        high = -math.inf                    # backward jumps: earlier than a predecessor
+        for i, (t, _) in enumerate(rows):
+            if not ok[i]:
                 continue
-            d = DRIVER.match(m.group(4))
-            if d:
-                completions.append((parse_ts(m.group(1), m.group(2), m.group(3)),
-                                    int(d.group(1))))
+            if t < high:
+                ok[i] = False
+            high = max(high, t)
+        for (t, d), good in zip(rows, ok):
+            if isinstance(d, float):
+                if good:
+                    done_marks.append((t, d))
+                continue
+            if not d:
+                continue
+            key = (int(d.group(1)), int(d.group(2)))
+            if good:
+                completions.append((t,) + key)
+            else:
+                bad_keys.add(key)
     completions.sort()
-    for (t0, _), (t1, c1) in zip(completions, completions[1:]):
+    # A step that is not undone (the clock jumps and stays there) keeps the
+    # order and cannot be seen that way. The engine's run clock is immune: each
+    # node prints "-- cycle c/R done at X ms --" on it, so Docker time minus X
+    # is the run clock's zero on the Docker clock, the same on every such line
+    # while the host clock behaves (median over them all = the estimate).
+    # Cycle c is trusted only if the cell's last completion of c and of c-1
+    # both sit where summary.json (cycle_end_ms) says, within CLOCK_TOL_MS.
+    ends = json.loads((run / "summary.json").read_text()).get("cycle_end_ms") or []
+    zeros = sorted(t - x / 1000.0 for t, x in done_marks)
+    t0 = zeros[len(zeros) // 2] if zeros else None
+    last = {}
+    for t, c, _ in completions:
+        last[c] = max(last.get(c, t), t)
+
+    def off(c):
+        if c == 0:
+            return False
+        if t0 is None or c not in last or c > len(ends):
+            return True
+        return abs((last[c] - t0) * 1000.0 - ends[c - 1]) > CLOCK_TOL_MS
+
+    bad_cycles = {c for c in last if off(c) or off(c - 1)}
+    dropped = 0
+    for (t0, c0, s0), (t1, c1, s1) in zip(completions, completions[1:]):
+        lo, hi = sorted(((c0, s0), (c1, s1)))
+        if c1 in bad_cycles or any(lo < k < hi for k in bad_keys):
+            dropped += 1
+            continue
         cell.append((c1, (t1 - t0) * 1000.0))
+    cell_dropped[2] += len(bad_cycles)
+    cell_dropped[0] += dropped
+    cell_dropped[1] += len(bad_keys)
     return events, cell
 
 
@@ -151,7 +219,9 @@ def main():
           "- **apply**: passo homomórfico de um participante ao aplicar um evento "
           "compartilhado.",
           "- **célula**: intervalo entre a conclusão de um passo e a do seguinte, "
-          "em qualquer nó, no relógio comum (exige `nodeK.ts.log`).\n"]
+          "em qualquer nó, no relógio comum (exige `nodeK.ts.log`). Linhas com "
+          "carimbo fora de ordem no próprio nó (relógio do host saltou) são "
+          "descartadas, junto com os intervalos que as atravessariam.\n"]
     for name, entry in table.items():
         md.append(f"## `{name}` ({entry['runs']} execuções)\n")
         md.append("| classe | fase | n | média | p50 | p90 | p95 | p99 | máx |")
@@ -167,6 +237,11 @@ def main():
             md.append("\n(sem `nodeK.ts.log`: intervalo da célula não disponível "
                       "para estas execuções)")
         md.append("")
+    if cell_dropped[1]:
+        md.append(f"Carimbos inválidos descartados: {cell_dropped[1]} conclusões de passo, "
+                  f"{cell_dropped[2]} ciclos inteiros cujo início ou fim nos carimbos diverge do "
+                  f"relógio do motor em mais de {CLOCK_TOL_MS:.0f} ms, "
+                  f"{cell_dropped[0]} intervalos da célula (em todas as execuções).\n")
     text = "\n".join(md) + "\n"
 
     out = roots[0]
