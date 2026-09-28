@@ -291,6 +291,18 @@ que é o evento em voo que a parada protege. O `scripts/loss.py` gera
 `perda.md` com os desfechos, os passos executados, as retransmissões e essas
 verificações.
 
+**Resultado** (WSL, 5 repetições, 40/40 PASS,
+[`docs/resultados-wsl/20260928-085743-varredura`](docs/resultados-wsl/20260928-085743-varredura/README.md)):
+- **Segurança:** nenhuma divergência em 40 execuções, e oráculo PASS em
+  todas.
+- **2 nós:** completa até 20 % de perda. Com 30 %, 4 de 5 execuções param em
+  SAFE HALT, sempre com um único commit em voo.
+- **7 nós:** completa até 5 %. Com 10 % não há parada, mas o dono desiste do
+  2PC *antes* do commit e 36–97 passos são pulados sem aplicar nada.
+- **Tempo:** cada retransmissão custa um *timeout* de 1,5 s. Com 7 nós a
+  célula é bem mais sensível: 1 % de perda já triplica o tempo por passo
+  (61 → 201 ms), porque cada 2PC depende de 12 quadros em vez de 2.
+
 O resultado da varredura está na seção "O resultado principal", acima.
 
 ---

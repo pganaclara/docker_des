@@ -295,7 +295,7 @@ indicado, de experimentos anteriores (§7 da arquitetura, [commit `b7f013b`](htt
 | Distribuir reduz o pior caso e o *jitter* é pequeno | varredura com percentis (n = 5): 2PC p99 − p50 ≤ 3,1 ms; intervalo máximo da célula 498 → 84 ms de 1 para 7 containers (5,9×, contra 3,9× na média) | [9]–[11] (latência e *jitter* de vPLC) |
 | O container não custa desempenho mensurável | ponte × host × nativo com os mesmos binários: 18/18 IC 95 % contêm zero; sobrecarga < 1,6 % por passo (ciclos 2–5), < 2,1 % (ciclo 1); RTT e espera pelos pares iguais | [3], [12] |
 | A decomposição modular local é a partição natural | roteamento derivado do cabeçalho; eventos locais não geram tráfego | [16], [18] |
-| O protocolo preserva segurança sob perda | experimento anterior: 5 % de perda completa sem divergência; 30 % para em SAFE HALT | [20], [21], [23], [33] |
+| O protocolo preserva segurança sob perda | 40 execuções com perda de 1–30 % (2 nós) e 1–10 % (7 nós), emulação ligada, n = 5: nenhuma divergência entre nós, oráculo PASS; perda pesada vira SAFE HALT (2 nós, 30 %) ou passos pulados antes do commit (7 nós, 10 %) (arquitetura §6.7) | [20], [21], [23], [33] |
 | Concorrência entre iniciadores é tratada | *lock* + *wound-wait* | [22] (mutex), [35] |
 | A distribuição preserva o comportamento do supervisor monolítico | experimento anterior: `extended_small_factory`, verificação cruzada com o monolítico PASS | [16], [26] |
 | UDP basta como transporte | confiabilidade fim a fim no protocolo; multicast nas 35 execuções (e unicast no experimento anterior) | [33], [36] |
@@ -310,7 +310,7 @@ indicado, de experimentos anteriores (§7 da arquitetura, [commit `b7f013b`](htt
 | Escalabilidade no número de nós | TCS distribuída [18], [22] | **feito**: 1 a 7 containers, 5 repetições (arquitetura §6) | `REPEAT=5 scripts/run-all.sh` |
 | Latência e *jitter* por passo | vPLC [9]–[11] | **feito**: p50–p99 de decisão e aplicação por classe e intervalo da célula (varredura 1–7, n = 5; arquitetura §6.5); sem PREEMPT_RT | `REPEAT=5 scripts/run-all.sh` (`latencia.md`, `latencia.csv`) |
 | Efeito da partição | localização [18] | **parcial**: blocos × S5 isolado, 2 a 6 containers, 5 repetições (arquitetura §6.4) | `scripts/run-all.sh s5`; outras partições com `DES_SUP_NODE_MAP` |
-| Robustez a perda | TCS em rede [20], [21] | **preparado, falta rodar** com emulação e n = 5 (antes: uma execução sem emulação, arquitetura §7.5–§7.6); segurança conferida por par de nós | `REPEAT=5 scripts/run-all.sh perda` (`perda.md`) |
+| Robustez a perda | TCS em rede [20], [21] | **feito**: 2 nós com 1–30 % e 7 nós com 1–10 %, emulação ligada, n = 5; 40/40 sem divergência (arquitetura §6.7) | `REPEAT=5 scripts/run-all.sh perda` (`perda.md`) |
 | Robustez a atraso | [19], [22] | feito antes com `netem`, retirado | ver [commit `b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775) |
 | Equivalência com o monolítico | TCS [16] | feito antes (`extended_small_factory`), retirado; o FMS não tem monolítico | ver [commit `b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775) |
 | Sobrecarga do container | [3], [12] | **feito**: mesmos binários na *bridge*, na rede do host e como processos nativos, N = 1, 2, 4, 7, n = 5; nenhuma diferença significativa, sobrecarga < 1,6 % (ciclos 2–5) com 95 % de confiança (arquitetura §6.6) | `REPEAT=5 scripts/run-all.sh sobrecarga` (`sobrecarga.md`) |

@@ -347,6 +347,35 @@ par veth + bridge. Isso concorda com [12]: o isolamento por namespaces não
 interpõe um hipervisor. Ressalva: a decifração emulada é espera, e o teste
 não foi repetido com a emulação desligada, quando o protocolo pesaria mais.
 
+### 6.7 Robustez a perda de quadros
+
+Perda injetada pelo motor, com emulação e *timeouts* do ESP32, 5 repetições
+com sementes diferentes
+([`docs/resultados-wsl/20260928-085743-varredura`](resultados-wsl/20260928-085743-varredura/README.md),
+40/40 PASS):
+
+| nós | perda | completa | SAFE HALT | incompleta (pulos) | ms/passo, ciclos 2–5 (completas) |
+|---|---|---|---|---|---|
+| 2 | 1 / 5 / 10 / 20 % | 5 / 5 / 5 / 5 | 0 | 0 | 162 / 247 / 329 / 605 |
+| 2 | 30 % | 0 | 4 | 1 | — |
+| 7 | 1 / 5 % | 5 / 5 | 0 | 0 | 201 / 763 |
+| 7 | 10 % | 0 | 0 | 5 | — |
+
+- **Segurança.** Em todas as 40 execuções, cada par de nós executou os
+  eventos compartilhados em comum na mesma ordem e o mesmo número de vezes
+  (verificação do `summarize.py`), e o oráculo passou em todo nó. Nos SAFE
+  HALT, os nós diferem em no máximo um evento: o commit em voo.
+- **Dois modos de falha, cada um no seu lugar.** Depois do ponto de commit,
+  ACKs perdidos esgotam as 5 tentativas e forçam o SAFE HALT: com 2 nós a
+  30 %, cada tentativa falha com ≈ 0,51, e as cinco com ≈ 3,5 % por evento.
+  Antes do commit, a votação de 7 nós precisa de 12 quadros (0,9¹² ≈ 0,28 por
+  tentativa a 10 %). O dono desiste (SKIP) sem aplicar nada, e a perda pesada
+  vira passos pulados, não divergência.
+- **Custo.** O acréscimo no tempo por passo acompanha retransmissões ×
+  *timeout* (1,5 s) ÷ passos (§7.5). Como cada 2PC com 7 nós envolve 12
+  quadros, 1 % de perda já triplica o passo (61 → 201 ms). Distribuir acelera
+  sem perda, mas amplifica o custo da perda.
+
 **Para citar:** *com o custo de decifração do ESP32-S3 emulado, distribuir os
 7 supervisores modulares locais do FMS em 7 containers reduz o tempo por passo
 de 303,1 ± 1,3 ms para 90,1 ± 1,0 ms (3,37×; IC 95 %, n = 5), com aceleração
@@ -460,6 +489,10 @@ RTT da rede.
 
 ### 7.6 Perda pesada: segurança preservada, de dois jeitos
 
+Refeito com a emulação e 5 repetições na §6.7; os dois modos de falha se
+confirmaram. A execução única original:
+
+
 - **2 nós, 30 % de perda** (`fms-2-loss30`): depois de 116 dos 220 passos
   (73 numa execução anterior: a perda é aleatória), um COMMIT/NOTIFY esgota as
   retransmissões e o dono entra em **SAFE HALT**; o par também para. Nada
@@ -496,6 +529,9 @@ mas numa rede física a conta muda.
   si*, não para afirmar prazos [6], [9], [11]. O intervalo da célula (§6.5)
   depende do relógio de parede do host, que no WSL 2 salta; as amostras
   afetadas são descartadas, não corrigidas.
+- **Perda sintética.** A perda da §6.7 é independente por quadro e por
+  receptor. Wi-Fi real perde em rajadas, e atraso ou reordenação não foram
+  injetados.
 - **A emulação cobre só a decifração.** `DES_EMU_SCALARMUL_MS` iguala a
   multiplicação escalar ao ESP32-S3 (69 ms). As somas de pontos (≈ 5 ms cada
   na placa), o HMAC, o Wi-Fi e o segundo núcleo da placa única não são
