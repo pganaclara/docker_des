@@ -375,6 +375,7 @@ docker_des/
 └── docs/
     ├── arquitetura.md      ESP32 → container, por que C++, prova de equivalência, achados
     ├── literatura.md       revisão de literatura com referências conferidas
+    ├── roteiro-dissertacao.md  roteiro de capítulos, com fontes e figuras de cada um
     ├── resultados/escala/  varredura de referência na nuvem (1 a 7 containers)
     ├── resultados/escala-s5/  S5 isolado × blocos (nuvem, n = 1)
     └── resultados-wsl/     varreduras no WSL (a com 5 repetições é o resultado principal)
