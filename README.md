@@ -154,6 +154,7 @@ Variações:
 REPEAT=5 scripts/run-all.sh          # 5 vezes cada configuração (média ± desvio)
 scripts/run-all.sh 1 2 7             # só algumas configurações
 scripts/run-all.sh s5                # partição com S5 isolado × blocos, de 1 a 7
+python3 scripts/latency.py results/<data>-varredura   # percentis de latência por passo
 scripts/run.sh scenarios/fms-7.env   # uma configuração, com os logs ao vivo
 ```
 
@@ -176,6 +177,24 @@ motor distribui os 7 supervisores do FMS em blocos contíguos:
 
 Em todos, o resumo confere sozinho os invariantes (`EXPECT_*`): 798
 decifrações (190 no ciclo 1), oráculo PASS em todo nó e nenhum passo pulado.
+
+### Latência por passo (percentis)
+
+`scripts/latency.py` (chamado no fim do `run-all.sh`) gera `latencia.md` e
+`latencia.csv` com p50/p90/p95/p99/máx de:
+- **decisão** no nó dono de cada evento (passo homomórfico + espera pelos
+  pares), separada em local, 2PC e NOTIFY;
+- **aplicação** nos participantes de cada evento compartilhado;
+- **intervalo da célula**: tempo entre a conclusão de um passo e a do
+  seguinte, em qualquer nó, no relógio comum. Vem dos logs com carimbo de
+  tempo do Docker (`nodeK.ts.log`), que o `run.sh` passou a salvar.
+
+Na varredura de 1 a 7 com 5 repetições (só eventos; aquelas execuções não
+têm `.ts.log`), a decisão 2PC no dono cai em degraus de uma decifração
+(≈ 69 ms) conforme ele fica com menos supervisores: p50 de 283,5 → 214,1 →
+144,7 → 75,8 ms com 2, 3, 4 e 7 containers (ciclos 2–5). A dispersão é
+pequena: p99 − p50 ≤ 7 ms. Tabelas em
+[`docs/resultados-wsl/20260927-170420-varredura/latencia.md`](docs/resultados-wsl/20260927-170420-varredura/latencia.md).
 
 ### Partição alternativa: S5 isolado
 
@@ -250,6 +269,7 @@ docker_des/
 │   ├── run.sh                   roda um cenário e resume
 │   ├── run-all.sh               varredura de 1 a 7 containers (e a série s5)
 │   ├── scaling.py               tabela de escala da varredura
+│   ├── latency.py               percentis de latência por passo
 │   ├── summarize.py             tabela + verificações a partir dos logs
 │   └── sync-engine.sh           atualiza engine/ a partir do esp32_crypto
 └── docs/

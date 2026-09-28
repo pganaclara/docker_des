@@ -93,7 +93,8 @@ def main():
         return 2
     run = pathlib.Path(sys.argv[1])
     env = read_env(run / "scenario.env")
-    logs = sorted(run.glob("node*.log"), key=lambda p: int(re.sub(r"\D", "", p.stem)))
+    logs = sorted((p for p in run.glob("node*.log") if not p.name.endswith(".ts.log")),
+                  key=lambda p: int(re.sub(r"\D", "", p.stem)))
     if not logs:
         print(f"no node*.log in {run}")
         return 2

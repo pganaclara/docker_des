@@ -14,7 +14,8 @@
 # Writes everything to results/<timestamp>-varredura/: one folder per run
 # (scripts/run.sh), plus escala.md / escala.json (scripts/scaling.py): time
 # per step against the number of containers, the speed-up over one container,
-# and the lower bound set by the busiest node's decryptions.
+# and the lower bound set by the busiest node's decryptions; and latencia.md /
+# latencia.csv (scripts/latency.py): per-step latency percentiles.
 # =============================================================================
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 2
@@ -66,4 +67,6 @@ for n in "${names[@]}"; do
 done
 echo
 python3 scripts/scaling.py "$batch" || status=1
+python3 scripts/latency.py "$batch" > /dev/null &&
+    echo "percentis de latência por passo: $batch/latencia.md"
 exit $status

@@ -11,6 +11,7 @@
 # Starts node1..nodeN (N = DES_NUM_NODES of the scenario), waits for every
 # container to exit, then writes to results/<timestamp>-<scenario>/:
 #   nodeK.log      the node's full log
+#   nodeK.ts.log   the same, each line prefixed with Docker's timestamp
 #   summary.md     per-node table and verdict (scripts/summarize.py)
 #   summary.json   the same, machine-readable
 # Exit status: summarize.py's — 0 when every expectation in the scenario holds
@@ -60,6 +61,10 @@ fi
 echo "== collect -> $out"
 for s in "${services[@]}"; do
     "${dc[@]}" logs --no-color --no-log-prefix "$s" > "$out/$s.log" 2>&1 || true
+    # Same log with Docker's per-line timestamps (one clock for every node on
+    # this host), for the cell-level intervals in scripts/latency.py.
+    "${dc[@]}" logs --no-color --no-log-prefix --timestamps "$s" \
+        > "$out/$s.ts.log" 2>&1 || true
     cid=$("${dc[@]}" ps -aq "$s")
     code=$(docker inspect -f '{{.State.ExitCode}}' "$cid" 2>/dev/null || echo 255)
     echo "$code" > "$out/$s.exit"

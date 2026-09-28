@@ -304,7 +304,7 @@ indicado, de experimentos anteriores (§7 da arquitetura, [commit `b7f013b`](htt
 | pergunta | linha que a faz | situação | como medir com este repositório |
 |---|---|---|---|
 | Escalabilidade no número de nós | TCS distribuída [18], [22] | **feito**: 1 a 7 containers, 5 repetições (arquitetura §6) | `REPEAT=5 scripts/run-all.sh` |
-| Latência e *jitter* por passo | vPLC [9]–[11] | **parcial**: média e IC 95 % por configuração; percentis e distribuição por passo não | logs por passo (`nodeK.log`) → histograma e percentis |
+| Latência e *jitter* por passo | vPLC [9]–[11] | **feito para eventos**: p50–p99 de decisão e aplicação por classe (varredura 1–7, n = 5); intervalo da célula pronto, falta rodar | `python3 scripts/latency.py <varredura>` (`latencia.md`, `latencia.csv`) |
 | Efeito da partição | localização [18] | **parcial**: blocos × S5 isolado, 2 a 6 containers, 5 repetições (arquitetura §6.4) | `scripts/run-all.sh s5`; outras partições com `DES_SUP_NODE_MAP` |
 | Robustez a perda | TCS em rede [20], [21] | feito antes (arquitetura §7.5–§7.6), cenários retirados | `DES_EXTRA_FLAGS=-DDES_SIMULATE_LOSS_PCT=<p>` |
 | Robustez a atraso | [19], [22] | feito antes com `netem`, retirado | ver [commit `b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775) |
