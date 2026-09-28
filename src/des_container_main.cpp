@@ -46,6 +46,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <ctime>
 #include <ifaddrs.h>
 #include <net/if.h>
 #include <netinet/in.h>
@@ -196,6 +197,12 @@ static void on_watchdog(int) {
     _exit(4);
 }
 
+// The engine drops a received frame when rand() % 100 < DES_SIMULATE_LOSS_PCT
+// and never seeds rand(), so every run (and every node) would lose the same
+// frames. Seeded here, per node and per run: $DES_LOSS_SEED when set (to
+// replay a run), else from the clock, the pid and the node id.
+static unsigned g_loss_seed = 0;
+
 // One line a script can parse, printed last. Everything in it comes from the
 // engine's own counters; decryption counts per step are in the log lines above.
 static void print_result(int code) {
@@ -222,8 +229,10 @@ static void print_result(int code) {
            g_halt_why ? g_halt_why : "");
     for (int c = 0; c < g_cycles_done; ++c)
         printf("%s%.1f", c ? "," : "", g_cycle_end_ms[c]);
-    printf("],\"rounds\":%d,\"work_ms\":%d,\"emu_scalarmul_ms\":%.1f,\"exit\":%d}\n",
-           (int)DES_ROUNDS, (int)DES_WORK_MS, g_emu_mul_us / 1000.0, code);
+    printf("],\"rounds\":%d,\"work_ms\":%d,\"emu_scalarmul_ms\":%.1f,"
+           "\"loss_pct\":%d,\"loss_seed\":%u,\"exit\":%d}\n",
+           (int)DES_ROUNDS, (int)DES_WORK_MS, g_emu_mul_us / 1000.0,
+           (int)DES_SIMULATE_LOSS_PCT, g_loss_seed, code);
     fflush(stdout);
 }
 
@@ -263,6 +272,19 @@ int main(int argc, char** argv) {
     else
         printf("des_container: ESP32 emulation OFF (DES_EMU_SCALARMUL_MS=0) — "
                "decryptions run at this machine's own speed\n");
+
+    if (const char* e = getenv("DES_LOSS_SEED"); e && *e) {
+        g_loss_seed = (unsigned)strtoul(e, nullptr, 10);
+    } else {
+        struct timespec now;
+        clock_gettime(CLOCK_REALTIME, &now);
+        g_loss_seed = (unsigned)(now.tv_nsec ^ (now.tv_sec << 20) ^ (getpid() << 8))
+                      ^ (unsigned)DES_NODE_ID * 2654435761u;
+    }
+    srand(g_loss_seed);
+    if (DES_SIMULATE_LOSS_PCT > 0)
+        printf("des_container: dropping %d %% of received frames, seed %u "
+               "(DES_LOSS_SEED to replay)\n", (int)DES_SIMULATE_LOSS_PCT, g_loss_seed);
 
     des_setup();          // rendezvous, probe, the scripted run, the summary
 

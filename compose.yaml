@@ -39,6 +39,8 @@ x-node: &node
     # Every decryption takes what it takes on an ESP32-S3 (69 ms) unless
     # overridden; 0 = the PC's own speed.
     DES_EMU_SCALARMUL_MS: ${DES_EMU_SCALARMUL_MS:-69}
+    # Seed of the injected frame loss (loss scenarios); empty = a fresh one.
+    DES_LOSS_SEED: ${DES_LOSS_SEED:-}
   secrets:
     - des_auth_key
   networks:

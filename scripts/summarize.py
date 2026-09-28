@@ -17,7 +17,16 @@ If scenario.env carries EXPECT_* values, each is checked and reported:
     EXPECT_DEC_TOTAL            798         decryptions, whole cell
     EXPECT_DEC_CYCLE1_TOTAL     190         decryptions, whole cell, cycle 1
     EXPECT_MONO                 PASS        monolithic cross-check verdict
-    EXPECT_OUTCOME              complete | halt
+    EXPECT_OUTCOME              complete, halt or incomplete; several accepted
+                                outcomes separated by "|" (loss scenarios)
+The decryption counts are only checked when the run completed (a halted or
+skipping run legitimately does fewer). Always checked, whatever the outcome:
+the oracle and the crypto self-test on every node, one fingerprint, and
+CONSISTENCY ACROSS NODES: for every pair of nodes, the shared events both take
+part in (routing table the engine prints) were executed in the same order on
+both, each exactly as often. After a SAFE HALT one of the two may be one event
+ahead — the commit in flight when the cell stopped, which is what the halt is
+for — and nothing more.
 Exit status 0 when every expectation holds, 1 otherwise.
 """
 import json
@@ -31,6 +40,9 @@ RUN = re.compile(r"RUN — SIM_SEQ driver — (\d+) cycles x (\d+) steps")
 PROBE = re.compile(r"(\d+) probes: avg ([\d.]+) ms\s+min ([\d.]+) ms\s+max ([\d.]+) ms")
 MONO = re.compile(r"distributed vs MONOLITHIC sup\.\s*:\s*(PASS|FAIL|off)")
 SKIP = re.compile(r"^c\d+\s+s\d+\s+SKIP\s")
+ROUTE = re.compile(r"^\s+(\d+)\s+(?:yes|no)\s+([\d ]+?)\s+\d+\s+(?:local|SHARED)")
+OWN_SHARED = re.compile(r"^c\d+\s+s\d+\s+(?:2pc|notify)\s+(\S+)\s")
+APPLY = re.compile(r"^\s+·\s+apply\s+(\S+)\s")
 
 
 def read_env(path):
@@ -50,7 +62,8 @@ def parse_node(log_path):
     text = log_path.read_text(errors="replace")
     node = {"log": log_path.name, "dec_total": 0, "dec_by_cycle": {},
             "he_ms_total": 0.0, "skip_lines": 0, "selftest": "PASS",
-            "mono": None, "rtt": None, "result": None, "seq_len": None}
+            "mono": None, "rtt": None, "result": None, "seq_len": None,
+            "route": {}, "shared_seq": []}
     cycle = 0
     for line in text.splitlines():
         m = CYCLE.match(line)
@@ -63,6 +76,12 @@ def parse_node(log_path):
             node["dec_total"] += d
             node["he_ms_total"] += float(m.group(1))
             node["dec_by_cycle"][cycle] = node["dec_by_cycle"].get(cycle, 0) + d
+        m = ROUTE.match(line)
+        if m and cycle == 0:
+            node["route"][m.group(1)] = {int(x) for x in m.group(2).split()}
+        m = OWN_SHARED.match(line) or APPLY.match(line)
+        if m:
+            node["shared_seq"].append(m.group(1))
         if SKIP.match(line):
             node["skip_lines"] += 1
         if "FAIL" in line and ("Enc(" in line or "curve " in line or "frame tag" in line):
@@ -124,6 +143,29 @@ def main():
     per_step_rest = ((cycle_end[-1] - cycle_end[0]) / ((n_cycles - 1) * seq_len)
                      if n_cycles > 1 and seq_len else None)
     rtt = next((n["rtt"] for n in nodes if n["rtt"]), None)
+
+    # Consistency across nodes (see the docstring).
+    route = next((n["route"] for n in nodes if n["route"]), {})
+    ids = [r["node"] if r else i + 1 for i, r in enumerate(res)]
+    diverged, lagged = [], []
+    for a in range(len(nodes)):
+        for b in range(a + 1, len(nodes)):
+            both = {e for e, ns in route.items() if len(ns) > 1
+                    and ids[a] in ns and ids[b] in ns}
+            if not both:
+                continue
+            pa = [e for e in nodes[a]["shared_seq"] if e in both]
+            pb = [e for e in nodes[b]["shared_seq"] if e in both]
+            if pa == pb:
+                continue
+            short, long_ = (pa, pb) if len(pa) < len(pb) else (pb, pa)
+            if halted and long_[:len(short)] == short and len(long_) - len(short) == 1:
+                lagged.append(f"{ids[a]}-{ids[b]}")
+            else:
+                diverged.append(f"{ids[a]}-{ids[b]}")
+    consistency = ("DIVERGENTE nos pares " + ", ".join(diverged) if diverged else
+                   "consistente até o SAFE HALT (1 evento em voo: " + ", ".join(lagged) + ")"
+                   if lagged else "consistente")
     mono = next((n["mono"] for n in nodes if n["mono"]), None)
 
     checks = []
@@ -135,20 +177,26 @@ def main():
     if "EXPECT_FINGERPRINT" in env:
         check("config fingerprint", env["EXPECT_FINGERPRINT"],
               fps[0] if len(fps) == 1 else "/".join(fps) or "-")
-    if "EXPECT_DEC_PER_NODE" in env:
+    done = outcome == "complete"
+    if "EXPECT_DEC_PER_NODE" in env and done:
         check("decryptions per node", env["EXPECT_DEC_PER_NODE"],
               " ".join(str(n["dec_total"]) for n in nodes))
-    if "EXPECT_DEC_CYCLE1_PER_NODE" in env:
+    if "EXPECT_DEC_CYCLE1_PER_NODE" in env and done:
         check("decryptions per node, cycle 1", env["EXPECT_DEC_CYCLE1_PER_NODE"],
               " ".join(str(n["dec_by_cycle"].get(1, 0)) for n in nodes))
-    if "EXPECT_DEC_TOTAL" in env:
+    if "EXPECT_DEC_TOTAL" in env and done:
         check("decryptions, whole cell", env["EXPECT_DEC_TOTAL"], dec_total)
-    if "EXPECT_DEC_CYCLE1_TOTAL" in env:
+    if "EXPECT_DEC_CYCLE1_TOTAL" in env and done:
         check("decryptions, whole cell, cycle 1", env["EXPECT_DEC_CYCLE1_TOTAL"], dec_c1)
     if "EXPECT_MONO" in env:
         check("monolithic cross-check", env["EXPECT_MONO"], mono or "-")
-    check("outcome", env.get("EXPECT_OUTCOME", "complete"), outcome)
-    if outcome == "complete":
+    want = env.get("EXPECT_OUTCOME", "complete")
+    checks.append({"check": "outcome", "expected": want, "got": outcome,
+                   "ok": outcome in want.split("|")})
+    if route and len(nodes) > 1:
+        checks.append({"check": "consistency across nodes", "expected": "consistente",
+                       "got": consistency, "ok": not diverged})
+    if have_all:
         check("same fingerprint on every node", 1, len(fps))
         check("oracle PASS on every node", True,
               all(r["oracle"] == "PASS" for r in res if r))
@@ -214,12 +262,13 @@ def main():
     (run / "summary.json").write_text(json.dumps({
         "run": run.name, "scenario": env, "outcome": outcome, "halted_nodes": halted,
         "fingerprints": fps, "rounds": rounds, "seq_len": seq_len,
-        "steps_fired": fired, "skips": skips,
+        "steps_fired": fired, "skips": skips, "consistency": consistency,
         "decryptions_total": dec_total, "decryptions_cycle1": dec_c1,
         "cycle_end_ms": cycle_end, "per_step_ms_cycle1": per_step_c1,
         "per_step_ms_steady": per_step_rest, "rtt_ms": rtt, "mono": mono,
         "checks": checks, "all_checks_ok": ok,
-        "nodes": [{k: v for k, v in n.items()} for n in nodes],
+        "nodes": [{k: v for k, v in n.items() if k not in ("route", "shared_seq")}
+                  for n in nodes],
     }, indent=2, ensure_ascii=False) + "\n")
     print(md_text)
     return 0 if ok else 1

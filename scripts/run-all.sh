@@ -11,6 +11,8 @@
 #                                          containers on the bridge (ponte), on
 #                                          the host's network (host) and as
 #                                          plain processes (nativo)
+#   scripts/run-all.sh perda               frame loss: 2 nodes at 1-30 %, 7 nodes
+#                                          at 1-10 % (scripts/loss.py)
 #
 # Every decryption takes 69 ms, as on an ESP32-S3 (compose.yaml default);
 # DES_EMU_SCALARMUL_MS=0 scripts/run-all.sh runs at the PC's own speed.
@@ -33,6 +35,9 @@ if (($#)); then
             names+=(fms-1)
             for n in 2 3 4 5 6; do names+=("fms-$n" "fms-$n-s5"); done
             names+=(fms-7)
+        elif [[ $a == perda ]]; then
+            for p in 1 5 10 20 30; do names+=("fms-2-perda$p"); done
+            for p in 1 5 10; do names+=("fms-7-perda$p"); done
         elif [[ $a == sobrecarga ]]; then
             names+=(fms-1-ponte fms-1-nativo)
             for n in 2 4 7; do names+=("fms-$n-ponte" "fms-$n-host" "fms-$n-nativo"); done
@@ -77,6 +82,9 @@ echo
 python3 scripts/scaling.py "$batch" || status=1
 python3 scripts/latency.py "$batch" > /dev/null &&
     echo "percentis de latência por passo: $batch/latencia.md"
+if compgen -G "$batch/*-fms-*-perda*" > /dev/null; then
+    python3 scripts/loss.py "$batch" || status=1
+fi
 if compgen -G "$batch/*-fms-*-ponte" > /dev/null; then
     python3 scripts/overhead.py "$batch" || status=1
 fi

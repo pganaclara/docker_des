@@ -155,6 +155,7 @@ REPEAT=5 scripts/run-all.sh          # 5 vezes cada configuração (média ± de
 scripts/run-all.sh 1 2 7             # só algumas configurações
 scripts/run-all.sh s5                # partição com S5 isolado × blocos, de 1 a 7
 scripts/run-all.sh sobrecarga        # sobrecarga do container: ponte × host × nativo
+scripts/run-all.sh perda             # robustez a perda de quadros (2 e 7 nós)
 python3 scripts/latency.py results/<data>-varredura   # percentis de latência por passo
 scripts/run.sh scenarios/fms-7.env   # uma configuração, com os logs ao vivo
 ```
@@ -263,6 +264,33 @@ diferenças contêm o zero. Com 95 % de confiança, a sobrecarga fica abaixo de
 pelos pares também são iguais nos três modos: o que custa na rede é o laço
 do motor, não a bridge.
 
+### Robustez a perda de quadros
+
+`scripts/run-all.sh perda` roda a célula com perda de quadros injetada pelo
+próprio motor (`DES_SIMULATE_LOSS_PCT`). Cada nó descarta P % do que recebe
+depois da autenticação, então quem enviou precisa retransmitir de verdade. Os
+cenários:
+- `fms-2-perda{1,5,10,20,30}`: 2 nós, a partição das placas;
+- `fms-7-perda{1,5,10}`: 7 nós.
+
+A decifração continua emulada a 69 ms, e os *timeouts* do motor (1,5 s) são
+os do ESP32. O sorteio é novo a cada execução e em cada nó; a semente fica no
+log e `DES_LOSS_SEED` a fixa.
+
+Com perda, o desfecho é aleatório. Pode ser:
+- **completa**: os 220 passos;
+- **SAFE HALT**: um COMMIT esgotou as retransmissões e a célula parou;
+- **incompleta**: passos pulados, quando o dono desistiu antes do commit e
+  nada foi aplicado.
+
+O que não pode acontecer é **divergência**. O `summarize.py` confere em toda
+execução (com ou sem perda) que cada par de nós executou os eventos
+compartilhados que tem em comum na mesma ordem e o mesmo número de vezes.
+Depois de um SAFE HALT, um dos dois pode estar no máximo um commit à frente,
+que é o evento em voo que a parada protege. O `scripts/loss.py` gera
+`perda.md` com os desfechos, os passos executados, as retransmissões e essas
+verificações.
+
 O resultado da varredura está na seção "O resultado principal", acima.
 
 ---
@@ -319,15 +347,17 @@ docker_des/
 ├── compose.yaml            node1..node7 numa rede bridge "cell"
 ├── compose.host.yaml       os mesmos nós na rede do host (teste de sobrecarga)
 ├── scenarios/*.env         fms-1..7 (blocos), fms-2..6-s5 (S5 isolado),
-│                           fms-N-{ponte,host,nativo} (sobrecarga, N = 1, 2, 4, 7)
+│                           fms-N-{ponte,host,nativo} (sobrecarga, N = 1, 2, 4, 7),
+│                           fms-2-perda1..30 e fms-7-perda1..10 (perda)
 ├── scripts/
 │   ├── install-docker-wsl.sh    instala Docker Engine no WSL 2
 │   ├── gen-key.sh               cria a chave da célula (Docker secret)
 │   ├── run.sh                   roda um cenário e resume
-│   ├── run-all.sh               varredura de 1 a 7 containers (e as séries s5 e sobrecarga)
+│   ├── run-all.sh               varredura de 1 a 7 containers (e as séries s5, sobrecarga, perda)
 │   ├── scaling.py               tabela de escala da varredura
 │   ├── latency.py               percentis de latência por passo
 │   ├── overhead.py              tabela ponte × host × nativo (sobrecarga)
+│   ├── loss.py                  desfechos e segurança sob perda de quadros
 │   ├── summarize.py             tabela + verificações a partir dos logs
 │   └── sync-engine.sh           atualiza engine/ a partir do esp32_crypto
 └── docs/
