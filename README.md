@@ -154,6 +154,7 @@ Variações:
 REPEAT=5 scripts/run-all.sh          # 5 vezes cada configuração (média ± desvio)
 scripts/run-all.sh 1 2 7             # só algumas configurações
 scripts/run-all.sh s5                # partição com S5 isolado × blocos, de 1 a 7
+scripts/run-all.sh sobrecarga        # sobrecarga do container: ponte × host × nativo
 python3 scripts/latency.py results/<data>-varredura   # percentis de latência por passo
 scripts/run.sh scenarios/fms-7.env   # uma configuração, com os logs ao vivo
 ```
@@ -228,6 +229,30 @@ no ciclo 1, −6,8 % nos seguintes); com 2 é bem pior (+23 % e +39 %); com 3 e
 ciclo 1. Não existe partição melhor para todo número de containers.
 Detalhes em [`docs/resultados-wsl/20260927-200439-varredura/`](docs/resultados-wsl/20260927-200439-varredura/README.md) (com IC 95 % das diferenças) e na primeira execução, [`docs/resultados/escala-s5/`](docs/resultados/escala-s5/README.md).
 
+### Sobrecarga do container: ponte × host × nativo
+
+A literatura de PLC virtual pergunta quanto o container custa em relação a
+rodar direto na máquina (`docs/literatura.md`, [3] e [12]).
+`scripts/run-all.sh sobrecarga` roda a mesma célula com 1, 2, 4 e 7 nós em três lugares:
+
+| modo | cenário | onde os nós rodam |
+|---|---|---|
+| ponte | `fms-N-ponte` | um container por nó na rede *bridge* `cell` (como a varredura principal) |
+| host | `fms-N-host` | um container por nó na pilha de rede do host (`compose.host.yaml`): sem veth nem bridge |
+| nativo | `fms-N-nativo` | sem Docker na execução: os binários saem da imagem e rodam como processos comuns |
+
+Os três modos usam **os mesmos binários** (uma imagem por N, estáticos para
+rodar fora do container, com `-DDES_MCAST_LOOP=1` porque no host e no nativo
+todos os nós ficam numa interface só). Portanto, só muda onde eles rodam. O
+`scripts/overhead.py` gera `sobrecarga.md` com:
+- o tempo por passo em cada modo;
+- a diferença para a ponte, com IC 95 % de Welch;
+- a parte da rede: RTT de aplicação e espera pelos pares no 2PC e no NOTIFY.
+
+No modo nativo não há `nodeK.ts.log` (não há Docker para carimbar) nem o
+limite de 1 CPU por nó (`DES_CPUS`). Como a decifração emulada é espera, e não
+cálculo, o limite de CPU pesa pouco.
+
 O resultado da varredura está na seção "O resultado principal", acima.
 
 ---
@@ -264,6 +289,7 @@ No arquivo de cenário (ou no ambiente):
 | `DES_EMU_SCALARMUL_MS` | `69` | custo emulado de uma decifração, em ms (ESP32-S3). `0` desliga e roda na velocidade do PC; só muda o tempo, não a lógica |
 | `DES_SKIP_BUILD` | `0` | `1` reaproveita a imagem já compilada (sem internet) |
 | `DES_CPUS` | `1.0` | CPUs por container |
+| `DES_MODE` | `bridge` | onde os nós rodam: `bridge`/`ponte` (containers na rede `cell`), `host` (containers na rede do host) ou `nativo` (processos, sem Docker) |
 | `DES_LINGER_MS` | `10000` | quanto o nó ainda atende os pares depois de terminar |
 | `DES_RUN_TIMEOUT_S` | `900` | *watchdog* da execução |
 | `UBUNTU_IMAGE` | `ubuntu:26.04` | imagem base (ver "Problemas comuns") |
@@ -281,14 +307,17 @@ docker_des/
 ├── docker/entrypoint.sh    escolhe o binário do nó
 ├── Dockerfile              build (um binário por nó) + imagem final
 ├── compose.yaml            node1..node7 numa rede bridge "cell"
-├── scenarios/*.env         fms-1..7 (blocos) e fms-2..6-s5 (S5 isolado)
+├── compose.host.yaml       os mesmos nós na rede do host (teste de sobrecarga)
+├── scenarios/*.env         fms-1..7 (blocos), fms-2..6-s5 (S5 isolado),
+│                           fms-N-{ponte,host,nativo} (sobrecarga, N = 1, 2, 4, 7)
 ├── scripts/
 │   ├── install-docker-wsl.sh    instala Docker Engine no WSL 2
 │   ├── gen-key.sh               cria a chave da célula (Docker secret)
 │   ├── run.sh                   roda um cenário e resume
-│   ├── run-all.sh               varredura de 1 a 7 containers (e a série s5)
+│   ├── run-all.sh               varredura de 1 a 7 containers (e as séries s5 e sobrecarga)
 │   ├── scaling.py               tabela de escala da varredura
 │   ├── latency.py               percentis de latência por passo
+│   ├── overhead.py              tabela ponte × host × nativo (sobrecarga)
 │   ├── summarize.py             tabela + verificações a partir dos logs
 │   └── sync-engine.sh           atualiza engine/ a partir do esp32_crypto
 └── docs/

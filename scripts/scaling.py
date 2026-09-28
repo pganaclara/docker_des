@@ -57,8 +57,9 @@ def main():
         if (m := re.fullmatch(r"fms-(\d+)(?:-([\w]+))?", name)):
             series.setdefault(m.group(2), {})[int(m.group(1))] = runs
     if None not in series:
-        print(f"nenhuma execução fms-N em {root}")
-        return 2
+        # e.g. an overhead batch (fms-N-ponte/host/nativo): scripts/overhead.py
+        print(f"nenhuma execução fms-N (blocos, containers na ponte) em {root}")
+        return 0
 
     bad = 0
 

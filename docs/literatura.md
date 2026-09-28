@@ -312,7 +312,7 @@ indicado, de experimentos anteriores (§7 da arquitetura, [commit `b7f013b`](htt
 | Robustez a perda | TCS em rede [20], [21] | feito antes (arquitetura §7.5–§7.6), cenários retirados | `DES_EXTRA_FLAGS=-DDES_SIMULATE_LOSS_PCT=<p>` |
 | Robustez a atraso | [19], [22] | feito antes com `netem`, retirado | ver [commit `b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775) |
 | Equivalência com o monolítico | TCS [16] | feito antes (`extended_small_factory`), retirado; o FMS não tem monolítico | ver [commit `b7f013b`](https://github.com/pganaclara/docker_des/tree/b7f013bcc9bb1502148459f825c7523ec3ce0775) |
-| Sobrecarga do container | [3], [12] | **não feito** | mesmo cenário com `network_mode: host` e sem limite de CPU |
+| Sobrecarga do container | [3], [12] | **preparado, falta rodar**: mesmos binários como containers na *bridge*, containers na rede do host e processos nativos, N = 1, 2, 4, 7 | `REPEAT=5 scripts/run-all.sh sobrecarga` (`sobrecarga.md`) |
 
 ---
 

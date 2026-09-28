@@ -1,0 +1,41 @@
+# =============================================================================
+# compose.host.yaml — the same nodes WITHOUT a network namespace of their own
+# =============================================================================
+# Overlay for the container-overhead test (scenarios/fms-N-host.env, which
+# scripts/run.sh picks up through DES_MODE=host):
+#   docker compose -f compose.yaml -f compose.host.yaml ...
+# Every node shares the host's network stack: no bridge, no veth pair, no NAT.
+# All nodes then sit on one host interface, so the image must be built with
+# -DDES_MCAST_LOOP=1 (the scenario does it) or none hears the others.
+# =============================================================================
+# Docker refuses a hostname together with the host's network, hence the
+# resets. (A YAML anchor would not carry the !reset tags, so it is spelled out.)
+services:
+  node1:
+    network_mode: host
+    networks: !reset []
+    hostname: !reset null
+  node2:
+    network_mode: host
+    networks: !reset []
+    hostname: !reset null
+  node3:
+    network_mode: host
+    networks: !reset []
+    hostname: !reset null
+  node4:
+    network_mode: host
+    networks: !reset []
+    hostname: !reset null
+  node5:
+    network_mode: host
+    networks: !reset []
+    hostname: !reset null
+  node6:
+    network_mode: host
+    networks: !reset []
+    hostname: !reset null
+  node7:
+    network_mode: host
+    networks: !reset []
+    hostname: !reset null

@@ -7,6 +7,10 @@
 #   scripts/run-all.sh 1 2 7               only these node counts
 #   scripts/run-all.sh s5                  S5 isolated vs block partition, N = 1..7
 #   scripts/run-all.sh 4 4-s5              any scenario fms-<arg>
+#   scripts/run-all.sh sobrecarga          container overhead: N = 1, 2, 4, 7 as
+#                                          containers on the bridge (ponte), on
+#                                          the host's network (host) and as
+#                                          plain processes (nativo)
 #
 # Every decryption takes 69 ms, as on an ESP32-S3 (compose.yaml default);
 # DES_EMU_SCALARMUL_MS=0 scripts/run-all.sh runs at the PC's own speed.
@@ -15,7 +19,8 @@
 # (scripts/run.sh), plus escala.md / escala.json (scripts/scaling.py): time
 # per step against the number of containers, the speed-up over one container,
 # and the lower bound set by the busiest node's decryptions; and latencia.md /
-# latencia.csv (scripts/latency.py): per-step latency percentiles.
+# latencia.csv (scripts/latency.py): per-step latency percentiles; and, for the
+# overhead scenarios, sobrecarga.md / sobrecarga.json (scripts/overhead.py).
 # =============================================================================
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 2
@@ -28,6 +33,9 @@ if (($#)); then
             names+=(fms-1)
             for n in 2 3 4 5 6; do names+=("fms-$n" "fms-$n-s5"); done
             names+=(fms-7)
+        elif [[ $a == sobrecarga ]]; then
+            names+=(fms-1-ponte fms-1-nativo)
+            for n in 2 4 7; do names+=("fms-$n-ponte" "fms-$n-host" "fms-$n-nativo"); done
         elif [[ $a =~ ^[0-9]+(-[a-z0-9]+)?$ ]]; then names+=("fms-$a")
         else names+=("${a%.env}"); fi
     done
@@ -69,4 +77,7 @@ echo
 python3 scripts/scaling.py "$batch" || status=1
 python3 scripts/latency.py "$batch" > /dev/null &&
     echo "percentis de latência por passo: $batch/latencia.md"
+if compgen -G "$batch/*-fms-*-ponte" > /dev/null; then
+    python3 scripts/overhead.py "$batch" || status=1
+fi
 exit $status
