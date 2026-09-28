@@ -337,7 +337,7 @@ Os mesmos binários (estáticos, com loop de multicast) em três lugares:
 
 Com N = 1, 2, 4 e 7 e 5 repetições
 ([`docs/resultados-wsl/20260928-002448-varredura`](resultados-wsl/20260928-002448-varredura/README.md),
-55/55 PASS), **nenhuma diferença é significativa**: os 18 IC 95 % de
+55/55 PASS), **nenhuma diferença é significativa**: os 14 IC 95 % de
 Welch (modo − ponte) contêm o zero, e as médias diferem no máximo 0,7 ms. O
 limite superior da sobrecarga da ponte sobre o nativo é 1,6 % do tempo por
 passo nos ciclos 2–5 e 2,1 % no ciclo 1. O RTT de aplicação (~4 ms; ~10 ms

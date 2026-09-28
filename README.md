@@ -258,7 +258,7 @@ cálculo, o limite de CPU pesa pouco.
 [`docs/resultados-wsl/20260928-002448-varredura`](docs/resultados-wsl/20260928-002448-varredura/README.md)):
 o container **não tem custo mensurável**. Com 1, 2, 4 e 7 nós, os três modos
 dão o mesmo tempo por passo; por exemplo, 7 nós nos ciclos 2–5: ponte
-61,1 ± 0,6, host 61,0 ± 0,6, nativo 60,9 ± 0,6 ms. Todos os 18 IC 95 % das
+61,1 ± 0,6, host 61,0 ± 0,6, nativo 60,9 ± 0,6 ms. Todos os 14 IC 95 % das
 diferenças contêm o zero. Com 95 % de confiança, a sobrecarga fica abaixo de
 1,6 % nos ciclos 2–5 e de 2,1 % no ciclo 1. O RTT de aplicação e a espera
 pelos pares também são iguais nos três modos: o que custa na rede é o laço

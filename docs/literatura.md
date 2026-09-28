@@ -293,7 +293,7 @@ indicado, de experimentos anteriores (§7 da arquitetura, [commit `b7f013b`](htt
 | **A aceleração é limitada pelo supervisor mais carregado** | o tempo medido acompanha o limite "decifrações do nó mais carregado × 69 ms ÷ 44", 25–33 ms acima dele | [43] |
 | Sem a emulação, distribuir atrasa | experimento anterior: 2,4 → 4,7 ms/passo de 1 para 7 nós na velocidade de um PC | [43]; [9]–[11] (custo de rede em containers) |
 | Distribuir reduz o pior caso e o *jitter* é pequeno | varredura com percentis (n = 5): 2PC p99 − p50 ≤ 3,1 ms; intervalo máximo da célula 498 → 84 ms de 1 para 7 containers (5,9×, contra 3,9× na média) | [9]–[11] (latência e *jitter* de vPLC) |
-| O container não custa desempenho mensurável | ponte × host × nativo com os mesmos binários: 18/18 IC 95 % contêm zero; sobrecarga < 1,6 % por passo (ciclos 2–5), < 2,1 % (ciclo 1); RTT e espera pelos pares iguais | [3], [12] |
+| O container não custa desempenho mensurável | ponte × host × nativo com os mesmos binários: 14/14 IC 95 % contêm zero; sobrecarga < 1,6 % por passo (ciclos 2–5), < 2,1 % (ciclo 1); RTT e espera pelos pares iguais | [3], [12] |
 | A decomposição modular local é a partição natural | roteamento derivado do cabeçalho; eventos locais não geram tráfego | [16], [18] |
 | O protocolo preserva segurança sob perda | 40 execuções com perda de 1–30 % (2 nós) e 1–10 % (7 nós), emulação ligada, n = 5: nenhuma divergência entre nós, oráculo PASS; perda pesada vira SAFE HALT (2 nós, 30 %) ou passos pulados antes do commit (7 nós, 10 %) (arquitetura §6.7) | [20], [21], [23], [33] |
 | Concorrência entre iniciadores é tratada | *lock* + *wound-wait* | [22] (mutex), [35] |

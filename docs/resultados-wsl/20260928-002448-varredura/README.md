@@ -35,7 +35,7 @@ Tabelas em [`sobrecarga.md`](sobrecarga.md); percentis em
 | 7 | nativo | 89,6 ± 1,3 | +0,2 [−1,9; +2,2] | 60,9 ± 0,6 | −0,1 [−1,0; +0,7] |
 
 **Nenhuma diferença é estatisticamente distinguível de zero**: todos os
-18 intervalos contêm o zero, e as médias diferem no máximo 0,7 ms. O que o
+14 intervalos contêm o zero, e as médias diferem no máximo 0,7 ms. O que o
 experimento permite afirmar é um limite superior. Com 95 % de confiança, o
 container (na ponte, contra processos nativos) custa no máximo:
 - **1,6 %** do tempo por passo nos ciclos 2–5. É o limite inferior do IC de
