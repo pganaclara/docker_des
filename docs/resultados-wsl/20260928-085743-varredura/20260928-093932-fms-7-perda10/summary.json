@@ -1,0 +1,531 @@
+{
+  "run": "20260928-093932-fms-7-perda10",
+  "scenario": {
+    "DES_PROBLEM": "fms",
+    "DES_NUM_NODES": "7",
+    "DES_FAMILY": "LMOD",
+    "DES_ROUNDS": "5",
+    "DES_WORK_MS": "0",
+    "DES_EXTRA_FLAGS": "-DDES_SIMULATE_LOSS_PCT=10",
+    "DES_TAG_SUFFIX": "-perda10",
+    "EXPECT_OUTCOME": "complete|halt|incomplete",
+    "EXPECT_FINGERPRINT": "04511541",
+    "EXPECT_DEC_TOTAL": "798",
+    "EXPECT_DEC_CYCLE1_TOTAL": "190"
+  },
+  "outcome": "incomplete",
+  "halted_nodes": [],
+  "fingerprints": [
+    "04511541"
+  ],
+  "rounds": 5,
+  "seq_len": 44,
+  "steps_fired": 151,
+  "skips": 69,
+  "consistency": "consistente",
+  "decryptions_total": 563,
+  "decryptions_cycle1": 147,
+  "cycle_end_ms": [
+    107927.6,
+    210718.4,
+    351953.4,
+    499717.6,
+    591743.1
+  ],
+  "per_step_ms_cycle1": 2452.9,
+  "per_step_ms_steady": 2748.9517045454545,
+  "rtt_ms": {
+    "n": 6,
+    "avg": 4.21,
+    "min": 3.55,
+    "max": 4.67
+  },
+  "mono": "off",
+  "checks": [
+    {
+      "check": "config fingerprint",
+      "expected": "04511541",
+      "got": "04511541",
+      "ok": true
+    },
+    {
+      "check": "outcome",
+      "expected": "complete|halt|incomplete",
+      "got": "incomplete",
+      "ok": true
+    },
+    {
+      "check": "consistency across nodes",
+      "expected": "consistente",
+      "got": "consistente",
+      "ok": true
+    },
+    {
+      "check": "same fingerprint on every node",
+      "expected": 1,
+      "got": 1,
+      "ok": true
+    },
+    {
+      "check": "oracle PASS on every node",
+      "expected": true,
+      "got": true,
+      "ok": true
+    },
+    {
+      "check": "crypto self-test PASS on every node",
+      "expected": true,
+      "got": true,
+      "ok": true
+    }
+  ],
+  "all_checks_ok": true,
+  "nodes": [
+    {
+      "log": "node1.log",
+      "dec_total": 71,
+      "dec_by_cycle": {
+        "1": 17,
+        "2": 12,
+        "3": 12,
+        "4": 16,
+        "5": 14
+      },
+      "he_ms_total": 4938.6,
+      "skip_lines": 30,
+      "selftest": "PASS",
+      "mono": "off",
+      "rtt": {
+        "n": 6,
+        "avg": 4.21,
+        "min": 3.55,
+        "max": 4.67
+      },
+      "result": {
+        "node": 1,
+        "nodes": 7,
+        "family": "LOCAL MODULAR",
+        "data": "supervisor_data_fms.h",
+        "transport": "UDP/IP multicast (RFC 1112)",
+        "fingerprint": "04511541",
+        "supervisors": [
+          "S0"
+        ],
+        "fired": {
+          "local": 14,
+          "ctrl": 28,
+          "unctrl": 28
+        },
+        "applied_for_peers": 0,
+        "skips": 30,
+        "impossible": 15,
+        "tx": 492,
+        "rx": 11918,
+        "retx": 190,
+        "auth_bad": 0,
+        "replays": 0,
+        "challenges": 7,
+        "mac_us": 6.84,
+        "rxq_peak": 17,
+        "rxq_drops": 0,
+        "sync_wait_ms": 193784.5,
+        "oracle": "PASS",
+        "safe_halt": false,
+        "halt_reason": "",
+        "cycle_end_ms": [
+          102388.8,
+          208662.5,
+          345707.6,
+          499717.6,
+          591510.7
+        ],
+        "rounds": 5,
+        "work_ms": 0,
+        "emu_scalarmul_ms": 69.0,
+        "loss_pct": 10,
+        "loss_seed": 2526263994,
+        "exit": 1
+      },
+      "seq_len": 44,
+      "exit": 1
+    },
+    {
+      "log": "node2.log",
+      "dec_total": 71,
+      "dec_by_cycle": {
+        "1": 17,
+        "2": 14,
+        "3": 12,
+        "4": 12,
+        "5": 16
+      },
+      "he_ms_total": 4943.400000000002,
+      "skip_lines": 6,
+      "selftest": "PASS",
+      "mono": "off",
+      "rtt": null,
+      "result": {
+        "node": 2,
+        "nodes": 7,
+        "family": "LOCAL MODULAR",
+        "data": "supervisor_data_fms.h",
+        "transport": "UDP/IP multicast (RFC 1112)",
+        "fingerprint": "04511541",
+        "supervisors": [
+          "S1"
+        ],
+        "fired": {
+          "local": 14,
+          "ctrl": 0,
+          "unctrl": 0
+        },
+        "applied_for_peers": 56,
+        "skips": 6,
+        "impossible": 3,
+        "tx": 2240,
+        "rx": 10335,
+        "retx": 0,
+        "auth_bad": 0,
+        "replays": 0,
+        "challenges": 7,
+        "mac_us": 3.34,
+        "rxq_peak": 12,
+        "rxq_drops": 0,
+        "sync_wait_ms": 0.0,
+        "oracle": "PASS",
+        "safe_halt": false,
+        "halt_reason": "",
+        "cycle_end_ms": [
+          97912.8,
+          208688.2,
+          345799.7,
+          495243.9,
+          590015.9
+        ],
+        "rounds": 5,
+        "work_ms": 0,
+        "emu_scalarmul_ms": 69.0,
+        "loss_pct": 10,
+        "loss_seed": 1029139735,
+        "exit": 1
+      },
+      "seq_len": 44,
+      "exit": 1
+    },
+    {
+      "log": "node3.log",
+      "dec_total": 70,
+      "dec_by_cycle": {
+        "1": 14,
+        "2": 12,
+        "3": 14,
+        "4": 16,
+        "5": 14
+      },
+      "he_ms_total": 4866.500000000001,
+      "skip_lines": 6,
+      "selftest": "PASS",
+      "mono": "off",
+      "rtt": null,
+      "result": {
+        "node": 3,
+        "nodes": 7,
+        "family": "LOCAL MODULAR",
+        "data": "supervisor_data_fms.h",
+        "transport": "UDP/IP multicast (RFC 1112)",
+        "fingerprint": "04511541",
+        "supervisors": [
+          "S2"
+        ],
+        "fired": {
+          "local": 14,
+          "ctrl": 0,
+          "unctrl": 0
+        },
+        "applied_for_peers": 56,
+        "skips": 6,
+        "impossible": 3,
+        "tx": 2231,
+        "rx": 10297,
+        "retx": 0,
+        "auth_bad": 0,
+        "replays": 0,
+        "challenges": 7,
+        "mac_us": 3.99,
+        "rxq_peak": 9,
+        "rxq_drops": 0,
+        "sync_wait_ms": 0.0,
+        "oracle": "PASS",
+        "safe_halt": false,
+        "halt_reason": "",
+        "cycle_end_ms": [
+          99484.2,
+          208688.5,
+          344230.9,
+          495244.1,
+          590014.1
+        ],
+        "rounds": 5,
+        "work_ms": 0,
+        "emu_scalarmul_ms": 69.0,
+        "loss_pct": 10,
+        "loss_seed": 3508961900,
+        "exit": 1
+      },
+      "seq_len": 44,
+      "exit": 1
+    },
+    {
+      "log": "node4.log",
+      "dec_total": 73,
+      "dec_by_cycle": {
+        "1": 19,
+        "2": 14,
+        "3": 10,
+        "4": 14,
+        "5": 16
+      },
+      "he_ms_total": 5120.600000000001,
+      "skip_lines": 6,
+      "selftest": "PASS",
+      "mono": "off",
+      "rtt": null,
+      "result": {
+        "node": 4,
+        "nodes": 7,
+        "family": "LOCAL MODULAR",
+        "data": "supervisor_data_fms.h",
+        "transport": "UDP/IP multicast (RFC 1112)",
+        "fingerprint": "04511541",
+        "supervisors": [
+          "S3"
+        ],
+        "fired": {
+          "local": 14,
+          "ctrl": 0,
+          "unctrl": 0
+        },
+        "applied_for_peers": 56,
+        "skips": 6,
+        "impossible": 3,
+        "tx": 2238,
+        "rx": 10338,
+        "retx": 0,
+        "auth_bad": 0,
+        "replays": 0,
+        "challenges": 6,
+        "mac_us": 3.71,
+        "rxq_peak": 10,
+        "rxq_drops": 0,
+        "sync_wait_ms": 0.0,
+        "oracle": "PASS",
+        "safe_halt": false,
+        "halt_reason": "",
+        "cycle_end_ms": [
+          97912.7,
+          208688.0,
+          344230.9,
+          495242.5,
+          590014.1
+        ],
+        "rounds": 5,
+        "work_ms": 0,
+        "emu_scalarmul_ms": 69.0,
+        "loss_pct": 10,
+        "loss_seed": 1731149945,
+        "exit": 1
+      },
+      "seq_len": 44,
+      "exit": 1
+    },
+    {
+      "log": "node5.log",
+      "dec_total": 81,
+      "dec_by_cycle": {
+        "1": 19,
+        "2": 13,
+        "3": 16,
+        "4": 15,
+        "5": 18
+      },
+      "he_ms_total": 5684.4000000000015,
+      "skip_lines": 9,
+      "selftest": "PASS",
+      "mono": "off",
+      "rtt": null,
+      "result": {
+        "node": 5,
+        "nodes": 7,
+        "family": "LOCAL MODULAR",
+        "data": "supervisor_data_fms.h",
+        "transport": "UDP/IP multicast (RFC 1112)",
+        "fingerprint": "04511541",
+        "supervisors": [
+          "S4"
+        ],
+        "fired": {
+          "local": 0,
+          "ctrl": 14,
+          "unctrl": 7
+        },
+        "applied_for_peers": 56,
+        "skips": 9,
+        "impossible": 3,
+        "tx": 1885,
+        "rx": 10595,
+        "retx": 24,
+        "auth_bad": 0,
+        "replays": 0,
+        "challenges": 9,
+        "mac_us": 3.89,
+        "rxq_peak": 17,
+        "rxq_drops": 0,
+        "sync_wait_ms": 70247.1,
+        "oracle": "PASS",
+        "safe_halt": false,
+        "halt_reason": "",
+        "cycle_end_ms": [
+          107921.6,
+          210646.9,
+          351881.8,
+          498466.8,
+          591740.0
+        ],
+        "rounds": 5,
+        "work_ms": 0,
+        "emu_scalarmul_ms": 69.0,
+        "loss_pct": 10,
+        "loss_seed": 835971482,
+        "exit": 1
+      },
+      "seq_len": 44,
+      "exit": 1
+    },
+    {
+      "log": "node6.log",
+      "dec_total": 92,
+      "dec_by_cycle": {
+        "1": 30,
+        "2": 13,
+        "3": 16,
+        "4": 15,
+        "5": 18
+      },
+      "he_ms_total": 6436.000000000001,
+      "skip_lines": 0,
+      "selftest": "PASS",
+      "mono": "off",
+      "rtt": null,
+      "result": {
+        "node": 6,
+        "nodes": 7,
+        "family": "LOCAL MODULAR",
+        "data": "supervisor_data_fms.h",
+        "transport": "UDP/IP multicast (RFC 1112)",
+        "fingerprint": "04511541",
+        "supervisors": [
+          "S5"
+        ],
+        "fired": {
+          "local": 0,
+          "ctrl": 0,
+          "unctrl": 0
+        },
+        "applied_for_peers": 77,
+        "skips": 0,
+        "impossible": 0,
+        "tx": 2415,
+        "rx": 10165,
+        "retx": 0,
+        "auth_bad": 0,
+        "replays": 0,
+        "challenges": 8,
+        "mac_us": 5.33,
+        "rxq_peak": 10,
+        "rxq_drops": 0,
+        "sync_wait_ms": 0.0,
+        "oracle": "PASS",
+        "safe_halt": false,
+        "halt_reason": "",
+        "cycle_end_ms": [
+          107925.5,
+          209149.6,
+          350383.0,
+          496967.2,
+          591741.2
+        ],
+        "rounds": 5,
+        "work_ms": 0,
+        "emu_scalarmul_ms": 69.0,
+        "loss_pct": 10,
+        "loss_seed": 2504582204,
+        "exit": 0
+      },
+      "seq_len": 44,
+      "exit": 0
+    },
+    {
+      "log": "node7.log",
+      "dec_total": 105,
+      "dec_by_cycle": {
+        "1": 31,
+        "2": 19,
+        "3": 16,
+        "4": 15,
+        "5": 24
+      },
+      "he_ms_total": 7350.899999999999,
+      "skip_lines": 12,
+      "selftest": "PASS",
+      "mono": "off",
+      "rtt": null,
+      "result": {
+        "node": 7,
+        "nodes": 7,
+        "family": "LOCAL MODULAR",
+        "data": "supervisor_data_fms.h",
+        "transport": "UDP/IP multicast (RFC 1112)",
+        "fingerprint": "04511541",
+        "supervisors": [
+          "S6"
+        ],
+        "fired": {
+          "local": 18,
+          "ctrl": 0,
+          "unctrl": 0
+        },
+        "applied_for_peers": 77,
+        "skips": 12,
+        "impossible": 6,
+        "tx": 2199,
+        "rx": 10265,
+        "retx": 0,
+        "auth_bad": 0,
+        "replays": 0,
+        "challenges": 6,
+        "mac_us": 4.38,
+        "rxq_peak": 9,
+        "rxq_drops": 0,
+        "sync_wait_ms": 0.0,
+        "oracle": "PASS",
+        "safe_halt": false,
+        "halt_reason": "",
+        "cycle_end_ms": [
+          107927.6,
+          210718.4,
+          351953.4,
+          496968.2,
+          591743.1
+        ],
+        "rounds": 5,
+        "work_ms": 0,
+        "emu_scalarmul_ms": 69.0,
+        "loss_pct": 10,
+        "loss_seed": 2119098990,
+        "exit": 1
+      },
+      "seq_len": 44,
+      "exit": 1
+    }
+  ]
+}

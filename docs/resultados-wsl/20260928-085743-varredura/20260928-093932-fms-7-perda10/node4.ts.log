@@ -1,0 +1,416 @@
+2026-09-28T12:39:36.528093674Z des_container: node 4 of 7, LOCAL MODULAR, data supervisor_data_fms.h, transport UDP/IP multicast (RFC 1112)
+2026-09-28T12:39:36.528280263Z des_container: EMULATING the ESP32 — every decryption takes at least 69.0 ms (DES_EMU_SCALARMUL_MS)
+2026-09-28T12:39:36.528295770Z des_container: dropping 10 % of received frames, seed 1731149945 (DES_LOSS_SEED to replay)
+2026-09-28T12:39:36.528302573Z 
+2026-09-28T12:39:36.528306475Z ============================================================
+2026-09-28T12:39:36.528311177Z   Distributed Homomorphic DES — generic engine
+2026-09-28T12:39:36.528315380Z   node 4/7   family LOCAL MODULAR   7 supervisors   31 events
+2026-09-28T12:39:36.528321582Z   data: supervisor_data_fms.h
+2026-09-28T12:39:36.528334689Z ============================================================
+2026-09-28T12:39:36.549400552Z --- event routing (DERIVED from the header, not hardcoded) ---
+2026-09-28T12:39:36.549449675Z   event  ctrl  nodes      owner  class
+2026-09-28T12:39:36.549455678Z   11     yes   1          1      local — no network
+2026-09-28T12:39:36.549460180Z   12     no    1          1      local — no network
+2026-09-28T12:39:36.549464082Z   21     yes   2          2      local — no network
+2026-09-28T12:39:36.549467984Z   22     no    2          2      local — no network
+2026-09-28T12:39:36.549472086Z   30     no    1 2 3 4 5 6 7  1      SHARED — needs network
+2026-09-28T12:39:36.549476388Z   31     yes   1 2 3 4 5 6 7  1      SHARED — needs network
+2026-09-28T12:39:36.549480690Z   32     no    1 2 3 4 5 6 7  1      SHARED — needs network
+2026-09-28T12:39:36.549484792Z   33     yes   1 2 3 4 5 6 7  1      SHARED — needs network
+2026-09-28T12:39:36.549494496Z   34     no    1 2 3 4 5 6 7  1      SHARED — needs network
+2026-09-28T12:39:36.549498298Z   35     yes   1 2 3 4 5 6 7  1      SHARED — needs network
+2026-09-28T12:39:36.549501800Z   36     no    1 2 3 4 5 6 7  1      SHARED — needs network
+2026-09-28T12:39:36.549505702Z   37     yes   1 2 3 4 5 6 7  1      SHARED — needs network
+2026-09-28T12:39:36.549509304Z   38     no    1 2 3 4 5 6 7  1      SHARED — needs network
+2026-09-28T12:39:36.549513005Z   39     yes   1 2 3 4 5 6 7  1      SHARED — needs network
+2026-09-28T12:39:36.549516307Z   41     yes   3          3      local — no network
+2026-09-28T12:39:36.549519809Z   42     no    3          3      local — no network
+2026-09-28T12:39:36.549523710Z   51     yes   4          4      local — no network
+2026-09-28T12:39:36.549527212Z   52     no    4          4      local — no network
+2026-09-28T12:39:36.549530414Z   53     yes   4          4      local — no network
+2026-09-28T12:39:36.549534115Z   54     no    4          4      local — no network
+2026-09-28T12:39:36.549537617Z   61     yes   5 6 7      5      SHARED — needs network
+2026-09-28T12:39:36.549565831Z   63     yes   5 6 7      5      SHARED — needs network
+2026-09-28T12:39:36.549571833Z   64     no    5 6 7      5      SHARED — needs network
+2026-09-28T12:39:36.549575335Z   65     yes   5 6 7      5      SHARED — needs network
+2026-09-28T12:39:36.549578537Z   66     no    5 6 7      5      SHARED — needs network
+2026-09-28T12:39:36.549582338Z   71     yes   7          7      local — no network
+2026-09-28T12:39:36.549588942Z   72     no    7          7      local — no network
+2026-09-28T12:39:36.549592243Z   73     yes   7          7      local — no network
+2026-09-28T12:39:36.549595845Z   74     no    7          7      local — no network
+2026-09-28T12:39:36.549599347Z   81     yes   7          7      local — no network
+2026-09-28T12:39:36.549602948Z   82     no    7          7      local — no network
+2026-09-28T12:39:36.549606650Z   => 15/31 events shared; 16/31 need ZERO network traffic; 14 concern this node
+2026-09-28T12:39:36.549610652Z   NOTE controllability was INFERRED from event labels (the header
+2026-09-28T12:39:36.549618256Z        does not carry it). Check the 'ctrl' column above; if it is
+2026-09-28T12:39:36.549621957Z        wrong, set DES_CONTROLLABLE_MASK explicitly.
+2026-09-28T12:39:36.549625159Z 
+2026-09-28T12:39:36.549628661Z [init] config fingerprint 04511541 — every node must print the same
+2026-09-28T12:39:36.549632362Z 
+2026-09-28T12:39:36.549640866Z [net] UDP multicast 239.192.7.1:5077  ttl=1  frame=44 B
+2026-09-28T12:39:36.549644668Z --- crypto self-test ---
+2026-09-28T12:39:36.557001282Z   Enc(0)->0 Enc(1)->1                PASS
+2026-09-28T12:39:36.559058165Z   Enc(1)+Enc(1)->1 homomorphic OR   PASS
+2026-09-28T12:39:36.560732665Z   Enc(0)+Enc(0)->0                  PASS
+2026-09-28T12:39:36.560764380Z   curve secp192r1, ciphertext 50 B    PASS
+2026-09-28T12:39:36.561309540Z   frame tag HMAC-SHA256/128: 3.7 us, 1-bit tamper caught  PASS
+2026-09-28T12:39:36.561330250Z 
+2026-09-28T12:39:36.561335453Z --- encrypting my supervisors' initial states ---
+2026-09-28T12:39:36.561339855Z [load] S3         idx 3   21 states  14 constraining ev    1050 B ciphertext
+2026-09-28T12:39:37.591648620Z [init] my keypair is mine alone; no ciphertext ever leaves this node
+2026-09-28T12:39:37.591748968Z [init] my enablement: 11=1 12=1 21=1 22=1 30=0 31=1 32=0 33=1 34=0 35=1 36=0 37=0 38=0 39=0 41=1 42=1 51=0 52=0 53=0 54=0 61=1 63=1 64=1 65=1 66=1 71=1 72=1 73=1 74=1 81=1 82=1
+2026-09-28T12:39:37.591756071Z 
+2026-09-28T12:39:41.808115985Z [net] waiting for 6 peer(s)..................... all present.
+2026-09-28T12:39:43.311916531Z 
+2026-09-28T12:39:43.311970557Z ============================================================
+2026-09-28T12:39:43.311978260Z   RUN — SIM_SEQ driver — 5 cycles x 44 steps — LOCAL MODULAR
+2026-09-28T12:39:43.312041791Z   columns: cN sNN = cycle/step of MY walk; · = a peer caused this
+2026-09-28T12:39:43.312046793Z   'done at': run clock, common to all nodes; a cycle is over at the
+2026-09-28T12:39:43.312049494Z   LATEST node's print, machine time (DES_WORK_MS 0) included
+2026-09-28T12:39:43.312051895Z ============================================================
+2026-09-28T12:39:43.312054197Z 
+2026-09-28T12:39:43.312056298Z -- cycle 1/5 --
+2026-09-28T12:39:48.224578510Z     ·     vote   31    YES to node 1          (seq 1)
+2026-09-28T12:39:49.726380301Z     ·     vote   31    YES to node 1          (seq 1)
+2026-09-28T12:39:51.210061305Z     ·     vote   31    YES to node 1          (seq 1)
+2026-09-28T12:39:52.712633664Z     ·     vote   31    YES to node 1          (seq 1)
+2026-09-28T12:39:54.265688337Z     ·     vote   31    YES to node 1          (seq 1)
+2026-09-28T12:39:55.774337156Z     ·     vote   31    YES to node 1          (seq 1)
+2026-09-28T12:39:57.273994822Z     ·     vote   31    YES to node 1          (seq 1)
+2026-09-28T12:39:58.773832975Z     ·     vote   31    YES to node 1          (seq 1)
+2026-09-28T12:39:58.849079319Z     ·     apply  31        70.5 ms HE    1 dec  from node 1  (seq 1)
+2026-09-28T12:40:03.626865321Z     ·     apply  32       278.6 ms HE    4 dec  from node 1  (seq 2)
+2026-09-28T12:40:06.409992651Z     ·     vote   33    YES to node 1          (seq 3)
+2026-09-28T12:40:07.912028454Z     ·     vote   33    YES to node 1          (seq 3)
+2026-09-28T12:40:07.986349456Z     ·     apply  33        69.6 ms HE    1 dec  from node 1  (seq 3)
+2026-09-28T12:40:09.560961027Z     ·     apply  34        69.3 ms HE    1 dec  from node 1  (seq 4)
+2026-09-28T12:40:09.713386338Z     ·     vote   35    YES to node 1          (seq 5)
+2026-09-28T12:40:22.245953471Z     ·     vote   35    YES to node 1          (seq 5)
+2026-09-28T12:40:23.748768946Z     ·     vote   35    YES to node 1          (seq 5)
+2026-09-28T12:40:25.249903118Z     ·     vote   35    YES to node 1          (seq 5)
+2026-09-28T12:40:25.322414355Z     ·     apply  35        69.5 ms HE    1 dec  from node 1  (seq 5)
+2026-09-28T12:40:25.393773543Z c1  s11  local  53        69.3 ms HE    1 dec  0 frames
+2026-09-28T12:40:25.464107040Z c1  s12  local  54        69.5 ms HE    1 dec  0 frames
+2026-09-28T12:40:25.771781812Z     ·     apply  36        69.5 ms HE    1 dec  from node 1  (seq 6)
+2026-09-28T12:40:28.773441865Z     ·     vote   39    YES to node 1          (seq 7)
+2026-09-28T12:40:30.272774877Z     ·     vote   39    YES to node 1          (seq 7)
+2026-09-28T12:40:31.774108444Z     ·     vote   39    YES to node 1          (seq 7)
+2026-09-28T12:40:33.275571072Z     ·     vote   39    YES to node 1          (seq 7)
+2026-09-28T12:40:33.347747750Z     ·     apply  39        69.4 ms HE    1 dec  from node 1  (seq 7)
+2026-09-28T12:40:28.601697897Z     ·     apply  30        69.5 ms HE    1 dec  from node 1  (seq 8)
+2026-09-28T12:40:31.731559916Z     ·     vote   31    YES to node 1          (seq 9)
+2026-09-28T12:40:33.232288794Z     ·     vote   31    YES to node 1          (seq 9)
+2026-09-28T12:40:34.731873725Z     ·     vote   31    YES to node 1          (seq 9)
+2026-09-28T12:40:37.782686869Z     ·     vote   31    YES to node 1          (seq 9)
+2026-09-28T12:40:40.782266003Z     ·     vote   31    YES to node 1          (seq 9)
+2026-09-28T12:40:42.284752021Z     ·     vote   31    YES to node 1          (seq 9)
+2026-09-28T12:40:43.835072188Z     ·     skip   31    node 1 gave up on it — moving on too  (occ 2)
+2026-09-28T12:40:43.839630366Z     ·     skip   32    node 1 gave up on it — moving on too  (occ 2)
+2026-09-28T12:40:53.853051763Z     ·     vote   35    YES to node 1          (seq 9)
+2026-09-28T12:40:56.851200323Z     ·     vote   35    YES to node 1          (seq 9)
+2026-09-28T12:40:56.905551986Z     ·     vote   35    YES to node 1          (seq 9)
+2026-09-28T12:40:57.010551143Z     ·     vote   35    YES to node 1          (seq 9)
+2026-09-28T12:40:57.215321059Z     ·     vote   35    YES to node 1          (seq 9)
+2026-09-28T12:40:58.717054517Z     ·     vote   35    YES to node 1          (seq 9)
+2026-09-28T12:41:11.243670430Z     ·     vote   35    YES to node 1          (seq 9)
+2026-09-28T12:41:01.705662874Z     ·     vote   35    YES to node 1          (seq 9)
+2026-09-28T12:41:03.256746206Z     ·     vote   35    YES to node 1          (seq 9)
+2026-09-28T12:41:04.757508800Z     ·     vote   35    YES to node 1          (seq 9)
+2026-09-28T12:41:16.196115880Z     ·     skip   35    node 1 gave up on it — moving on too  (occ 2)
+2026-09-28T12:41:05.474613583Z     ·     skip   36    node 1 gave up on it — moving on too  (occ 2)
+2026-09-28T12:41:15.467289552Z     ·     skip   61    node 5 gave up on it — moving on too  (occ 2)
+2026-09-28T12:41:15.780388215Z     ·     vote   33    YES to node 1          (seq 9)
+2026-09-28T12:41:17.289665477Z     ·     vote   33    YES to node 1          (seq 9)
+2026-09-28T12:41:18.780872707Z     ·     vote   33    YES to node 1          (seq 9)
+2026-09-28T12:41:31.319898782Z     ·     vote   33    YES to node 1          (seq 9)
+2026-09-28T12:41:31.407997966Z     ·     apply  33        69.9 ms HE    1 dec  from node 1  (seq 9)
+2026-09-28T12:41:23.436736194Z     ·     apply  34        69.4 ms HE    1 dec  from node 1  (seq 10)
+2026-09-28T12:41:23.508512181Z c1  s38  local  51        69.7 ms HE    1 dec  0 frames
+2026-09-28T12:41:23.577973161Z c1  s39  local  52        69.4 ms HE    1 dec  0 frames
+2026-09-28T12:41:23.583248881Z     ·     vote   37    YES to node 1          (seq 11)
+2026-09-28T12:41:25.083614986Z     ·     vote   37    YES to node 1          (seq 11)
+2026-09-28T12:41:36.202673367Z     ·     apply  37        69.7 ms HE    1 dec  from node 1  (seq 11)
+2026-09-28T12:41:25.842155490Z     ·     apply  38        69.4 ms HE    1 dec  from node 1  (seq 12)
+2026-09-28T12:41:25.844988743Z -- cycle 1/5 done at 97912.7 ms --
+2026-09-28T12:41:25.845060478Z 
+2026-09-28T12:41:25.845066080Z -- cycle 2/5 --
+2026-09-28T12:41:35.855226188Z     ·     skip   63    node 5 gave up on it — moving on too  (occ 1)
+2026-09-28T12:41:35.859800273Z     ·     skip   64    node 5 gave up on it — moving on too  (occ 1)
+2026-09-28T12:41:51.381423905Z     ·     vote   31    YES to node 1          (seq 13)
+2026-09-28T12:41:41.850363228Z     ·     vote   31    YES to node 1          (seq 13)
+2026-09-28T12:41:41.972355502Z     ·     apply  31       114.3 ms HE    1 dec  from node 1  (seq 13)
+2026-09-28T12:41:45.000498206Z     ·     apply  32        69.6 ms HE    1 dec  from node 1  (seq 14)
+2026-09-28T12:41:47.998042120Z     ·     vote   33    YES to node 1          (seq 15)
+2026-09-28T12:41:48.072553113Z     ·     apply  33        69.4 ms HE    1 dec  from node 1  (seq 15)
+2026-09-28T12:41:49.642493253Z     ·     apply  34        69.5 ms HE    1 dec  from node 1  (seq 16)
+2026-09-28T12:41:49.952242516Z     ·     vote   35    YES to node 1          (seq 17)
+2026-09-28T12:41:51.450842484Z     ·     vote   35    YES to node 1          (seq 17)
+2026-09-28T12:41:54.453283210Z     ·     vote   35    YES to node 1          (seq 17)
+2026-09-28T12:41:56.002519722Z     ·     vote   35    YES to node 1          (seq 17)
+2026-09-28T12:41:59.001957013Z     ·     vote   35    YES to node 1          (seq 17)
+2026-09-28T12:42:00.507036480Z     ·     vote   35    YES to node 1          (seq 17)
+2026-09-28T12:42:02.060669830Z     ·     skip   35    node 1 gave up on it — moving on too  (occ 3)
+2026-09-28T12:42:02.132350471Z c2  s11  local  53        69.4 ms HE    1 dec  0 frames
+2026-09-28T12:42:02.201435372Z c2  s12  local  54        69.2 ms HE    1 dec  0 frames
+2026-09-28T12:42:02.669484352Z     ·     skip   36    node 1 gave up on it — moving on too  (occ 3)
+2026-09-28T12:42:02.675165366Z     ·     vote   39    YES to node 1          (seq 17)
+2026-09-28T12:42:04.173493297Z     ·     vote   39    YES to node 1          (seq 17)
+2026-09-28T12:42:07.163035828Z     ·     vote   39    YES to node 1          (seq 17)
+2026-09-28T12:42:07.237510903Z     ·     apply  39        69.6 ms HE    1 dec  from node 1  (seq 17)
+2026-09-28T12:42:17.252715280Z     ·     skip   61    node 5 gave up on it — moving on too  (occ 3)
+2026-09-28T12:42:19.200872388Z     ·     apply  30        69.3 ms HE    1 dec  from node 1  (seq 18)
+2026-09-28T12:42:28.048641299Z     ·     skip   65    node 5 gave up on it — moving on too  (occ 2)
+2026-09-28T12:42:28.053516528Z     ·     skip   66    node 5 gave up on it — moving on too  (occ 2)
+2026-09-28T12:42:28.059872964Z     ·     vote   31    YES to node 1          (seq 19)
+2026-09-28T12:42:29.559747835Z     ·     vote   31    YES to node 1          (seq 19)
+2026-09-28T12:42:31.104425515Z     ·     vote   31    YES to node 1          (seq 19)
+2026-09-28T12:42:32.603358836Z     ·     vote   31    YES to node 1          (seq 19)
+2026-09-28T12:42:34.104307119Z     ·     vote   31    YES to node 1          (seq 19)
+2026-09-28T12:42:35.710918133Z     ·     vote   31    YES to node 1          (seq 19)
+2026-09-28T12:42:35.917258399Z     ·     vote   31    YES to node 1          (seq 19)
+2026-09-28T12:42:36.322435346Z     ·     vote   31    YES to node 1          (seq 19)
+2026-09-28T12:42:37.128902785Z     ·     vote   31    YES to node 1          (seq 19)
+2026-09-28T12:42:38.131961733Z     ·     skip   31    node 1 gave up on it — moving on too  (occ 4)
+2026-09-28T12:42:38.438916461Z     ·     skip   32    node 1 gave up on it — moving on too  (occ 4)
+2026-09-28T12:42:48.434682571Z     ·     vote   35    YES to node 1          (seq 19)
+2026-09-28T12:42:48.507773185Z     ·     apply  35        70.1 ms HE    1 dec  from node 1  (seq 19)
+2026-09-28T12:42:53.102062106Z     ·     apply  36        69.3 ms HE    1 dec  from node 1  (seq 20)
+2026-09-28T12:42:53.486821200Z     ·     vote   33    YES to node 1          (seq 21)
+2026-09-28T12:42:54.986689067Z     ·     vote   33    YES to node 1          (seq 21)
+2026-09-28T12:42:55.058287369Z     ·     apply  33        69.3 ms HE    1 dec  from node 1  (seq 21)
+2026-09-28T12:42:58.105265951Z     ·     apply  34        69.8 ms HE    1 dec  from node 1  (seq 22)
+2026-09-28T12:42:58.176598626Z c2  s38  local  51        69.4 ms HE    1 dec  0 frames
+2026-09-28T12:42:58.246036895Z c2  s39  local  52        69.3 ms HE    1 dec  0 frames
+2026-09-28T12:43:01.104488197Z     ·     vote   37    YES to node 1          (seq 23)
+2026-09-28T12:43:02.661848027Z     ·     vote   37    YES to node 1          (seq 23)
+2026-09-28T12:43:04.160733425Z     ·     vote   37    YES to node 1          (seq 23)
+2026-09-28T12:43:16.691661233Z     ·     vote   37    YES to node 1          (seq 23)
+2026-09-28T12:43:07.252534543Z     ·     vote   37    YES to node 1          (seq 23)
+2026-09-28T12:43:08.750968125Z     ·     vote   37    YES to node 1          (seq 23)
+2026-09-28T12:43:10.251089813Z     ·     vote   37    YES to node 1          (seq 23)
+2026-09-28T12:43:10.356105178Z     ·     vote   37    YES to node 1          (seq 23)
+2026-09-28T12:43:21.549284466Z     ·     vote   37    YES to node 1          (seq 23)
+2026-09-28T12:43:12.078040409Z     ·     vote   37    YES to node 1          (seq 23)
+2026-09-28T12:43:13.577901873Z     ·     vote   37    YES to node 1          (seq 23)
+2026-09-28T12:43:15.077739425Z     ·     vote   37    YES to node 1          (seq 23)
+2026-09-28T12:43:16.576075101Z     ·     skip   37    node 1 gave up on it — moving on too  (occ 2)
+2026-09-28T12:43:16.583144678Z     ·     skip   38    node 1 gave up on it — moving on too  (occ 2)
+2026-09-28T12:43:16.585315215Z -- cycle 2/5 done at 208688.0 ms --
+2026-09-28T12:43:16.585374944Z 
+2026-09-28T12:43:16.585384748Z -- cycle 3/5 --
+2026-09-28T12:43:26.570008243Z     ·     vote   31    YES to node 1          (seq 23)
+2026-09-28T12:43:28.069862403Z     ·     vote   31    YES to node 1          (seq 23)
+2026-09-28T12:43:29.571128138Z     ·     vote   31    YES to node 1          (seq 23)
+2026-09-28T12:43:31.072465833Z     ·     vote   31    YES to node 1          (seq 23)
+2026-09-28T12:43:32.623816492Z     ·     vote   31    YES to node 1          (seq 23)
+2026-09-28T12:43:34.122335015Z     ·     vote   31    YES to node 1          (seq 23)
+2026-09-28T12:43:46.657065793Z     ·     vote   31    YES to node 1          (seq 23)
+2026-09-28T12:43:46.729456474Z     ·     apply  31        69.4 ms HE    1 dec  from node 1  (seq 23)
+2026-09-28T12:43:38.759353329Z     ·     apply  32        69.3 ms HE    1 dec  from node 1  (seq 24)
+2026-09-28T12:43:38.905875821Z     ·     vote   33    NO  to node 1          (seq 25)
+2026-09-28T12:43:40.405933578Z     ·     vote   33    NO  to node 1          (seq 25)
+2026-09-28T12:43:40.463749797Z     ·     vote   33    NO  to node 1          (seq 25)
+2026-09-28T12:43:51.604700447Z     ·     vote   33    NO  to node 1          (seq 25)
+2026-09-28T12:43:40.776850054Z     ·     vote   33    NO  to node 1          (seq 25)
+2026-09-28T12:43:42.275842203Z     ·     vote   33    NO  to node 1          (seq 25)
+2026-09-28T12:43:43.777316537Z     ·     vote   33    NO  to node 1          (seq 25)
+2026-09-28T12:43:44.180758456Z     ·     vote   33    NO  to node 1          (seq 25)
+2026-09-28T12:43:44.985856640Z     ·     vote   33    NO  to node 1          (seq 25)
+2026-09-28T12:43:46.479393413Z     ·     vote   33    NO  to node 1          (seq 25)
+2026-09-28T12:43:47.978611169Z     ·     vote   33    NO  to node 1          (seq 25)
+2026-09-28T12:43:49.478597292Z     ·     vote   33    NO  to node 1          (seq 25)
+2026-09-28T12:43:50.483706320Z     ·     skip   33    node 1 gave up on it — moving on too  (occ 5)
+2026-09-28T12:43:50.808199145Z     ·     skip   34    node 1 gave up on it — moving on too  (occ 5)
+2026-09-28T12:43:50.815589075Z     ·     vote   35    YES to node 1          (seq 25)
+2026-09-28T12:43:52.315757686Z     ·     vote   35    YES to node 1          (seq 25)
+2026-09-28T12:43:53.817002611Z     ·     vote   35    YES to node 1          (seq 25)
+2026-09-28T12:43:53.888300369Z     ·     apply  35        69.5 ms HE    1 dec  from node 1  (seq 25)
+2026-09-28T12:44:03.871377071Z c3  s11  SKIP   53    my own supervisor disables it here
+2026-09-28T12:44:03.871434399Z c3  s12  [!!]   54    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+2026-09-28T12:44:03.871439801Z c3  s12  SKIP   54    physically impossible here — rejected
+2026-09-28T12:44:05.513117609Z     ·     apply  36        69.4 ms HE    1 dec  from node 1  (seq 26)
+2026-09-28T12:44:06.949156392Z     ·     vote   39    NO  to node 1          (seq 27)
+2026-09-28T12:44:08.450070559Z     ·     vote   39    NO  to node 1          (seq 27)
+2026-09-28T12:44:09.951040252Z     ·     vote   39    NO  to node 1          (seq 27)
+2026-09-28T12:44:11.448126825Z     ·     vote   39    NO  to node 1          (seq 27)
+2026-09-28T12:44:11.503928081Z     ·     vote   39    NO  to node 1          (seq 27)
+2026-09-28T12:44:13.003757029Z     ·     vote   39    NO  to node 1          (seq 27)
+2026-09-28T12:44:16.111465000Z     ·     vote   39    NO  to node 1          (seq 27)
+2026-09-28T12:44:17.611543267Z     ·     vote   39    NO  to node 1          (seq 27)
+2026-09-28T12:44:19.163053203Z     ·     skip   39    node 1 gave up on it — moving on too  (occ 3)
+2026-09-28T12:44:22.511691774Z     ·     skip   30    node 1 gave up on it — moving on too  (occ 3)
+2026-09-28T12:44:57.307310441Z     ·     vote   31    YES to node 1          (seq 27)
+2026-09-28T12:44:58.807572096Z     ·     vote   31    YES to node 1          (seq 27)
+2026-09-28T12:45:00.450856171Z     ·     apply  31        69.5 ms HE    1 dec  from node 1  (seq 27)
+2026-09-28T12:45:12.981877979Z     ·     apply  32        69.3 ms HE    1 dec  from node 1  (seq 28)
+2026-09-28T12:45:13.129218062Z     ·     vote   35    YES to node 1          (seq 29)
+2026-09-28T12:45:14.627865846Z     ·     vote   35    YES to node 1          (seq 29)
+2026-09-28T12:45:14.702838559Z     ·     apply  35        69.7 ms HE    1 dec  from node 1  (seq 29)
+2026-09-28T12:45:19.347716956Z     ·     apply  36        69.5 ms HE    1 dec  from node 1  (seq 30)
+2026-09-28T12:45:20.778235996Z     ·     vote   33    NO  to node 1          (seq 31)
+2026-09-28T12:45:22.280028282Z     ·     vote   33    NO  to node 1          (seq 31)
+2026-09-28T12:45:23.780764463Z     ·     vote   33    NO  to node 1          (seq 31)
+2026-09-28T12:45:25.279738803Z     ·     vote   33    NO  to node 1          (seq 31)
+2026-09-28T12:45:25.337417056Z     ·     vote   33    NO  to node 1          (seq 31)
+2026-09-28T12:45:26.837457505Z     ·     vote   33    NO  to node 1          (seq 31)
+2026-09-28T12:45:17.295781450Z     ·     vote   33    NO  to node 1          (seq 31)
+2026-09-28T12:45:18.796447198Z     ·     vote   33    NO  to node 1          (seq 31)
+2026-09-28T12:45:20.347526728Z     ·     skip   33    node 1 gave up on it — moving on too  (occ 6)
+2026-09-28T12:45:20.354520669Z     ·     skip   34    node 1 gave up on it — moving on too  (occ 6)
+2026-09-28T12:45:30.356154598Z c3  s38  SKIP   51    my own supervisor disables it here
+2026-09-28T12:45:30.356212525Z c3  s39  [!!]   52    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+2026-09-28T12:45:30.356220529Z c3  s39  SKIP   52    physically impossible here — rejected
+2026-09-28T12:45:31.864845799Z     ·     vote   37    YES to node 1          (seq 31)
+2026-09-28T12:45:31.937397756Z     ·     apply  37        69.5 ms HE    1 dec  from node 1  (seq 31)
+2026-09-28T12:45:32.015080064Z     ·     apply  38        69.6 ms HE    1 dec  from node 1  (seq 32)
+2026-09-28T12:45:32.017734532Z -- cycle 3/5 done at 344230.9 ms --
+2026-09-28T12:45:32.017772350Z 
+2026-09-28T12:45:32.017778653Z -- cycle 4/5 --
+2026-09-28T12:45:43.594950581Z     ·     vote   31    YES to node 1          (seq 33)
+2026-09-28T12:45:45.095854142Z     ·     vote   31    YES to node 1          (seq 33)
+2026-09-28T12:45:46.592227447Z     ·     vote   31    YES to node 1          (seq 33)
+2026-09-28T12:45:48.090941563Z     ·     vote   31    YES to node 1          (seq 33)
+2026-09-28T12:45:48.164907596Z     ·     apply  31        69.4 ms HE    1 dec  from node 1  (seq 33)
+2026-09-28T12:45:51.225993022Z     ·     apply  32        69.3 ms HE    1 dec  from node 1  (seq 34)
+2026-09-28T12:45:54.303961226Z     ·     vote   33    YES to node 1          (seq 35)
+2026-09-28T12:45:57.297066127Z     ·     vote   33    YES to node 1          (seq 35)
+2026-09-28T12:46:00.349127455Z     ·     vote   33    YES to node 1          (seq 35)
+2026-09-28T12:46:01.860041840Z     ·     vote   33    YES to node 1          (seq 35)
+2026-09-28T12:46:03.362252826Z     ·     vote   33    YES to node 1          (seq 35)
+2026-09-28T12:46:04.912816310Z     ·     skip   33    node 1 gave up on it — moving on too  (occ 7)
+2026-09-28T12:46:04.917331867Z     ·     skip   34    node 1 gave up on it — moving on too  (occ 7)
+2026-09-28T12:46:05.224680083Z     ·     vote   35    YES to node 1          (seq 35)
+2026-09-28T12:46:06.723196719Z     ·     vote   35    YES to node 1          (seq 35)
+2026-09-28T12:46:08.222114532Z     ·     vote   35    YES to node 1          (seq 35)
+2026-09-28T12:46:09.723520334Z     ·     vote   35    YES to node 1          (seq 35)
+2026-09-28T12:46:11.258682084Z     ·     vote   35    YES to node 1          (seq 35)
+2026-09-28T12:46:11.330867666Z     ·     apply  35        69.5 ms HE    1 dec  from node 1  (seq 35)
+2026-09-28T12:46:21.347089046Z c4  s11  SKIP   53    my own supervisor disables it here
+2026-09-28T12:46:21.347141772Z c4  s12  [!!]   54    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+2026-09-28T12:46:21.347179690Z c4  s12  SKIP   54    physically impossible here — rejected
+2026-09-28T12:46:21.419019407Z     ·     apply  36        69.5 ms HE    1 dec  from node 1  (seq 36)
+2026-09-28T12:46:37.011780079Z     ·     vote   39    NO  to node 1          (seq 37)
+2026-09-28T12:46:27.477871836Z     ·     vote   39    NO  to node 1          (seq 37)
+2026-09-28T12:46:28.980070216Z     ·     vote   39    NO  to node 1          (seq 37)
+2026-09-28T12:46:30.479056562Z     ·     vote   39    NO  to node 1          (seq 37)
+2026-09-28T12:46:30.531838575Z     ·     vote   39    NO  to node 1          (seq 37)
+2026-09-28T12:46:30.636182319Z     ·     vote   39    NO  to node 1          (seq 37)
+2026-09-28T12:46:32.135396680Z     ·     vote   39    NO  to node 1          (seq 37)
+2026-09-28T12:46:33.636071632Z     ·     vote   39    NO  to node 1          (seq 37)
+2026-09-28T12:46:33.839005371Z     ·     vote   39    NO  to node 1          (seq 37)
+2026-09-28T12:46:36.843343752Z     ·     vote   39    NO  to node 1          (seq 37)
+2026-09-28T12:46:38.342708079Z     ·     vote   39    NO  to node 1          (seq 37)
+2026-09-28T12:46:38.746478254Z     ·     skip   39    node 1 gave up on it — moving on too  (occ 4)
+2026-09-28T12:46:41.838861942Z     ·     skip   30    node 1 gave up on it — moving on too  (occ 4)
+2026-09-28T12:47:23.437132965Z     ·     skip   65    node 5 gave up on it — moving on too  (occ 4)
+2026-09-28T12:47:23.444468870Z     ·     skip   66    node 5 gave up on it — moving on too  (occ 4)
+2026-09-28T12:47:23.449627434Z     ·     vote   31    YES to node 1          (seq 37)
+2026-09-28T12:47:24.948672808Z     ·     vote   31    YES to node 1          (seq 37)
+2026-09-28T12:47:26.433308216Z     ·     vote   31    YES to node 1          (seq 37)
+2026-09-28T12:47:27.935042775Z     ·     vote   31    YES to node 1          (seq 37)
+2026-09-28T12:47:29.484644499Z     ·     vote   31    YES to node 1          (seq 37)
+2026-09-28T12:47:29.558871956Z     ·     apply  31        69.4 ms HE    1 dec  from node 1  (seq 37)
+2026-09-28T12:47:34.202481247Z     ·     apply  32        69.4 ms HE    1 dec  from node 1  (seq 38)
+2026-09-28T12:47:37.132408715Z     ·     vote   35    YES to node 1          (seq 39)
+2026-09-28T12:47:38.631831469Z     ·     vote   35    YES to node 1          (seq 39)
+2026-09-28T12:47:38.704298185Z     ·     apply  35        69.3 ms HE    1 dec  from node 1  (seq 39)
+2026-09-28T12:47:40.655258233Z     ·     apply  36        69.5 ms HE    1 dec  from node 1  (seq 40)
+2026-09-28T12:47:50.654935162Z     ·     skip   61    node 5 gave up on it — moving on too  (occ 8)
+2026-09-28T12:47:50.662519285Z     ·     vote   33    YES to node 1          (seq 41)
+2026-09-28T12:47:52.172576064Z     ·     vote   33    YES to node 1          (seq 41)
+2026-09-28T12:47:53.673501937Z     ·     vote   33    YES to node 1          (seq 41)
+2026-09-28T12:47:53.749910836Z     ·     apply  33        69.5 ms HE    1 dec  from node 1  (seq 41)
+2026-09-28T12:47:55.321586905Z     ·     apply  34        69.7 ms HE    1 dec  from node 1  (seq 42)
+2026-09-28T12:47:55.393015325Z c4  s38  local  51        69.4 ms HE    1 dec  0 frames
+2026-09-28T12:47:55.462231289Z c4  s39  local  52        69.3 ms HE    1 dec  0 frames
+2026-09-28T12:47:58.320498297Z     ·     vote   37    YES to node 1          (seq 43)
+2026-09-28T12:47:59.818497271Z     ·     vote   37    YES to node 1          (seq 43)
+2026-09-28T12:48:01.454464861Z     ·     apply  37        69.4 ms HE    1 dec  from node 1  (seq 43)
+2026-09-28T12:48:02.954112823Z     ·     apply  38        69.8 ms HE    1 dec  from node 1  (seq 44)
+2026-09-28T12:48:02.956131187Z -- cycle 4/5 done at 495242.5 ms --
+2026-09-28T12:48:02.956253446Z 
+2026-09-28T12:48:02.956266752Z -- cycle 5/5 --
+2026-09-28T12:48:07.592926122Z     ·     vote   31    YES to node 1          (seq 45)
+2026-09-28T12:48:09.094851972Z     ·     vote   31    YES to node 1          (seq 45)
+2026-09-28T12:48:10.594508138Z     ·     vote   31    YES to node 1          (seq 45)
+2026-09-28T12:48:12.089173656Z     ·     vote   31    YES to node 1          (seq 45)
+2026-09-28T12:48:13.639418487Z     ·     vote   31    YES to node 1          (seq 45)
+2026-09-28T12:48:15.139231628Z     ·     vote   31    YES to node 1          (seq 45)
+2026-09-28T12:48:27.672433522Z     ·     vote   31    YES to node 1          (seq 45)
+2026-09-28T12:48:29.174359172Z     ·     vote   31    YES to node 1          (seq 45)
+2026-09-28T12:48:30.724410311Z     ·     skip   31    node 1 gave up on it — moving on too  (occ 9)
+2026-09-28T12:48:31.036514999Z     ·     skip   32    node 1 gave up on it — moving on too  (occ 9)
+2026-09-28T12:48:41.040201026Z     ·     vote   33    YES to node 1          (seq 45)
+2026-09-28T12:48:41.112984794Z     ·     apply  33        69.7 ms HE    1 dec  from node 1  (seq 45)
+2026-09-28T12:48:31.733797931Z     ·     apply  34        69.9 ms HE    1 dec  from node 1  (seq 46)
+2026-09-28T12:48:47.254408977Z     ·     vote   35    YES to node 1          (seq 47)
+2026-09-28T12:48:37.726769547Z     ·     vote   35    YES to node 1          (seq 47)
+2026-09-28T12:48:39.225832630Z     ·     vote   35    YES to node 1          (seq 47)
+2026-09-28T12:48:40.725878181Z     ·     vote   35    YES to node 1          (seq 47)
+2026-09-28T12:48:42.256294687Z     ·     vote   35    YES to node 1          (seq 47)
+2026-09-28T12:48:43.758050956Z     ·     vote   35    YES to node 1          (seq 47)
+2026-09-28T12:48:43.813607895Z     ·     vote   35    YES to node 1          (seq 47)
+2026-09-28T12:48:43.916164585Z     ·     vote   35    YES to node 1          (seq 47)
+2026-09-28T12:48:45.418729940Z     ·     vote   35    YES to node 1          (seq 47)
+2026-09-28T12:48:46.913825567Z     ·     vote   35    YES to node 1          (seq 47)
+2026-09-28T12:48:48.413971967Z     ·     vote   35    YES to node 1          (seq 47)
+2026-09-28T12:48:49.965067104Z     ·     skip   35    node 1 gave up on it — moving on too  (occ 9)
+2026-09-28T12:48:50.037258789Z c5  s11  local  53        69.8 ms HE    1 dec  0 frames
+2026-09-28T12:48:50.106737278Z c5  s12  local  54        69.4 ms HE    1 dec  0 frames
+2026-09-28T12:48:50.273044821Z     ·     skip   36    node 1 gave up on it — moving on too  (occ 9)
+2026-09-28T12:48:51.793016344Z     ·     vote   39    YES to node 1          (seq 47)
+2026-09-28T12:48:53.295583100Z     ·     vote   39    YES to node 1          (seq 47)
+2026-09-28T12:48:53.367497152Z     ·     apply  39        69.4 ms HE    1 dec  from node 1  (seq 47)
+2026-09-28T12:48:59.526383418Z     ·     apply  30        69.7 ms HE    1 dec  from node 1  (seq 48)
+2026-09-28T12:49:13.947264494Z     ·     vote   31    YES to node 1          (seq 49)
+2026-09-28T12:49:16.936761204Z     ·     vote   31    YES to node 1          (seq 49)
+2026-09-28T12:49:17.008630335Z     ·     apply  31        69.5 ms HE    1 dec  from node 1  (seq 49)
+2026-09-28T12:49:18.655699918Z     ·     apply  32        69.8 ms HE    1 dec  from node 1  (seq 50)
+2026-09-28T12:49:20.161736331Z     ·     vote   35    YES to node 1          (seq 51)
+2026-09-28T12:49:21.661130479Z     ·     vote   35    YES to node 1          (seq 51)
+2026-09-28T12:49:23.163477430Z     ·     vote   35    YES to node 1          (seq 51)
+2026-09-28T12:49:23.236066205Z     ·     apply  35        69.6 ms HE    1 dec  from node 1  (seq 51)
+2026-09-28T12:49:27.878985862Z     ·     apply  36        70.5 ms HE    1 dec  from node 1  (seq 52)
+2026-09-28T12:49:30.879461749Z     ·     vote   33    YES to node 1          (seq 53)
+2026-09-28T12:49:30.953485409Z     ·     apply  33        69.3 ms HE    1 dec  from node 1  (seq 53)
+2026-09-28T12:49:32.898194875Z     ·     apply  34        69.3 ms HE    1 dec  from node 1  (seq 54)
+2026-09-28T12:49:32.970015282Z c5  s38  local  51        69.4 ms HE    1 dec  0 frames
+2026-09-28T12:49:33.039453352Z c5  s39  local  52        69.3 ms HE    1 dec  0 frames
+2026-09-28T12:49:33.042231079Z     ·     vote   37    YES to node 1          (seq 55)
+2026-09-28T12:49:33.117028208Z     ·     apply  37        69.9 ms HE    1 dec  from node 1  (seq 55)
+2026-09-28T12:49:37.677985516Z     ·     apply  38        69.3 ms HE    1 dec  from node 1  (seq 56)
+2026-09-28T12:49:37.680419779Z -- cycle 5/5 done at 590014.1 ms --
+2026-09-28T12:49:37.680438188Z 
+2026-09-28T12:49:37.680496616Z ============================================================
+2026-09-28T12:49:37.680503019Z   SUMMARY — node 4/7 — LOCAL MODULAR — UDP/IP multicast (RFC 1112)
+2026-09-28T12:49:37.680505920Z ============================================================
+2026-09-28T12:49:37.680508121Z   events this node FIRED:
+2026-09-28T12:49:37.680510223Z   local (no network)     n=14   avg    69.56 ms  (HE   69.42 + net    0.00)  min   69.29  max    69.98  100.0%
+2026-09-28T12:49:37.680512324Z   shared controllable          (none on this node)
+2026-09-28T12:49:37.680514925Z   shared uncontroll.           (none on this node)
+2026-09-28T12:49:37.680516926Z   events this node APPLIED for a peer (participant side):
+2026-09-28T12:49:37.680519127Z   shared, applied        n=56   avg    74.08 ms  (HE   74.08 + net    0.00)  min   69.27  max   278.63
+2026-09-28T12:49:37.680521228Z   run clock, end of cycles 1..5 (ms): 97912.7 208688.0 344230.9 495242.5 590014.1
+2026-09-28T12:49:37.680523329Z      a cycle is over at the LATEST node's value; DES_WORK_MS 0 included
+2026-09-28T12:49:37.680525430Z   ----------------------------------------------------------
+2026-09-28T12:49:37.680527531Z   all events            n=14   avg    69.56 ms  (HE   69.42 + net    0.00)
+2026-09-28T12:49:37.680529532Z   PEER-WAIT + WIRE      0.0 % of total step time
+2026-09-28T12:49:37.680531533Z      (compare against the round-trip probe above: the excess is
+2026-09-28T12:49:37.680533534Z       the peer's own HE work, not the link.)
+2026-09-28T12:49:37.680535635Z   frames: tx=2237 rx=10312 retransmits=0
+2026-09-28T12:49:37.680537636Z   authentication: HMAC-SHA256/128, 3.7 us per frame; 0 rejected (bad tag), 0 stale/replayed dropped, 6 epoch challenges
+2026-09-28T12:49:37.680539937Z   rx queue: peak 10/64 frames
+2026-09-28T12:49:37.680541938Z   plant check: 3 event reports rejected as physically impossible
+2026-09-28T12:49:37.680543939Z      (these supervisors carry the plant: an impossible uncontrollable event is caught)
+2026-09-28T12:49:37.680546040Z   !! 6 STEPS SKIPPED — each SKIP line above says why. Firing a
+2026-09-28T12:49:37.680548141Z      step anyway would corrupt every supervisor downstream.
+2026-09-28T12:49:37.680550142Z   injected frame loss: 10 %
+2026-09-28T12:49:37.680552243Z   ----------------------------------------------------------
+2026-09-28T12:49:37.680554344Z   homomorphic vs cleartext oracle : PASS — every encrypted bit matched
+2026-09-28T12:49:37.680556745Z      (PASS certifies the cryptography: each node's encrypted bits
+2026-09-28T12:49:37.680558846Z       match its own clear model for the events it applied. It does
+2026-09-28T12:49:37.680560847Z       not certify the distributed run — read the skips for that.)
+2026-09-28T12:49:37.680562848Z   distributed vs MONOLITHIC sup.  : off — this header has no monolithic supervisor
+2026-09-28T12:49:37.680565749Z   safe halt                       : no — ran to completion
+2026-09-28T12:49:37.680608770Z ============================================================
+2026-09-28T12:49:47.687001983Z @@RESULT {"node":4,"nodes":7,"family":"LOCAL MODULAR","data":"supervisor_data_fms.h","transport":"UDP/IP multicast (RFC 1112)","fingerprint":"04511541","supervisors":["S3"],"fired":{"local":14,"ctrl":0,"unctrl":0},"applied_for_peers":56,"skips":6,"impossible":3,"tx":2238,"rx":10338,"retx":0,"auth_bad":0,"replays":0,"challenges":6,"mac_us":3.71,"rxq_peak":10,"rxq_drops":0,"sync_wait_ms":0.0,"oracle":"PASS","safe_halt":false,"halt_reason":"","cycle_end_ms":[97912.7,208688.0,344230.9,495242.5,590014.1],"rounds":5,"work_ms":0,"emu_scalarmul_ms":69.0,"loss_pct":10,"loss_seed":1731149945,"exit":1}

@@ -1,0 +1,323 @@
+2026-09-28T13:49:59.742708762Z des_container: node 1 of 7, LOCAL MODULAR, data supervisor_data_fms.h, transport UDP/IP multicast (RFC 1112)
+2026-09-28T13:49:59.742942373Z des_container: EMULATING the ESP32 — every decryption takes at least 69.0 ms (DES_EMU_SCALARMUL_MS)
+2026-09-28T13:49:59.742951578Z des_container: dropping 10 % of received frames, seed 3121014296 (DES_LOSS_SEED to replay)
+2026-09-28T13:49:59.742954979Z 
+2026-09-28T13:49:59.742980792Z ============================================================
+2026-09-28T13:49:59.742985694Z   Distributed Homomorphic DES — generic engine
+2026-09-28T13:49:59.742988095Z   node 1/7   family LOCAL MODULAR   7 supervisors   31 events
+2026-09-28T13:49:59.742989696Z   data: supervisor_data_fms.h
+2026-09-28T13:49:59.742991297Z ============================================================
+2026-09-28T13:49:59.743938449Z --- event routing (DERIVED from the header, not hardcoded) ---
+2026-09-28T13:49:59.743963061Z   event  ctrl  nodes      owner  class
+2026-09-28T13:49:59.743966763Z   11     yes   1          1      local — no network
+2026-09-28T13:49:59.743969764Z   12     no    1          1      local — no network
+2026-09-28T13:49:59.743971965Z   21     yes   2          2      local — no network
+2026-09-28T13:49:59.743974166Z   22     no    2          2      local — no network
+2026-09-28T13:49:59.743976767Z   30     no    1 2 3 4 5 6 7  1      SHARED — needs network
+2026-09-28T13:49:59.743979069Z   31     yes   1 2 3 4 5 6 7  1      SHARED — needs network
+2026-09-28T13:49:59.743981370Z   32     no    1 2 3 4 5 6 7  1      SHARED — needs network
+2026-09-28T13:49:59.743983671Z   33     yes   1 2 3 4 5 6 7  1      SHARED — needs network
+2026-09-28T13:49:59.743985772Z   34     no    1 2 3 4 5 6 7  1      SHARED — needs network
+2026-09-28T13:49:59.743989073Z   35     yes   1 2 3 4 5 6 7  1      SHARED — needs network
+2026-09-28T13:49:59.743991274Z   36     no    1 2 3 4 5 6 7  1      SHARED — needs network
+2026-09-28T13:49:59.743993475Z   37     yes   1 2 3 4 5 6 7  1      SHARED — needs network
+2026-09-28T13:49:59.743995977Z   38     no    1 2 3 4 5 6 7  1      SHARED — needs network
+2026-09-28T13:49:59.743998178Z   39     yes   1 2 3 4 5 6 7  1      SHARED — needs network
+2026-09-28T13:49:59.744000479Z   41     yes   3          3      local — no network
+2026-09-28T13:49:59.744002880Z   42     no    3          3      local — no network
+2026-09-28T13:49:59.744005181Z   51     yes   4          4      local — no network
+2026-09-28T13:49:59.744007382Z   52     no    4          4      local — no network
+2026-09-28T13:49:59.744009683Z   53     yes   4          4      local — no network
+2026-09-28T13:49:59.744011784Z   54     no    4          4      local — no network
+2026-09-28T13:49:59.744013985Z   61     yes   5 6 7      5      SHARED — needs network
+2026-09-28T13:49:59.744213881Z   63     yes   5 6 7      5      SHARED — needs network
+2026-09-28T13:49:59.744222585Z   64     no    5 6 7      5      SHARED — needs network
+2026-09-28T13:49:59.744225486Z   65     yes   5 6 7      5      SHARED — needs network
+2026-09-28T13:49:59.744228188Z   66     no    5 6 7      5      SHARED — needs network
+2026-09-28T13:49:59.744230489Z   71     yes   7          7      local — no network
+2026-09-28T13:49:59.744232890Z   72     no    7          7      local — no network
+2026-09-28T13:49:59.744235391Z   73     yes   7          7      local — no network
+2026-09-28T13:49:59.744237992Z   74     no    7          7      local — no network
+2026-09-28T13:49:59.744245196Z   81     yes   7          7      local — no network
+2026-09-28T13:49:59.744247797Z   82     no    7          7      local — no network
+2026-09-28T13:49:59.744249998Z   => 15/31 events shared; 16/31 need ZERO network traffic; 12 concern this node
+2026-09-28T13:49:59.744252699Z   NOTE controllability was INFERRED from event labels (the header
+2026-09-28T13:49:59.744263905Z        does not carry it). Check the 'ctrl' column above; if it is
+2026-09-28T13:49:59.744266506Z        wrong, set DES_CONTROLLABLE_MASK explicitly.
+2026-09-28T13:49:59.744269007Z 
+2026-09-28T13:49:59.744271808Z [init] config fingerprint 04511541 — every node must print the same
+2026-09-28T13:49:59.744275910Z 
+2026-09-28T13:49:59.744836578Z [net] UDP multicast 239.192.7.1:5077  ttl=1  frame=44 B
+2026-09-28T13:49:59.744859489Z --- crypto self-test ---
+2026-09-28T13:49:59.749863179Z   Enc(0)->0 Enc(1)->1                PASS
+2026-09-28T13:49:59.750775815Z   Enc(1)+Enc(1)->1 homomorphic OR   PASS
+2026-09-28T13:49:59.751557188Z   Enc(0)+Enc(0)->0                  PASS
+2026-09-28T13:49:59.751573796Z   curve secp192r1, ciphertext 50 B    PASS
+2026-09-28T13:49:59.751809409Z   frame tag HMAC-SHA256/128: 2.0 us, 1-bit tamper caught  PASS
+2026-09-28T13:49:59.751828018Z 
+2026-09-28T13:49:59.751831720Z --- encrypting my supervisors' initial states ---
+2026-09-28T13:49:59.751834721Z [load] S0         idx 0   18 states  12 constraining ev     900 B ciphertext
+2026-09-28T13:50:00.601922497Z [init] my keypair is mine alone; no ciphertext ever leaves this node
+2026-09-28T13:50:00.601956813Z [init] my enablement: 11=1 12=0 21=1 22=1 30=0 31=0 32=0 33=1 34=0 35=1 36=0 37=1 38=0 39=1 41=1 42=1 51=1 52=1 53=1 54=1 61=1 63=1 64=1 65=1 66=1 71=1 72=1 73=1 74=1 81=1 82=1
+2026-09-28T13:50:00.601961015Z 
+2026-09-28T13:50:01.608725533Z [net] waiting for 6 peer(s)..... all present.
+2026-09-28T13:50:03.113760068Z 
+2026-09-28T13:50:03.113873622Z --- transport round-trip probe (UDP/IP multicast (RFC 1112)) ---
+2026-09-28T13:50:07.463556570Z   7 probes: avg 4.38 ms  min 2.94 ms  max 5.86 ms
+2026-09-28T13:50:07.463627204Z 
+2026-09-28T13:50:07.463631606Z ============================================================
+2026-09-28T13:50:07.463634507Z   RUN — SIM_SEQ driver — 5 cycles x 44 steps — LOCAL MODULAR
+2026-09-28T13:50:07.463638009Z   columns: cN sNN = cycle/step of MY walk; · = a peer caused this
+2026-09-28T13:50:07.463641811Z   'done at': run clock, common to all nodes; a cycle is over at the
+2026-09-28T13:50:07.463644412Z   LATEST node's print, machine time (DES_WORK_MS 0) included
+2026-09-28T13:50:07.463647213Z ============================================================
+2026-09-28T13:50:07.463649815Z 
+2026-09-28T13:50:07.463652216Z -- cycle 1/5 --
+2026-09-28T13:50:07.604381640Z c1  s1   local  11       139.9 ms HE    2 dec  0 frames
+2026-09-28T13:50:07.674217200Z c1  s2   local  12        69.6 ms HE    1 dec  0 frames
+2026-09-28T13:50:20.223476014Z c1  s3   2pc    31        69.8 ms HE    1 dec  14 frames  + 1507.7 ms peer-wait  (seq 1)
+2026-09-28T13:50:13.892948888Z c1  s4   notify 32        69.4 ms HE    1 dec  7 frames  + 4501.1 ms peer-wait  (seq 2)
+2026-09-28T13:50:18.464994154Z c1  s8   2pc    33        69.8 ms HE    1 dec  14 frames  + 4507.2 ms peer-wait  (seq 3)
+2026-09-28T13:50:26.037633626Z c1  s9   notify 34        69.6 ms HE    1 dec  7 frames  + 7503.9 ms peer-wait  (seq 4)
+2026-09-28T13:50:29.119357625Z c1  s10  2pc    35        70.1 ms HE    1 dec  14 frames  + 3011.1 ms peer-wait  (seq 5)
+2026-09-28T13:50:32.256456776Z c1  s13  notify 36        69.5 ms HE    1 dec  7 frames  + 3000.6 ms peer-wait  (seq 6)
+2026-09-28T13:50:38.266406892Z c1  s14  retry  39    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T13:50:38.390828926Z c1  s14  2pc    39        69.8 ms HE    1 dec  14 frames  + 4.2 ms peer-wait  (seq 7)
+2026-09-28T13:50:41.989810795Z c1  s16  notify 30        69.9 ms HE    1 dec  7 frames  + 1505.2 ms peer-wait  (seq 8)
+2026-09-28T13:50:42.059695378Z c1  s25  local  11        70.0 ms HE    1 dec  0 frames
+2026-09-28T13:50:42.129582362Z c1  s27  local  12        69.7 ms HE    1 dec  0 frames
+2026-09-28T13:50:44.888819749Z c1  s28  2pc    31        70.5 ms HE    1 dec  14 frames  + 1506.8 ms peer-wait  (seq 9)
+2026-09-28T13:50:46.468722548Z c1  s29  notify 32        69.9 ms HE    1 dec  7 frames  + 1505.1 ms peer-wait  (seq 10)
+2026-09-28T13:51:00.352899290Z c1  s32  2pc    35        73.4 ms HE    1 dec  14 frames  + 3006.1 ms peer-wait  (seq 11)
+2026-09-28T13:50:53.942145100Z c1  s33  notify 36        72.9 ms HE    1 dec  7 frames  + 4501.8 ms peer-wait  (seq 12)
+2026-09-28T13:51:02.032577620Z c1  s36  retry  33    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T13:51:05.164254650Z c1  s36  2pc    33        70.1 ms HE    1 dec  14 frames  + 3005.3 ms peer-wait  (seq 13)
+2026-09-28T13:51:08.237786335Z c1  s37  notify 34        69.9 ms HE    1 dec  7 frames  + 3003.3 ms peer-wait  (seq 14)
+2026-09-28T13:51:08.315832816Z c1  s40  2pc    37        70.0 ms HE    1 dec  14 frames  + 5.5 ms peer-wait  (seq 15)
+2026-09-28T13:51:11.683386726Z c1  s41  notify 38        69.9 ms HE    1 dec  7 frames  + 3001.0 ms peer-wait  (seq 16)
+2026-09-28T13:51:11.683521882Z -- cycle 1/5 done at 64499.0 ms --
+2026-09-28T13:51:11.683552013Z 
+2026-09-28T13:51:11.683571739Z -- cycle 2/5 --
+2026-09-28T13:51:11.758483407Z c2  s1   local  11        75.0 ms HE    1 dec  0 frames
+2026-09-28T13:51:11.830436920Z c2  s2   local  12        72.4 ms HE    1 dec  0 frames
+2026-09-28T13:51:19.142470051Z c2  s3   retry  31    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T13:51:25.183581329Z c2  s3   retry  31    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T13:51:25.234518161Z c2  s3   SKIP   31    no quorum — a peer never answered
+2026-09-28T13:51:25.845251601Z c2  s4   [!!]   32    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+2026-09-28T13:51:25.845337241Z c2  s4   SKIP   32    physically impossible here — rejected
+2026-09-28T13:51:35.855636824Z c2  s8   sync   33    waiting for peers to reach this step (10 s)
+2026-09-28T13:51:41.849786890Z c2  s8   retry  33    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T13:51:47.912602761Z c2  s8   retry  33    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T13:51:47.963456853Z c2  s8   SKIP   33    no quorum — a peer never answered
+2026-09-28T13:51:47.970646488Z c2  s9   [!!]   34    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+2026-09-28T13:51:47.970702014Z c2  s9   SKIP   34    physically impossible here — rejected
+2026-09-28T13:51:54.279705264Z c2  s10  retry  35    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T13:51:55.822830015Z c2  s10  veto   35    a peer's supervisor disables it here  (1505.2 ms)
+2026-09-28T13:51:59.182716988Z c2  s10  veto   35    refused 2 more times over 10.9 s, giving up
+2026-09-28T13:51:59.182804530Z c2  s10  SKIP   35    a PEER's supervisor kept vetoing it
+2026-09-28T13:52:20.160948909Z c2  s13  sync   36    waiting for peers to reach this step (10 s)
+2026-09-28T13:52:20.167395889Z c2  s13  [!!]   36    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+2026-09-28T13:52:20.168436186Z c2  s13  SKIP   36    physically impossible here — rejected
+2026-09-28T13:52:21.681568689Z c2  s14  veto   39    a peer's supervisor disables it here  (1505.7 ms)
+2026-09-28T13:52:24.976775488Z c2  s14  retry  39    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T13:52:25.027460599Z c2  s14  veto   39    refused 3 more times over 15.8 s, giving up
+2026-09-28T13:52:25.027586760Z c2  s14  SKIP   39    no quorum — a peer never answered
+2026-09-28T13:52:35.018696790Z c2  s16  sync   30    waiting for peers to reach this step (10 s)
+2026-09-28T13:52:35.325932853Z     ·     skip   61    node 5 gave up on it — moving on too  (occ 3)
+2026-09-28T13:52:35.331399164Z c2  s16  [!!]   30    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+2026-09-28T13:52:35.331647583Z c2  s16  SKIP   30    physically impossible here — rejected
+2026-09-28T13:52:45.333956856Z c2  s25  SKIP   11    my own supervisor disables it here
+2026-09-28T13:52:45.334075113Z c2  s27  [!!]   12    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+2026-09-28T13:52:45.334217781Z c2  s27  SKIP   12    physically impossible here — rejected
+2026-09-28T13:52:55.332159270Z c2  s28  sync   31    waiting for peers to reach this step (10 s)
+2026-09-28T13:53:05.336519842Z c2  s28  sync   31    waiting for peers to reach this step (20 s)
+2026-09-28T13:53:15.322016112Z c2  s28  sync   31    waiting for peers to reach this step (30 s)
+2026-09-28T13:53:15.640821801Z     ·     skip   65    node 5 gave up on it — moving on too  (occ 2)
+2026-09-28T13:53:15.949566184Z     ·     skip   66    node 5 gave up on it — moving on too  (occ 2)
+2026-09-28T13:53:20.836909969Z c2  s28  2pc    31        70.6 ms HE    1 dec  14 frames  + 4508.5 ms peer-wait  (seq 17)
+2026-09-28T13:53:20.907376330Z c2  s29  notify 32        69.6 ms HE    1 dec  7 frames  + 1.9 ms peer-wait  (seq 18)
+2026-09-28T13:53:27.353554092Z c2  s32  retry  35    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T13:53:31.985589382Z c2  s32  2pc    35        70.2 ms HE    1 dec  14 frames  + 4505.4 ms peer-wait  (seq 19)
+2026-09-28T13:53:32.057074329Z c2  s33  notify 36        69.7 ms HE    1 dec  7 frames  + 1.9 ms peer-wait  (seq 20)
+2026-09-28T13:53:42.338303887Z c2  s36  retry  33    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T13:53:48.386480687Z c2  s36  retry  33    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T13:53:48.437319572Z c2  s36  SKIP   33    no quorum — a peer never answered
+2026-09-28T13:53:48.745711586Z c2  s37  [!!]   34    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+2026-09-28T13:53:48.745764412Z c2  s37  SKIP   34    physically impossible here — rejected
+2026-09-28T13:53:58.745648646Z c2  s40  sync   37    waiting for peers to reach this step (10 s)
+2026-09-28T13:54:00.259359508Z c2  s40  veto   37    a peer's supervisor disables it here  (1505.5 ms)
+2026-09-28T13:54:06.306858507Z c2  s40  retry  37    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T13:54:10.880854920Z c2  s40  veto   37    refused 4 more times over 12.1 s, giving up
+2026-09-28T13:54:10.882182754Z c2  s40  SKIP   37    a PEER's supervisor kept vetoing it
+2026-09-28T13:54:11.187553426Z c2  s41  [!!]   38    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+2026-09-28T13:54:11.187821154Z c2  s41  SKIP   38    physically impossible here — rejected
+2026-09-28T13:54:11.187846866Z -- cycle 2/5 done at 244437.8 ms --
+2026-09-28T13:54:11.187861973Z 
+2026-09-28T13:54:11.187875280Z -- cycle 3/5 --
+2026-09-28T13:54:11.258493313Z c3  s1   local  11        69.7 ms HE    1 dec  0 frames
+2026-09-28T13:54:11.328423518Z c3  s2   local  12        69.7 ms HE    1 dec  0 frames
+2026-09-28T13:54:21.335967040Z c3  s3   sync   31    waiting for peers to reach this step (10 s)
+2026-09-28T13:54:25.738785563Z     ·     skip   63    node 5 gave up on it — moving on too  (occ 2)
+2026-09-28T13:54:25.746874927Z     ·     skip   64    node 5 gave up on it — moving on too  (occ 2)
+2026-09-28T13:54:25.827450917Z c3  s3   2pc    31        70.1 ms HE    1 dec  14 frames  + 7.2 ms peer-wait  (seq 21)
+2026-09-28T13:54:28.902660203Z c3  s4   notify 32        69.7 ms HE    1 dec  7 frames  + 3001.4 ms peer-wait  (seq 22)
+2026-09-28T13:54:31.983634733Z c3  s8   2pc    33        70.2 ms HE    1 dec  14 frames  + 3010.4 ms peer-wait  (seq 23)
+2026-09-28T13:54:33.628929568Z c3  s9   notify 34        69.9 ms HE    1 dec  7 frames  + 1505.2 ms peer-wait  (seq 24)
+2026-09-28T13:54:39.712577287Z c3  s10  retry  35    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T13:54:45.756374111Z c3  s10  retry  35    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T13:54:45.808524723Z c3  s10  SKIP   35    no quorum — a peer never answered
+2026-09-28T13:54:46.118654468Z c3  s13  [!!]   36    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+2026-09-28T13:54:46.118981424Z c3  s13  SKIP   36    physically impossible here — rejected
+2026-09-28T13:54:52.422577891Z c3  s14  retry  39    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T13:54:55.552720379Z c3  s14  2pc    39        70.3 ms HE    1 dec  14 frames  + 3012.1 ms peer-wait  (seq 25)
+2026-09-28T13:55:04.054163938Z     ·     skip   61    node 5 gave up on it — moving on too  (occ 5)
+2026-09-28T13:55:04.431371025Z c3  s16  notify 30        70.1 ms HE    1 dec  7 frames  + 2.2 ms peer-wait  (seq 26)
+2026-09-28T13:55:04.502643470Z c3  s25  local  11        70.0 ms HE    1 dec  0 frames
+2026-09-28T13:55:04.572769469Z c3  s27  local  12        70.0 ms HE    1 dec  0 frames
+2026-09-28T13:55:08.078117684Z c3  s28  veto   31    a peer's supervisor disables it here  (3.7 ms)
+2026-09-28T13:55:27.308560727Z c3  s28  retry  31    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T13:55:30.669464786Z c3  s28  veto   31    refused 5 more times over 11.6 s, giving up
+2026-09-28T13:55:30.669613657Z c3  s28  SKIP   31    a PEER's supervisor kept vetoing it
+2026-09-28T13:55:30.675735882Z c3  s29  [!!]   32    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+2026-09-28T13:55:30.676561576Z c3  s29  SKIP   32    physically impossible here — rejected
+2026-09-28T13:55:29.701414756Z c3  s32  sync   35    waiting for peers to reach this step (10 s)
+2026-09-28T13:55:36.094331985Z c3  s32  2pc    35        70.0 ms HE    1 dec  14 frames  + 6008.3 ms peer-wait  (seq 27)
+2026-09-28T13:55:39.165996378Z c3  s33  notify 36        70.0 ms HE    1 dec  7 frames  + 3001.7 ms peer-wait  (seq 28)
+2026-09-28T13:55:42.326248674Z c3  s36  2pc    33        69.7 ms HE    1 dec  14 frames  + 3005.8 ms peer-wait  (seq 29)
+2026-09-28T13:55:43.901079850Z c3  s37  notify 34        70.2 ms HE    1 dec  7 frames  + 1504.5 ms peer-wait  (seq 30)
+2026-09-28T13:55:49.901839473Z c3  s40  retry  37    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T13:55:53.026646945Z c3  s40  2pc    37        69.6 ms HE    1 dec  14 frames  + 3009.2 ms peer-wait  (seq 31)
+2026-09-28T13:55:56.088738110Z c3  s41  notify 38        69.9 ms HE    1 dec  7 frames  + 3000.9 ms peer-wait  (seq 32)
+2026-09-28T13:55:56.089126596Z -- cycle 3/5 done at 349386.0 ms --
+2026-09-28T13:55:56.089160212Z 
+2026-09-28T13:55:56.089172017Z -- cycle 4/5 --
+2026-09-28T13:56:06.089320419Z c4  s1   SKIP   11    my own supervisor disables it here
+2026-09-28T13:56:06.089430872Z c4  s2   [!!]   12    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+2026-09-28T13:56:06.089464288Z c4  s2   SKIP   12    physically impossible here — rejected
+2026-09-28T13:56:10.671132967Z c4  s3   2pc    31        69.7 ms HE    1 dec  14 frames  + 4505.9 ms peer-wait  (seq 33)
+2026-09-28T13:56:13.741520951Z c4  s4   notify 32        69.9 ms HE    1 dec  7 frames  + 3000.9 ms peer-wait  (seq 34)
+2026-09-28T13:56:26.276055333Z c4  s8   2pc    33        70.6 ms HE    1 dec  14 frames  + 1504.8 ms peer-wait  (seq 35)
+2026-09-28T13:56:18.683916731Z c4  s9   notify 34        69.9 ms HE    1 dec  7 frames  + 3001.7 ms peer-wait  (seq 36)
+2026-09-28T13:56:21.757187001Z c4  s10  2pc    35        69.7 ms HE    1 dec  14 frames  + 3006.1 ms peer-wait  (seq 37)
+2026-09-28T13:56:23.333110099Z c4  s13  notify 36        69.7 ms HE    1 dec  7 frames  + 1506.1 ms peer-wait  (seq 38)
+2026-09-28T13:56:29.711510075Z c4  s14  retry  39    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T13:56:35.757921659Z c4  s14  retry  39    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T13:56:35.809613251Z c4  s14  SKIP   39    no quorum — a peer never answered
+2026-09-28T13:56:36.347224961Z c4  s16  [!!]   30    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+2026-09-28T13:56:36.347326310Z c4  s16  SKIP   30    physically impossible here — rejected
+2026-09-28T13:56:36.418244586Z c4  s25  local  11        70.0 ms HE    1 dec  0 frames
+2026-09-28T13:56:36.488345873Z c4  s27  local  12        69.6 ms HE    1 dec  0 frames
+2026-09-28T13:56:46.481716791Z c4  s28  sync   31    waiting for peers to reach this step (10 s)
+2026-09-28T13:56:56.484344137Z c4  s28  sync   31    waiting for peers to reach this step (20 s)
+2026-09-28T13:57:06.486274440Z c4  s28  sync   31    waiting for peers to reach this step (30 s)
+2026-09-28T13:57:16.476679007Z c4  s28  sync   31    waiting for peers to reach this step (40 s)
+2026-09-28T13:57:16.939961411Z     ·     skip   65    node 5 gave up on it — moving on too  (occ 4)
+2026-09-28T13:57:16.946260720Z     ·     skip   66    node 5 gave up on it — moving on too  (occ 4)
+2026-09-28T13:57:23.257177740Z c4  s28  retry  31    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T13:57:27.886553152Z c4  s28  2pc    31        70.3 ms HE    1 dec  14 frames  + 4508.1 ms peer-wait  (seq 39)
+2026-09-28T13:57:28.263511220Z c4  s29  notify 32        69.8 ms HE    1 dec  7 frames  + 1.9 ms peer-wait  (seq 40)
+2026-09-28T13:57:34.565795545Z c4  s32  retry  35    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T13:57:40.603670526Z c4  s32  retry  35    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T13:57:40.653438499Z c4  s32  SKIP   35    no quorum — a peer never answered
+2026-09-28T13:57:40.660661149Z c4  s33  [!!]   36    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+2026-09-28T13:57:40.660708872Z c4  s33  SKIP   36    physically impossible here — rejected
+2026-09-28T13:57:50.668631313Z c4  s36  sync   33    waiting for peers to reach this step (10 s)
+2026-09-28T13:57:50.979850678Z     ·     skip   61    node 5 gave up on it — moving on too  (occ 8)
+2026-09-28T13:57:50.990133090Z c4  s36  veto   33    a peer's supervisor disables it here  (5.1 ms)
+2026-09-28T13:57:57.029676201Z c4  s36  retry  33    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T13:58:04.893703632Z c4  s36  retry  33    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T13:58:04.944239172Z c4  s36  veto   33    refused 2 more times over 14.0 s, giving up
+2026-09-28T13:58:04.944694890Z c4  s36  SKIP   33    no quorum — a peer never answered
+2026-09-28T13:58:05.254832338Z c4  s37  [!!]   34    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+2026-09-28T13:58:05.255113372Z c4  s37  SKIP   34    physically impossible here — rejected
+2026-09-28T13:58:15.263456096Z c4  s40  sync   37    waiting for peers to reach this step (10 s)
+2026-09-28T13:58:16.764020118Z c4  s40  veto   37    a peer's supervisor disables it here  (1502.6 ms)
+2026-09-28T13:58:22.820432865Z c4  s40  retry  37    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T13:58:28.079295209Z c4  s40  veto   37    refused 3 more times over 12.8 s, giving up
+2026-09-28T13:58:28.079325323Z c4  s40  SKIP   37    a PEER's supervisor kept vetoing it
+2026-09-28T13:58:28.083630180Z c4  s41  [!!]   38    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+2026-09-28T13:58:28.083714520Z c4  s41  SKIP   38    physically impossible here — rejected
+2026-09-28T13:58:28.083720323Z -- cycle 4/5 done at 501448.1 ms --
+2026-09-28T13:58:28.083722724Z 
+2026-09-28T13:58:28.083724825Z -- cycle 5/5 --
+2026-09-28T13:58:28.153141984Z c5  s1   local  11        69.3 ms HE    1 dec  0 frames
+2026-09-28T13:58:28.222361550Z c5  s2   local  12        69.2 ms HE    1 dec  0 frames
+2026-09-28T13:58:38.216836735Z c5  s3   sync   31    waiting for peers to reach this step (10 s)
+2026-09-28T13:58:38.661360578Z     ·     skip   63    node 5 gave up on it — moving on too  (occ 4)
+2026-09-28T13:58:38.665762480Z     ·     skip   64    node 5 gave up on it — moving on too  (occ 4)
+2026-09-28T13:58:42.012639929Z c5  s3   veto   31    a peer's supervisor disables it here  (3005.2 ms)
+2026-09-28T13:58:48.026606640Z c5  s3   retry  31    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T13:58:54.076297699Z c5  s3   retry  31    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T13:58:54.127530172Z c5  s3   SKIP   31    no quorum — a peer never answered
+2026-09-28T13:58:54.434281703Z c5  s4   [!!]   32    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+2026-09-28T13:58:54.434342632Z c5  s4   SKIP   32    physically impossible here — rejected
+2026-09-28T13:59:04.441230264Z c5  s8   sync   33    waiting for peers to reach this step (10 s)
+2026-09-28T13:59:21.702632020Z c5  s8   retry  33    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T13:59:12.288160920Z c5  s8   veto   33    a peer's supervisor disables it here  (1503.7 ms)
+2026-09-28T13:59:18.340234765Z c5  s8   retry  33    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T13:59:18.391387400Z c5  s8   SKIP   33    no quorum — a peer never answered
+2026-09-28T13:59:18.699577519Z c5  s9   [!!]   34    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+2026-09-28T13:59:18.699698977Z c5  s9   SKIP   34    physically impossible here — rejected
+2026-09-28T13:59:25.007651236Z c5  s10  retry  35    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T13:59:31.057749927Z c5  s10  retry  35    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T13:59:31.109184496Z c5  s10  SKIP   35    no quorum — a peer never answered
+2026-09-28T13:59:41.110999175Z c5  s13  sync   36    waiting for peers to reach this step (10 s)
+2026-09-28T13:59:41.115712627Z c5  s13  [!!]   36    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+2026-09-28T13:59:41.115876505Z c5  s13  SKIP   36    physically impossible here — rejected
+2026-09-28T13:59:47.498214967Z c5  s14  2pc    39        70.3 ms HE    1 dec  14 frames  + 6004.6 ms peer-wait  (seq 41)
+2026-09-28T13:59:54.503914818Z     ·     skip   61    node 5 gave up on it — moving on too  (occ 9)
+2026-09-28T13:59:54.580417362Z c5  s16  notify 30        69.7 ms HE    1 dec  7 frames  + 1.6 ms peer-wait  (seq 42)
+2026-09-28T14:00:15.553178449Z c5  s25  SKIP   11    my own supervisor disables it here
+2026-09-28T14:00:15.553258987Z c5  s27  [!!]   12    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+2026-09-28T14:00:15.553282999Z c5  s27  SKIP   12    physically impossible here — rejected
+2026-09-28T14:00:15.560642715Z c5  s28  veto   31    a peer's supervisor disables it here  (5.0 ms)
+2026-09-28T14:00:17.366703819Z c5  s28  retry  31    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T14:00:17.417133009Z c5  s28  veto   31    refused 3 more times over 12.8 s, giving up
+2026-09-28T14:00:17.418116378Z c5  s28  SKIP   31    no quorum — a peer never answered
+2026-09-28T14:00:17.725846877Z c5  s29  [!!]   32    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+2026-09-28T14:00:17.725949226Z c5  s29  SKIP   32    physically impossible here — rejected
+2026-09-28T14:00:27.722604942Z c5  s32  sync   35    waiting for peers to reach this step (10 s)
+2026-09-28T14:00:41.771830967Z c5  s32  2pc    35        70.0 ms HE    1 dec  14 frames  + 3005.8 ms peer-wait  (seq 43)
+2026-09-28T14:00:34.185479254Z c5  s33  notify 36        70.0 ms HE    1 dec  7 frames  + 3002.1 ms peer-wait  (seq 44)
+2026-09-28T14:00:37.259511104Z c5  s36  2pc    33        69.5 ms HE    1 dec  14 frames  + 3009.0 ms peer-wait  (seq 45)
+2026-09-28T14:00:40.329391845Z c5  s37  notify 34        70.0 ms HE    1 dec  7 frames  + 3000.3 ms peer-wait  (seq 46)
+2026-09-28T14:00:46.327405477Z c5  s40  retry  37    no quorum after 4 tries — nothing applied anywhere
+2026-09-28T14:00:49.456036983Z c5  s40  2pc    37        69.9 ms HE    1 dec  14 frames  + 3007.8 ms peer-wait  (seq 47)
+2026-09-28T14:00:54.034440830Z c5  s41  notify 38        69.9 ms HE    1 dec  7 frames  + 4502.2 ms peer-wait  (seq 48)
+2026-09-28T14:00:54.034649730Z -- cycle 5/5 done at 647453.5 ms --
+2026-09-28T14:00:54.034677143Z 
+2026-09-28T14:00:54.034693550Z ============================================================
+2026-09-28T14:00:54.034709058Z   SUMMARY — node 1/7 — LOCAL MODULAR — UDP/IP multicast (RFC 1112)
+2026-09-28T14:00:54.034726866Z ============================================================
+2026-09-28T14:00:54.034743274Z   events this node FIRED:
+2026-09-28T14:00:54.034758982Z   local (no network)     n=14   avg    75.52 ms  (HE   75.30 + net    0.00)  min   69.25  max   140.13    0.8%
+2026-09-28T14:00:54.034774789Z   shared controllable    n=24   avg  3077.58 ms  (HE   70.17 + net 3007.21)  min   74.01  max  6078.42   54.6%
+2026-09-28T14:00:54.034791697Z   shared uncontroll.     n=24   avg  2510.08 ms  (HE   69.95 + net 2439.93)  min   71.38  max  7573.72   44.6%
+2026-09-28T14:00:54.034866133Z   events this node APPLIED for a peer (participant side):
+2026-09-28T14:00:54.034880340Z   shared, applied              (none on this node)
+2026-09-28T14:00:54.034891645Z   sync-wait (peers reaching a shared step): n=80 avg 2952.17 ms, 236.2 s total
+2026-09-28T14:00:54.034903651Z      not protocol cost — the plant catching up; kept out of the rows above
+2026-09-28T14:00:54.034916057Z   run clock, end of cycles 1..5 (ms): 64499.0 244437.8 349386.0 501448.1 647453.5
+2026-09-28T14:00:54.034927562Z      a cycle is over at the LATEST node's value; DES_WORK_MS 0 included
+2026-09-28T14:00:54.034938968Z   ----------------------------------------------------------
+2026-09-28T14:00:54.034950973Z   all events            n=62   avg  2180.02 ms  (HE   71.24 + net 2108.57)
+2026-09-28T14:00:54.034962279Z   PEER-WAIT + WIRE      96.7 % of total step time
+2026-09-28T14:00:54.034973484Z      (compare against the round-trip probe above: the excess is
+2026-09-28T14:00:54.034986390Z       the peer's own HE work, not the link.)
+2026-09-28T14:00:54.034997396Z   frames: tx=529 rx=12813 retransmits=190
+2026-09-28T14:00:54.035009401Z   authentication: HMAC-SHA256/128, 2.0 us per frame; 0 rejected (bad tag), 0 stale/replayed dropped, 7 epoch challenges
+2026-09-28T14:00:54.035021807Z   rx queue: peak 17/64 frames
+2026-09-28T14:00:54.035035414Z   plant check: 19 event reports rejected as physically impossible
+2026-09-28T14:00:54.035047219Z      (these supervisors carry the plant: an impossible uncontrollable event is caught)
+2026-09-28T14:00:54.035058725Z   !! 38 STEPS SKIPPED — each SKIP line above says why. Firing a
+2026-09-28T14:00:54.035069830Z      step anyway would corrupt every supervisor downstream.
+2026-09-28T14:00:54.035081736Z   injected frame loss: 10 %
+2026-09-28T14:00:54.035092641Z   ----------------------------------------------------------
+2026-09-28T14:00:54.035104747Z   homomorphic vs cleartext oracle : PASS — every encrypted bit matched
+2026-09-28T14:00:54.035124856Z      (PASS certifies the cryptography: each node's encrypted bits
+2026-09-28T14:00:54.035136762Z       match its own clear model for the events it applied. It does
+2026-09-28T14:00:54.035148168Z       not certify the distributed run — read the skips for that.)
+2026-09-28T14:00:54.035160273Z   distributed vs MONOLITHIC sup.  : off — this header has no monolithic supervisor
+2026-09-28T14:00:54.035189387Z   safe halt                       : no — ran to completion
+2026-09-28T14:00:54.035196691Z ============================================================
+2026-09-28T14:01:04.030649384Z @@RESULT {"node":1,"nodes":7,"family":"LOCAL MODULAR","data":"supervisor_data_fms.h","transport":"UDP/IP multicast (RFC 1112)","fingerprint":"04511541","supervisors":["S0"],"fired":{"local":14,"ctrl":24,"unctrl":24},"applied_for_peers":0,"skips":38,"impossible":19,"tx":529,"rx":12813,"retx":190,"auth_bad":0,"replays":0,"challenges":7,"mac_us":2.05,"rxq_peak":17,"rxq_drops":0,"sync_wait_ms":236173.3,"oracle":"PASS","safe_halt":false,"halt_reason":"","cycle_end_ms":[64499.0,244437.8,349386.0,501448.1,647453.5],"rounds":5,"work_ms":0,"emu_scalarmul_ms":69.0,"loss_pct":10,"loss_seed":3121014296,"exit":1}

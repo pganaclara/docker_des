@@ -1,0 +1,332 @@
+des_container: node 1 of 7, LOCAL MODULAR, data supervisor_data_fms.h, transport UDP/IP multicast (RFC 1112)
+des_container: EMULATING the ESP32 — every decryption takes at least 69.0 ms (DES_EMU_SCALARMUL_MS)
+des_container: dropping 10 % of received frames, seed 585964764 (DES_LOSS_SEED to replay)
+
+============================================================
+  Distributed Homomorphic DES — generic engine
+  node 1/7   family LOCAL MODULAR   7 supervisors   31 events
+  data: supervisor_data_fms.h
+============================================================
+--- event routing (DERIVED from the header, not hardcoded) ---
+  event  ctrl  nodes      owner  class
+  11     yes   1          1      local — no network
+  12     no    1          1      local — no network
+  21     yes   2          2      local — no network
+  22     no    2          2      local — no network
+  30     no    1 2 3 4 5 6 7  1      SHARED — needs network
+  31     yes   1 2 3 4 5 6 7  1      SHARED — needs network
+  32     no    1 2 3 4 5 6 7  1      SHARED — needs network
+  33     yes   1 2 3 4 5 6 7  1      SHARED — needs network
+  34     no    1 2 3 4 5 6 7  1      SHARED — needs network
+  35     yes   1 2 3 4 5 6 7  1      SHARED — needs network
+  36     no    1 2 3 4 5 6 7  1      SHARED — needs network
+  37     yes   1 2 3 4 5 6 7  1      SHARED — needs network
+  38     no    1 2 3 4 5 6 7  1      SHARED — needs network
+  39     yes   1 2 3 4 5 6 7  1      SHARED — needs network
+  41     yes   3          3      local — no network
+  42     no    3          3      local — no network
+  51     yes   4          4      local — no network
+  52     no    4          4      local — no network
+  53     yes   4          4      local — no network
+  54     no    4          4      local — no network
+  61     yes   5 6 7      5      SHARED — needs network
+  63     yes   5 6 7      5      SHARED — needs network
+  64     no    5 6 7      5      SHARED — needs network
+  65     yes   5 6 7      5      SHARED — needs network
+  66     no    5 6 7      5      SHARED — needs network
+  71     yes   7          7      local — no network
+  72     no    7          7      local — no network
+  73     yes   7          7      local — no network
+  74     no    7          7      local — no network
+  81     yes   7          7      local — no network
+  82     no    7          7      local — no network
+  => 15/31 events shared; 16/31 need ZERO network traffic; 12 concern this node
+  NOTE controllability was INFERRED from event labels (the header
+       does not carry it). Check the 'ctrl' column above; if it is
+       wrong, set DES_CONTROLLABLE_MASK explicitly.
+
+[init] config fingerprint 04511541 — every node must print the same
+
+[net] UDP multicast 239.192.7.1:5077  ttl=1  frame=44 B
+--- crypto self-test ---
+  Enc(0)->0 Enc(1)->1                PASS
+  Enc(1)+Enc(1)->1 homomorphic OR   PASS
+  Enc(0)+Enc(0)->0                  PASS
+  curve secp192r1, ciphertext 50 B    PASS
+  frame tag HMAC-SHA256/128: 3.2 us, 1-bit tamper caught  PASS
+
+--- encrypting my supervisors' initial states ---
+[load] S0         idx 0   18 states  12 constraining ev     900 B ciphertext
+[init] my keypair is mine alone; no ciphertext ever leaves this node
+[init] my enablement: 11=1 12=0 21=1 22=1 30=0 31=0 32=0 33=1 34=0 35=1 36=0 37=1 38=0 39=1 41=1 42=1 51=1 52=1 53=1 54=1 61=1 63=1 64=1 65=1 66=1 71=1 72=1 73=1 74=1 81=1 82=1
+
+[net] waiting for 6 peer(s).. all present.
+
+--- transport round-trip probe (UDP/IP multicast (RFC 1112)) ---
+  5 probes: avg 4.79 ms  min 4.12 ms  max 6.22 ms
+
+============================================================
+  RUN — SIM_SEQ driver — 5 cycles x 44 steps — LOCAL MODULAR
+  columns: cN sNN = cycle/step of MY walk; · = a peer caused this
+  'done at': run clock, common to all nodes; a cycle is over at the
+  LATEST node's print, machine time (DES_WORK_MS 0) included
+============================================================
+
+-- cycle 1/5 --
+c1  s1   local  11       139.6 ms HE    2 dec  0 frames
+c1  s2   local  12        69.4 ms HE    1 dec  0 frames
+c1  s3   retry  31    no quorum after 4 tries — nothing applied anywhere
+c1  s3   2pc    31        69.4 ms HE    1 dec  14 frames  + 6004.3 ms peer-wait  (seq 1)
+c1  s4   notify 32        69.5 ms HE    1 dec  7 frames  + 2.2 ms peer-wait  (seq 2)
+c1  s8   retry  33    no quorum after 4 tries — nothing applied anywhere
+c1  s8   2pc    33        70.0 ms HE    1 dec  14 frames  + 3006.8 ms peer-wait  (seq 3)
+c1  s9   notify 34        70.0 ms HE    1 dec  7 frames  + 1.6 ms peer-wait  (seq 4)
+c1  s10  2pc    35        69.7 ms HE    1 dec  14 frames  + 4505.7 ms peer-wait  (seq 5)
+c1  s13  notify 36        69.3 ms HE    1 dec  7 frames  + 1.6 ms peer-wait  (seq 6)
+c1  s14  2pc    39        69.6 ms HE    1 dec  14 frames  + 4509.4 ms peer-wait  (seq 7)
+c1  s16  notify 30        69.3 ms HE    1 dec  7 frames  + 4502.8 ms peer-wait  (seq 8)
+c1  s25  local  11        69.6 ms HE    1 dec  0 frames
+c1  s27  local  12        69.7 ms HE    1 dec  0 frames
+c1  s28  2pc    31        69.3 ms HE    1 dec  14 frames  + 6005.1 ms peer-wait  (seq 9)
+c1  s29  notify 32        69.4 ms HE    1 dec  7 frames  + 3000.8 ms peer-wait  (seq 10)
+c1  s32  2pc    35        69.3 ms HE    1 dec  14 frames  + 3004.9 ms peer-wait  (seq 11)
+c1  s33  notify 36        69.7 ms HE    1 dec  7 frames  + 1.4 ms peer-wait  (seq 12)
+c1  s36  2pc    33        69.3 ms HE    1 dec  14 frames  + 6007.1 ms peer-wait  (seq 13)
+c1  s37  notify 34        69.3 ms HE    1 dec  7 frames  + 3000.9 ms peer-wait  (seq 14)
+c1  s40  retry  37    no quorum after 4 tries — nothing applied anywhere
+c1  s40  retry  37    no quorum after 4 tries — nothing applied anywhere
+c1  s40  SKIP   37    no quorum — a peer never answered
+c1  s41  [!!]   38    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+c1  s41  SKIP   38    physically impossible here — rejected
+-- cycle 1/5 done at 75865.8 ms --
+
+-- cycle 2/5 --
+c2  s1   local  11        69.3 ms HE    1 dec  0 frames
+c2  s2   local  12        69.3 ms HE    1 dec  0 frames
+c2  s3   sync   31    waiting for peers to reach this step (10 s)
+    ·     skip   63    node 5 gave up on it — moving on too  (occ 1)
+    ·     skip   64    node 5 gave up on it — moving on too  (occ 1)
+c2  s3   2pc    31        69.4 ms HE    1 dec  14 frames  + 4503.9 ms peer-wait  (seq 15)
+c2  s4   notify 32        69.3 ms HE    1 dec  7 frames  + 3001.3 ms peer-wait  (seq 16)
+c2  s8   veto   33    a peer's supervisor disables it here  (1504.1 ms)
+c2  s8   retry  33    no quorum after 4 tries — nothing applied anywhere
+c2  s8   veto   33    refused 1 more time over 12.2 s, giving up
+c2  s8   SKIP   33    no quorum — a peer never answered
+c2  s9   [!!]   34    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+c2  s9   SKIP   34    physically impossible here — rejected
+c2  s10  2pc    35        69.9 ms HE    1 dec  14 frames  + 4510.6 ms peer-wait  (seq 17)
+c2  s13  notify 36        69.8 ms HE    1 dec  7 frames  + 3001.1 ms peer-wait  (seq 18)
+c2  s14  retry  39    no quorum after 4 tries — nothing applied anywhere
+c2  s14  retry  39    no quorum after 4 tries — nothing applied anywhere
+c2  s14  SKIP   39    no quorum — a peer never answered
+c2  s16  sync   30    waiting for peers to reach this step (10 s)
+    ·     skip   61    node 5 gave up on it — moving on too  (occ 3)
+c2  s16  [!!]   30    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+c2  s16  SKIP   30    physically impossible here — rejected
+c2  s25  local  11        71.5 ms HE    1 dec  0 frames
+c2  s27  local  12        69.3 ms HE    1 dec  0 frames
+c2  s28  sync   31    waiting for peers to reach this step (10 s)
+c2  s28  sync   31    waiting for peers to reach this step (20 s)
+c2  s28  sync   31    waiting for peers to reach this step (30 s)
+    ·     skip   65    node 5 gave up on it — moving on too  (occ 2)
+    ·     skip   66    node 5 gave up on it — moving on too  (occ 2)
+c2  s28  retry  31    no quorum after 4 tries — nothing applied anywhere
+c2  s28  retry  31    no quorum after 4 tries — nothing applied anywhere
+c2  s28  SKIP   31    no quorum — a peer never answered
+c2  s29  [!!]   32    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+c2  s29  SKIP   32    physically impossible here — rejected
+c2  s32  sync   35    waiting for peers to reach this step (10 s)
+c2  s32  veto   35    a peer's supervisor disables it here  (1505.4 ms)
+c2  s32  veto   35    refused 3 more times over 11.3 s, giving up
+c2  s32  SKIP   35    a PEER's supervisor kept vetoing it
+c2  s33  [!!]   36    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+c2  s33  SKIP   36    physically impossible here — rejected
+c2  s36  sync   33    waiting for peers to reach this step (10 s)
+    ·     skip   61    node 5 gave up on it — moving on too  (occ 4)
+c2  s36  retry  33    no quorum after 4 tries — nothing applied anywhere
+c2  s36  veto   33    a peer's supervisor disables it here  (1505.7 ms)
+c2  s36  veto   33    refused 1 more time over 10.7 s, giving up
+c2  s36  SKIP   33    a PEER's supervisor kept vetoing it
+c2  s37  [!!]   34    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+c2  s37  SKIP   34    physically impossible here — rejected
+c2  s40  sync   37    waiting for peers to reach this step (10 s)
+c2  s40  2pc    37        69.4 ms HE    1 dec  14 frames  + 10505.8 ms peer-wait  (seq 19)
+c2  s41  notify 38        69.5 ms HE    1 dec  7 frames  + 1.6 ms peer-wait  (seq 20)
+-- cycle 2/5 done at 261353.9 ms --
+
+-- cycle 3/5 --
+c3  s1   SKIP   11    my own supervisor disables it here
+c3  s2   [!!]   12    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+c3  s2   SKIP   12    physically impossible here — rejected
+c3  s3   retry  31    no quorum after 4 tries — nothing applied anywhere
+c3  s3   2pc    31        69.4 ms HE    1 dec  14 frames  + 7506.1 ms peer-wait  (seq 21)
+c3  s4   notify 32        69.8 ms HE    1 dec  7 frames  + 3000.9 ms peer-wait  (seq 22)
+c3  s8   retry  33    no quorum after 4 tries — nothing applied anywhere
+c3  s8   retry  33    no quorum after 4 tries — nothing applied anywhere
+c3  s8   SKIP   33    no quorum — a peer never answered
+c3  s9   [!!]   34    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+c3  s9   SKIP   34    physically impossible here — rejected
+c3  s10  veto   35    a peer's supervisor disables it here  (1505.0 ms)
+c3  s10  veto   35    refused 5 more times over 10.1 s, giving up
+c3  s10  SKIP   35    a PEER's supervisor kept vetoing it
+c3  s13  sync   36    waiting for peers to reach this step (10 s)
+c3  s13  [!!]   36    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+c3  s13  SKIP   36    physically impossible here — rejected
+c3  s14  veto   39    a peer's supervisor disables it here  (2.9 ms)
+c3  s14  retry  39    no quorum after 4 tries — nothing applied anywhere
+c3  s14  retry  39    no quorum after 4 tries — nothing applied anywhere
+c3  s14  veto   39    refused 3 more times over 14.4 s, giving up
+c3  s14  SKIP   39    no quorum — a peer never answered
+c3  s16  [!!]   30    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+c3  s16  SKIP   30    physically impossible here — rejected
+c3  s25  local  11        69.3 ms HE    1 dec  0 frames
+c3  s27  local  12        69.4 ms HE    1 dec  0 frames
+c3  s28  sync   31    waiting for peers to reach this step (10 s)
+c3  s28  sync   31    waiting for peers to reach this step (20 s)
+c3  s28  sync   31    waiting for peers to reach this step (30 s)
+c3  s28  sync   31    waiting for peers to reach this step (40 s)
+    ·     skip   65    node 5 gave up on it — moving on too  (occ 3)
+    ·     skip   66    node 5 gave up on it — moving on too  (occ 3)
+c3  s28  veto   31    a peer's supervisor disables it here  (1504.3 ms)
+c3  s28  retry  31    no quorum after 4 tries — nothing applied anywhere
+c3  s28  retry  31    no quorum after 4 tries — nothing applied anywhere
+c3  s28  veto   31    refused 2 more times over 14.0 s, giving up
+c3  s28  SKIP   31    no quorum — a peer never answered
+c3  s29  [!!]   32    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+c3  s29  SKIP   32    physically impossible here — rejected
+c3  s32  sync   35    waiting for peers to reach this step (10 s)
+c3  s32  2pc    35        69.6 ms HE    1 dec  14 frames  + 6004.8 ms peer-wait  (seq 23)
+c3  s33  notify 36        69.6 ms HE    1 dec  7 frames  + 3001.0 ms peer-wait  (seq 24)
+    ·     skip   61    node 5 gave up on it — moving on too  (occ 6)
+c3  s36  2pc    33        69.5 ms HE    1 dec  14 frames  + 6007.6 ms peer-wait  (seq 25)
+c3  s37  notify 34        69.3 ms HE    1 dec  7 frames  + 4501.6 ms peer-wait  (seq 26)
+c3  s40  retry  37    no quorum after 4 tries — nothing applied anywhere
+c3  s40  2pc    37        69.7 ms HE    1 dec  14 frames  + 3004.6 ms peer-wait  (seq 27)
+c3  s41  notify 38        69.5 ms HE    1 dec  7 frames  + 1.4 ms peer-wait  (seq 28)
+-- cycle 3/5 done at 447201.6 ms --
+
+-- cycle 4/5 --
+c4  s1   SKIP   11    my own supervisor disables it here
+c4  s2   [!!]   12    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+c4  s2   SKIP   12    physically impossible here — rejected
+c4  s3   2pc    31        70.1 ms HE    1 dec  14 frames  + 6.1 ms peer-wait  (seq 29)
+c4  s4   notify 32        69.4 ms HE    1 dec  7 frames  + 3001.3 ms peer-wait  (seq 30)
+c4  s8   2pc    33        69.3 ms HE    1 dec  14 frames  + 6007.9 ms peer-wait  (seq 31)
+c4  s9   notify 34        69.6 ms HE    1 dec  7 frames  + 1.8 ms peer-wait  (seq 32)
+c4  s10  veto   35    a peer's supervisor disables it here  (3005.5 ms)
+c4  s10  veto   35    refused 3 more times over 11.3 s, giving up
+c4  s10  SKIP   35    a PEER's supervisor kept vetoing it
+c4  s13  [!!]   36    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+c4  s13  SKIP   36    physically impossible here — rejected
+c4  s14  2pc    39        69.7 ms HE    1 dec  14 frames  + 1506.2 ms peer-wait  (seq 33)
+c4  s16  notify 30        69.9 ms HE    1 dec  7 frames  + 3001.1 ms peer-wait  (seq 34)
+c4  s25  local  11        69.3 ms HE    1 dec  0 frames
+c4  s27  local  12        69.3 ms HE    1 dec  0 frames
+c4  s28  retry  31    no quorum after 4 tries — nothing applied anywhere
+c4  s28  veto   31    a peer's supervisor disables it here  (1503.6 ms)
+c4  s28  retry  31    no quorum after 4 tries — nothing applied anywhere
+c4  s28  SKIP   31    no quorum — a peer never answered
+c4  s29  [!!]   32    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+c4  s29  SKIP   32    physically impossible here — rejected
+c4  s32  sync   35    waiting for peers to reach this step (10 s)
+c4  s32  2pc    35        69.6 ms HE    1 dec  14 frames  + 6013.8 ms peer-wait  (seq 35)
+c4  s33  notify 36        69.5 ms HE    1 dec  7 frames  + 1.5 ms peer-wait  (seq 36)
+c4  s36  retry  33    no quorum after 4 tries — nothing applied anywhere
+c4  s36  2pc    33        69.4 ms HE    1 dec  14 frames  + 7506.0 ms peer-wait  (seq 37)
+c4  s37  notify 34        69.6 ms HE    1 dec  7 frames  + 3006.2 ms peer-wait  (seq 38)
+c4  s40  retry  37    no quorum after 4 tries — nothing applied anywhere
+c4  s40  retry  37    no quorum after 4 tries — nothing applied anywhere
+c4  s40  SKIP   37    no quorum — a peer never answered
+c4  s41  [!!]   38    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+c4  s41  SKIP   38    physically impossible here — rejected
+-- cycle 4/5 done at 543404.3 ms --
+
+-- cycle 5/5 --
+c5  s1   SKIP   11    my own supervisor disables it here
+c5  s2   [!!]   12    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+c5  s2   SKIP   12    physically impossible here — rejected
+    ·     skip   63    node 5 gave up on it — moving on too  (occ 4)
+    ·     skip   64    node 5 gave up on it — moving on too  (occ 4)
+c5  s3   2pc    31        69.5 ms HE    1 dec  14 frames  + 5.8 ms peer-wait  (seq 39)
+c5  s4   notify 32        69.2 ms HE    1 dec  7 frames  + 1505.4 ms peer-wait  (seq 40)
+c5  s8   veto   33    a peer's supervisor disables it here  (1505.5 ms)
+c5  s8   retry  33    no quorum after 4 tries — nothing applied anywhere
+c5  s8   veto   33    refused 5 more times over 14.6 s, giving up
+c5  s8   SKIP   33    a PEER's supervisor kept vetoing it
+c5  s9   [!!]   34    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+c5  s9   SKIP   34    physically impossible here — rejected
+c5  s10  2pc    35        69.5 ms HE    1 dec  14 frames  + 9008.0 ms peer-wait  (seq 41)
+c5  s13  notify 36        69.2 ms HE    1 dec  7 frames  + 1505.0 ms peer-wait  (seq 42)
+c5  s14  veto   39    a peer's supervisor disables it here  (1503.0 ms)
+c5  s14  retry  39    no quorum after 4 tries — nothing applied anywhere
+c5  s14  veto   39    refused 1 more time over 12.2 s, giving up
+c5  s14  SKIP   39    no quorum — a peer never answered
+c5  s16  sync   30    waiting for peers to reach this step (10 s)
+    ·     skip   61    node 5 gave up on it — moving on too  (occ 9)
+c5  s16  [!!]   30    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+c5  s16  SKIP   30    physically impossible here — rejected
+c5  s25  local  11        69.3 ms HE    1 dec  0 frames
+c5  s27  local  12        69.6 ms HE    1 dec  0 frames
+c5  s28  sync   31    waiting for peers to reach this step (10 s)
+c5  s28  sync   31    waiting for peers to reach this step (20 s)
+c5  s28  sync   31    waiting for peers to reach this step (30 s)
+c5  s28  sync   31    waiting for peers to reach this step (40 s)
+    ·     skip   65    node 5 gave up on it — moving on too  (occ 5)
+    ·     skip   66    node 5 gave up on it — moving on too  (occ 5)
+c5  s28  2pc    31        69.6 ms HE    1 dec  14 frames  + 3006.0 ms peer-wait  (seq 43)
+c5  s29  notify 32        69.3 ms HE    1 dec  7 frames  + 3000.1 ms peer-wait  (seq 44)
+c5  s32  veto   35    a peer's supervisor disables it here  (3.7 ms)
+c5  s32  retry  35    no quorum after 4 tries — nothing applied anywhere
+c5  s32  retry  35    no quorum after 4 tries — nothing applied anywhere
+c5  s32  SKIP   35    no quorum — a peer never answered
+c5  s33  [!!]   36    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+c5  s33  SKIP   36    physically impossible here — rejected
+c5  s36  sync   33    waiting for peers to reach this step (10 s)
+    ·     skip   61    node 5 gave up on it — moving on too  (occ 10)
+c5  s36  veto   33    a peer's supervisor disables it here  (3.6 ms)
+c5  s36  retry  33    no quorum after 4 tries — nothing applied anywhere
+c5  s36  veto   33    refused 3 more times over 12.8 s, giving up
+c5  s36  SKIP   33    a PEER's supervisor kept vetoing it
+c5  s37  [!!]   34    IMPOSSIBLE — uncontrollable, but no machine could produce it from here; rejected (sensor fault or attack?)
+c5  s37  SKIP   34    physically impossible here — rejected
+c5  s40  sync   37    waiting for peers to reach this step (10 s)
+c5  s40  retry  37    no quorum after 4 tries — nothing applied anywhere
+c5  s40  2pc    37        69.3 ms HE    1 dec  14 frames  + 4.0 ms peer-wait  (seq 45)
+c5  s41  notify 38        69.3 ms HE    1 dec  7 frames  + 7500.6 ms peer-wait  (seq 46)
+-- cycle 5/5 done at 715268.0 ms --
+
+============================================================
+  SUMMARY — node 1/7 — LOCAL MODULAR — UDP/IP multicast (RFC 1112)
+============================================================
+  events this node FIRED:
+  local (no network)     n=14   avg    74.68 ms  (HE   74.57 + net    0.00)  min   69.33  max   139.74    0.6%
+  shared controllable    n=23   avg  4771.85 ms  (HE   69.54 + net 4702.19)  min   73.40  max 10575.46   67.8%
+  shared uncontroll.     n=23   avg  2223.67 ms  (HE   69.49 + net 2154.05)  min   70.92  max  7569.98   31.6%
+  events this node APPLIED for a peer (participant side):
+  shared, applied              (none on this node)
+  sync-wait (peers reaching a shared step): n=80 avg 3463.28 ms, 277.1 s total
+     not protocol cost — the plant catching up; kept out of the rows above
+  run clock, end of cycles 1..5 (ms): 75865.8 261353.9 447201.6 543404.3 715268.0
+     a cycle is over at the LATEST node's value; DES_WORK_MS 0 included
+  ----------------------------------------------------------
+  all events            n=60   avg  2699.04 ms  (HE   70.69 + net 2628.23)
+  PEER-WAIT + WIRE      97.4 % of total step time
+     (compare against the round-trip probe above: the excess is
+      the peer's own HE work, not the link.)
+  frames: tx=557 rx=13775 retransmits=210
+  authentication: HMAC-SHA256/128, 3.2 us per frame; 0 rejected (bad tag), 0 stale/replayed dropped, 7 epoch challenges
+  rx queue: peak 19/64 frames
+  plant check: 20 event reports rejected as physically impossible
+     (these supervisors carry the plant: an impossible uncontrollable event is caught)
+  !! 40 STEPS SKIPPED — each SKIP line above says why. Firing a
+     step anyway would corrupt every supervisor downstream.
+  injected frame loss: 10 %
+  ----------------------------------------------------------
+  homomorphic vs cleartext oracle : PASS — every encrypted bit matched
+     (PASS certifies the cryptography: each node's encrypted bits
+      match its own clear model for the events it applied. It does
+      not certify the distributed run — read the skips for that.)
+  distributed vs MONOLITHIC sup.  : off — this header has no monolithic supervisor
+  safe halt                       : no — ran to completion
+============================================================
+@@RESULT {"node":1,"nodes":7,"family":"LOCAL MODULAR","data":"supervisor_data_fms.h","transport":"UDP/IP multicast (RFC 1112)","fingerprint":"04511541","supervisors":["S0"],"fired":{"local":14,"ctrl":23,"unctrl":23},"applied_for_peers":0,"skips":40,"impossible":20,"tx":557,"rx":13775,"retx":210,"auth_bad":0,"replays":0,"challenges":7,"mac_us":3.17,"rxq_peak":19,"rxq_drops":0,"sync_wait_ms":277062.4,"oracle":"PASS","safe_halt":false,"halt_reason":"","cycle_end_ms":[75865.8,261353.9,447201.6,543404.3,715268.0],"rounds":5,"work_ms":0,"emu_scalarmul_ms":69.0,"loss_pct":10,"loss_seed":585964764,"exit":1}

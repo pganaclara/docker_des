@@ -1,0 +1,3135 @@
+emulação: DES_EMU_SCALARMUL_MS=69 ms  ·  repetições: 5  ·  saída: results/20260928-085743-varredura
+
+################ fms-2-perda1  (repetição 1/5)
+== build (scenarios/fms-2-perda1.env)
+ Image docker-des:fms-2n-LMOD-r5-w0-perda1 Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 816B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 3.32kB 0.0s done
+#2 DONE 0.0s
+
+#3 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#3 DONE 1.1s
+
+#4 docker-image://docker.io/docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
+#4 resolve docker.io/docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32 0.0s done
+#4 CACHED
+
+#5 [internal] load metadata for docker.io/library/ubuntu:26.04
+#5 DONE 0.8s
+
+#6 [internal] load .dockerignore
+#6 transferring context: 2B done
+#6 DONE 0.0s
+
+#7 [internal] load build context
+#7 DONE 0.0s
+
+#8 [build 1/7] FROM docker.io/library/ubuntu:26.04@sha256:da6fc2be547864451aa253836dd926da33623312df4a9a243e35dc877c378a78
+#8 resolve docker.io/library/ubuntu:26.04@sha256:da6fc2be547864451aa253836dd926da33623312df4a9a243e35dc877c378a78 0.1s done
+#8 DONE 0.1s
+
+#7 [internal] load build context
+#7 transferring context: 14.28kB 0.0s done
+#7 DONE 0.0s
+
+#9 [build 2/7] RUN apt-get update  && apt-get install -y --no-install-recommends g++ libmbedtls-dev  && rm -rf /var/lib/apt/lists/*
+#9 CACHED
+
+#10 [build 3/7] WORKDIR /src
+#10 CACHED
+
+#11 [build 4/7] COPY engine/ engine/
+#11 CACHED
+
+#12 [build 5/7] COPY src/ src/
+#12 DONE 0.0s
+
+#13 [build 6/7] RUN cd engine && sha256sum -c --quiet SHA256SUMS
+#13 DONE 0.8s
+
+#14 [build 7/7] RUN set -eu; mkdir -p /out; pids="";     for id in $(seq 1 "2"); do       g++ -std=c++17 -O2 -Wall -Wextra -Iengine -Isrc           -DDES_DATA_HEADER=""supervisor_data_fms.h""           -DDES_NODE_ID="$id" -DDES_NUM_NODES="2"           -DDES_FAMILY="DES_FAMILY_LMOD"           -DDES_ROUNDS="5" -DDES_WORK_MS="0"           -DDES_SIMULATE_LOSS_PCT=1           -o "/out/des_node$id" src/des_container_main.cpp           -Wl,--wrap=mbedtls_ecp_mul -l:libmbedcrypto.a &       pids="$pids $!";     done;     for p in $pids; do wait "$p"; done;     { echo "DES_PROBLEM=fms"; echo "DES_NUM_NODES=2";       echo "DES_FAMILY=LMOD"; echo "DES_ROUNDS=5";       echo "DES_WORK_MS=0"; echo "DES_EXTRA_FLAGS=-DDES_SIMULATE_LOSS_PCT=1";       echo "mbedtls=$(dpkg-query -W -f='${Version}' libmbedtls-dev)";       echo "gxx=$(g++ -dumpfullversion)"; } > /out/BUILD_INFO;     cat /out/BUILD_INFO
+#14 3.520 DES_PROBLEM=fms
+#14 3.520 DES_NUM_NODES=2
+#14 3.520 DES_FAMILY=LMOD
+#14 3.520 DES_ROUNDS=5
+#14 3.520 DES_WORK_MS=0
+#14 3.520 DES_EXTRA_FLAGS=-DDES_SIMULATE_LOSS_PCT=1
+#14 3.520 mbedtls=3.6.5-0.1ubuntu2
+#14 3.520 gxx=15.2.0
+#14 DONE 3.6s
+
+#15 [stage-1 2/4] RUN useradd --system --no-create-home --shell /usr/sbin/nologin des
+#15 CACHED
+
+#16 [stage-1 3/4] COPY --from=build /out/ /opt/des/bin/
+#16 DONE 0.1s
+
+#17 [stage-1 4/4] COPY --chmod=0755 docker/entrypoint.sh /usr/local/bin/des-entrypoint
+#17 DONE 0.1s
+
+#18 exporting to image
+#18 exporting layers
+#18 exporting layers 0.3s done
+#18 exporting manifest sha256:0d5883184363a97c6e97d4b5d64a7f59f23060e4a06a6b8b03dbeb7e9f65dd8c 0.0s done
+#18 exporting config sha256:4b911c1f333039372f8ca6ec1f496be48daea209437507439ddd595c87bdab35 0.0s done
+#18 exporting attestation manifest sha256:7de3c0c64a672b9c49a28eafad05bb684a2f4b4696590e44ec345f7a58447822 0.0s done
+#18 exporting manifest list sha256:7bd5836a87058f88a5724bc3282096adffd5b0851ac86d8cda0e24ca8ca791fd 0.0s done
+#18 naming to docker.io/library/docker-des:fms-2n-LMOD-r5-w0-perda1 done
+#18 unpacking to docker.io/library/docker-des:fms-2n-LMOD-r5-w0-perda1 0.1s done
+#18 DONE 11.7s
+
+#19 resolving provenance for metadata file
+#19 DONE 0.0s
+ Image docker-des:fms-2n-LMOD-r5-w0-perda1 Built 
+== run (bridge): node1 node2
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node2-1 Started 
+ Container docker-des-node1-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-085743-fms-2-perda1
+# Execução `20260928-085743-fms-2-perda1`
+
+- problema `fms`, família `LMOD`, **2 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **220 executados**, 0 pulados
+- impressão digital da configuração: `edbd7971`
+- RTT de aplicação (nó 1, 20 sondas): média 2.37 ms, mín 2.24, máx 3.38
+- resultado: **complete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 S1 S2 S3 | 0 | 80/40/40 | 0 | 405 (85) | 28049.5 | 149/235 | 1 | PASS | não |
+| 2 | S4 S5 S6 | 0 | 60/0/0 | 80 | 393 (105) | 27245.4 | 236/148 | 0 | PASS | não |
+| **total** | | | | | **798 (190)** | 55294.9 | 385/383 | 1 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 9993.3, 16491.2, 22989.8, 29486.8, 36220.1
+
+Tempo por passo: ciclo 1 **227.12 ms**; ciclos 2–5 **149.02 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | edbd7971 | edbd7971 | ✅ |
+| decryptions, whole cell | 798 | 798 | ✅ |
+| decryptions, whole cell, cycle 1 | 190 | 190 | ✅ |
+| outcome | complete|halt|incomplete | complete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-2-perda5  (repetição 1/5)
+== build (scenarios/fms-2-perda5.env)
+ Image docker-des:fms-2n-LMOD-r5-w0-perda5 Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 816B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 3.32kB done
+#2 DONE 0.0s
+
+#3 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#3 DONE 0.5s
+
+#4 docker-image://docker.io/docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
+#4 resolve docker.io/docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32 0.0s done
+#4 CACHED
+
+#5 [internal] load metadata for docker.io/library/ubuntu:26.04
+#5 DONE 0.5s
+
+#6 [internal] load .dockerignore
+#6 transferring context: 2B done
+#6 DONE 0.0s
+
+#7 [internal] load build context
+#7 transferring context: 370B done
+#7 DONE 0.0s
+
+#8 [build 1/7] FROM docker.io/library/ubuntu:26.04@sha256:da6fc2be547864451aa253836dd926da33623312df4a9a243e35dc877c378a78
+#8 resolve docker.io/library/ubuntu:26.04@sha256:da6fc2be547864451aa253836dd926da33623312df4a9a243e35dc877c378a78 0.0s done
+#8 DONE 0.0s
+
+#9 [build 4/7] COPY engine/ engine/
+#9 CACHED
+
+#10 [build 5/7] COPY src/ src/
+#10 CACHED
+
+#11 [build 2/7] RUN apt-get update  && apt-get install -y --no-install-recommends g++ libmbedtls-dev  && rm -rf /var/lib/apt/lists/*
+#11 CACHED
+
+#12 [build 3/7] WORKDIR /src
+#12 CACHED
+
+#13 [build 6/7] RUN cd engine && sha256sum -c --quiet SHA256SUMS
+#13 CACHED
+
+#14 [build 7/7] RUN set -eu; mkdir -p /out; pids="";     for id in $(seq 1 "2"); do       g++ -std=c++17 -O2 -Wall -Wextra -Iengine -Isrc           -DDES_DATA_HEADER=""supervisor_data_fms.h""           -DDES_NODE_ID="$id" -DDES_NUM_NODES="2"           -DDES_FAMILY="DES_FAMILY_LMOD"           -DDES_ROUNDS="5" -DDES_WORK_MS="0"           -DDES_SIMULATE_LOSS_PCT=5           -o "/out/des_node$id" src/des_container_main.cpp           -Wl,--wrap=mbedtls_ecp_mul -l:libmbedcrypto.a &       pids="$pids $!";     done;     for p in $pids; do wait "$p"; done;     { echo "DES_PROBLEM=fms"; echo "DES_NUM_NODES=2";       echo "DES_FAMILY=LMOD"; echo "DES_ROUNDS=5";       echo "DES_WORK_MS=0"; echo "DES_EXTRA_FLAGS=-DDES_SIMULATE_LOSS_PCT=5";       echo "mbedtls=$(dpkg-query -W -f='${Version}' libmbedtls-dev)";       echo "gxx=$(g++ -dumpfullversion)"; } > /out/BUILD_INFO;     cat /out/BUILD_INFO
+#14 3.375 DES_PROBLEM=fms
+#14 3.375 DES_NUM_NODES=2
+#14 3.375 DES_FAMILY=LMOD
+#14 3.375 DES_ROUNDS=5
+#14 3.375 DES_WORK_MS=0
+#14 3.375 DES_EXTRA_FLAGS=-DDES_SIMULATE_LOSS_PCT=5
+#14 3.375 mbedtls=3.6.5-0.1ubuntu2
+#14 3.375 gxx=15.2.0
+#14 DONE 3.4s
+
+#15 [stage-1 2/4] RUN useradd --system --no-create-home --shell /usr/sbin/nologin des
+#15 CACHED
+
+#16 [stage-1 3/4] COPY --from=build /out/ /opt/des/bin/
+#16 DONE 0.0s
+
+#17 [stage-1 4/4] COPY --chmod=0755 docker/entrypoint.sh /usr/local/bin/des-entrypoint
+#17 DONE 0.0s
+
+#18 exporting to image
+#18 exporting layers
+#18 exporting layers 0.2s done
+#18 exporting manifest sha256:99ee4dd629e50f00c3622cdf86da116564ed48414e80f3941fb32b45a8f1fdaf 0.0s done
+#18 exporting config sha256:11c385c412de01a16db671dfac7446c0f0f15a7a4cd29916901552120f77fcf0 0.0s done
+#18 exporting attestation manifest sha256:8c4eef7b28d747802dc83a68323a52bf3b144d7c2e8b7209af12509958607891 0.0s done
+#18 exporting manifest list sha256:3f88f297752025a2187613a31b344a54df0b5bc1a338596f8d02109dd64921b9 0.0s done
+#18 naming to docker.io/library/docker-des:fms-2n-LMOD-r5-w0-perda5 done
+#18 unpacking to docker.io/library/docker-des:fms-2n-LMOD-r5-w0-perda5 0.1s done
+#18 DONE 0.4s
+
+#19 resolving provenance for metadata file
+#19 DONE 0.0s
+ Image docker-des:fms-2n-LMOD-r5-w0-perda5 Built 
+== run (bridge): node1 node2
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node2-1 Started 
+ Container docker-des-node1-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-085852-fms-2-perda5
+# Execução `20260928-085852-fms-2-perda5`
+
+- problema `fms`, família `LMOD`, **2 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **220 executados**, 0 pulados
+- impressão digital da configuração: `edbd7971`
+- RTT de aplicação (nó 1, 18 sondas): média 2.48 ms, mín 2.24, máx 3.54
+- resultado: **complete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 S1 S2 S3 | 0 | 80/40/40 | 0 | 405 (85) | 28047.8 | 161/290 | 13 | PASS | não |
+| 2 | S4 S5 S6 | 0 | 60/0/0 | 80 | 393 (105) | 27242.4 | 303/154 | 0 | PASS | não |
+| **total** | | | | | **798 (190)** | 55290.2 | 464/444 | 13 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 11490.6, 19725.6, 30935.2, 43713.0, 55158.4
+
+Tempo por passo: ciclo 1 **261.15 ms**; ciclos 2–5 **248.11 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | edbd7971 | edbd7971 | ✅ |
+| decryptions, whole cell | 798 | 798 | ✅ |
+| decryptions, whole cell, cycle 1 | 190 | 190 | ✅ |
+| outcome | complete|halt|incomplete | complete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-2-perda10  (repetição 1/5)
+== build (scenarios/fms-2-perda10.env)
+ Image docker-des:fms-2n-LMOD-r5-w0-perda10 Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 818B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile:
+#2 transferring dockerfile: 3.32kB done
+#2 DONE 0.0s
+
+#3 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#3 DONE 0.6s
+
+#4 docker-image://docker.io/docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
+#4 resolve docker.io/docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32 0.0s done
+#4 CACHED
+
+#5 [internal] load metadata for docker.io/library/ubuntu:26.04
+#5 DONE 0.7s
+
+#6 [internal] load .dockerignore
+#6 transferring context: 2B done
+#6 DONE 0.0s
+
+#7 [internal] load build context
+#7 transferring context: 370B done
+#7 DONE 0.0s
+
+#8 [build 1/7] FROM docker.io/library/ubuntu:26.04@sha256:da6fc2be547864451aa253836dd926da33623312df4a9a243e35dc877c378a78
+#8 resolve docker.io/library/ubuntu:26.04@sha256:da6fc2be547864451aa253836dd926da33623312df4a9a243e35dc877c378a78 0.0s done
+#8 DONE 0.0s
+
+#9 [build 3/7] WORKDIR /src
+#9 CACHED
+
+#10 [build 4/7] COPY engine/ engine/
+#10 CACHED
+
+#11 [build 5/7] COPY src/ src/
+#11 CACHED
+
+#12 [build 2/7] RUN apt-get update  && apt-get install -y --no-install-recommends g++ libmbedtls-dev  && rm -rf /var/lib/apt/lists/*
+#12 CACHED
+
+#13 [build 6/7] RUN cd engine && sha256sum -c --quiet SHA256SUMS
+#13 CACHED
+
+#14 [build 7/7] RUN set -eu; mkdir -p /out; pids="";     for id in $(seq 1 "2"); do       g++ -std=c++17 -O2 -Wall -Wextra -Iengine -Isrc           -DDES_DATA_HEADER=""supervisor_data_fms.h""           -DDES_NODE_ID="$id" -DDES_NUM_NODES="2"           -DDES_FAMILY="DES_FAMILY_LMOD"           -DDES_ROUNDS="5" -DDES_WORK_MS="0"           -DDES_SIMULATE_LOSS_PCT=10           -o "/out/des_node$id" src/des_container_main.cpp           -Wl,--wrap=mbedtls_ecp_mul -l:libmbedcrypto.a &       pids="$pids $!";     done;     for p in $pids; do wait "$p"; done;     { echo "DES_PROBLEM=fms"; echo "DES_NUM_NODES=2";       echo "DES_FAMILY=LMOD"; echo "DES_ROUNDS=5";       echo "DES_WORK_MS=0"; echo "DES_EXTRA_FLAGS=-DDES_SIMULATE_LOSS_PCT=10";       echo "mbedtls=$(dpkg-query -W -f='${Version}' libmbedtls-dev)";       echo "gxx=$(g++ -dumpfullversion)"; } > /out/BUILD_INFO;     cat /out/BUILD_INFO
+#14 4.558 DES_PROBLEM=fms
+#14 4.558 DES_NUM_NODES=2
+#14 4.558 DES_FAMILY=LMOD
+#14 4.558 DES_ROUNDS=5
+#14 4.558 DES_WORK_MS=0
+#14 4.558 DES_EXTRA_FLAGS=-DDES_SIMULATE_LOSS_PCT=10
+#14 4.558 mbedtls=3.6.5-0.1ubuntu2
+#14 4.558 gxx=15.2.0
+#14 DONE 4.6s
+
+#15 [stage-1 2/4] RUN useradd --system --no-create-home --shell /usr/sbin/nologin des
+#15 CACHED
+
+#16 [stage-1 3/4] COPY --from=build /out/ /opt/des/bin/
+#16 DONE -10.9s
+
+#17 [stage-1 4/4] COPY --chmod=0755 docker/entrypoint.sh /usr/local/bin/des-entrypoint
+#17 DONE 0.1s
+
+#18 exporting to image
+#18 exporting layers
+#18 exporting layers 0.3s done
+#18 exporting manifest sha256:85a6fa549b5c4f75490b5b7a0c7580cd93e0a3311a56f599e41979aa3939a89b 0.0s done
+#18 exporting config sha256:690748c29a2c3dc8bc19cb56804f0922d69e1de566966f5f9f34951ed7c0a210 0.0s done
+#18 exporting attestation manifest sha256:7e742ccc0d703d8cb9a25a011695bd0c08cc7abcb030d15a65b3962dff67d2fb 0.0s done
+#18 exporting manifest list sha256:c2f644e2a350eb45701644d698893456d0109e4d171b2a9320b7a930a4aa3d81 0.0s done
+#18 naming to docker.io/library/docker-des:fms-2n-LMOD-r5-w0-perda10 done
+#18 unpacking to docker.io/library/docker-des:fms-2n-LMOD-r5-w0-perda10 0.1s done
+#18 DONE 0.6s
+
+#19 resolving provenance for metadata file
+#19 DONE 0.0s
+ Image docker-des:fms-2n-LMOD-r5-w0-perda10 Built 
+== run (bridge): node1 node2
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node1-1 Started 
+ Container docker-des-node2-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-090017-fms-2-perda10
+# Execução `20260928-090017-fms-2-perda10`
+
+- problema `fms`, família `LMOD`, **2 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **220 executados**, 0 pulados
+- impressão digital da configuração: `edbd7971`
+- RTT de aplicação (nó 1, 19 sondas): média 2.59 ms, mín 2.23, máx 4.19
+- resultado: **complete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 S1 S2 S3 | 0 | 80/40/40 | 0 | 405 (85) | 28183.6 | 174/329 | 23 | PASS | não |
+| 2 | S4 S5 S6 | 0 | 60/0/0 | 80 | 393 (105) | 27340.3 | 366/161 | 0 | PASS | não |
+| **total** | | | | | **798 (190)** | 55523.9 | 540/490 | 23 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 16651.7, 35438.7, 48291.6, 61940.4, 71165.3
+
+Tempo por passo: ciclo 1 **378.45 ms**; ciclos 2–5 **309.74 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | edbd7971 | edbd7971 | ✅ |
+| decryptions, whole cell | 798 | 798 | ✅ |
+| decryptions, whole cell, cycle 1 | 190 | 190 | ✅ |
+| outcome | complete|halt|incomplete | complete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-2-perda20  (repetição 1/5)
+== build (scenarios/fms-2-perda20.env)
+ Image docker-des:fms-2n-LMOD-r5-w0-perda20 Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 818B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 3.32kB done
+#2 DONE 0.0s
+
+#3 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#3 DONE 0.6s
+
+#4 docker-image://docker.io/docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
+#4 resolve docker.io/docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32 0.0s done
+#4 CACHED
+
+#5 [internal] load metadata for docker.io/library/ubuntu:26.04
+#5 DONE 0.6s
+
+#6 [internal] load .dockerignore
+#6 transferring context: 2B done
+#6 DONE 0.0s
+
+#7 [internal] load build context
+#7 transferring context: 370B done
+#7 DONE 0.0s
+
+#8 [build 1/7] FROM docker.io/library/ubuntu:26.04@sha256:da6fc2be547864451aa253836dd926da33623312df4a9a243e35dc877c378a78
+#8 resolve docker.io/library/ubuntu:26.04@sha256:da6fc2be547864451aa253836dd926da33623312df4a9a243e35dc877c378a78 0.0s done
+#8 DONE 0.0s
+
+#9 [build 3/7] WORKDIR /src
+#9 CACHED
+
+#10 [build 4/7] COPY engine/ engine/
+#10 CACHED
+
+#11 [build 2/7] RUN apt-get update  && apt-get install -y --no-install-recommends g++ libmbedtls-dev  && rm -rf /var/lib/apt/lists/*
+#11 CACHED
+
+#12 [build 5/7] COPY src/ src/
+#12 CACHED
+
+#13 [build 6/7] RUN cd engine && sha256sum -c --quiet SHA256SUMS
+#13 CACHED
+
+#14 [build 7/7] RUN set -eu; mkdir -p /out; pids="";     for id in $(seq 1 "2"); do       g++ -std=c++17 -O2 -Wall -Wextra -Iengine -Isrc           -DDES_DATA_HEADER=""supervisor_data_fms.h""           -DDES_NODE_ID="$id" -DDES_NUM_NODES="2"           -DDES_FAMILY="DES_FAMILY_LMOD"           -DDES_ROUNDS="5" -DDES_WORK_MS="0"           -DDES_SIMULATE_LOSS_PCT=20           -o "/out/des_node$id" src/des_container_main.cpp           -Wl,--wrap=mbedtls_ecp_mul -l:libmbedcrypto.a &       pids="$pids $!";     done;     for p in $pids; do wait "$p"; done;     { echo "DES_PROBLEM=fms"; echo "DES_NUM_NODES=2";       echo "DES_FAMILY=LMOD"; echo "DES_ROUNDS=5";       echo "DES_WORK_MS=0"; echo "DES_EXTRA_FLAGS=-DDES_SIMULATE_LOSS_PCT=20";       echo "mbedtls=$(dpkg-query -W -f='${Version}' libmbedtls-dev)";       echo "gxx=$(g++ -dumpfullversion)"; } > /out/BUILD_INFO;     cat /out/BUILD_INFO
+#14 2.266 DES_PROBLEM=fms
+#14 2.266 DES_NUM_NODES=2
+#14 2.266 DES_FAMILY=LMOD
+#14 2.266 DES_ROUNDS=5
+#14 2.266 DES_WORK_MS=0
+#14 2.266 DES_EXTRA_FLAGS=-DDES_SIMULATE_LOSS_PCT=20
+#14 2.266 mbedtls=3.6.5-0.1ubuntu2
+#14 2.266 gxx=15.2.0
+#14 DONE 2.3s
+
+#15 [stage-1 2/4] RUN useradd --system --no-create-home --shell /usr/sbin/nologin des
+#15 CACHED
+
+#16 [stage-1 3/4] COPY --from=build /out/ /opt/des/bin/
+#16 DONE 0.0s
+
+#17 [stage-1 4/4] COPY --chmod=0755 docker/entrypoint.sh /usr/local/bin/des-entrypoint
+#17 DONE 0.0s
+
+#18 exporting to image
+#18 exporting layers 0.1s done
+#18 exporting manifest sha256:b95fd847932e2497c68a174e2fd2bad9a9c87e06c22c5907b1adc58ef69e8087 0.0s done
+#18 exporting config sha256:a513a85c77119ac1e9da17f29f1c249bac5f62b28230e67881a46e6339a31653 0.0s done
+#18 exporting attestation manifest sha256:e1033411637f556c391e99f5ff6733d86f5b4818f296568c9f1472882a093fa9 0.0s done
+#18 exporting manifest list sha256:8a37ff428210ab77ae7f66b75ca29765c4c7b740e6b76ad3489d40b3829f9476 done
+#18 naming to docker.io/library/docker-des:fms-2n-LMOD-r5-w0-perda20 done
+#18 unpacking to docker.io/library/docker-des:fms-2n-LMOD-r5-w0-perda20 0.1s done
+#18 DONE 0.3s
+
+#19 resolving provenance for metadata file
+#19 DONE 0.0s
+ Image docker-des:fms-2n-LMOD-r5-w0-perda20 Built 
+== run (bridge): node1 node2
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node1-1 Started 
+ Container docker-des-node2-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-090159-fms-2-perda20
+# Execução `20260928-090159-fms-2-perda20`
+
+- problema `fms`, família `LMOD`, **2 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **220 executados**, 0 pulados
+- impressão digital da configuração: `edbd7971`
+- RTT de aplicação (nó 1, 12 sondas): média 3.98 ms, mín 2.34, máx 5.39
+- resultado: **complete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 S1 S2 S3 | 0 | 80/40/40 | 0 | 405 (85) | 28254.2 | 233/548 | 79 | PASS | não |
+| 2 | S4 S5 S6 | 0 | 60/0/0 | 80 | 393 (105) | 27502.4 | 691/180 | 0 | PASS | não |
+| **total** | | | | | **798 (190)** | 55756.6 | 924/728 | 79 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 32283.5, 83800.5, 108177.8, 133835.5, 163080.2
+
+Tempo por passo: ciclo 1 **733.72 ms**; ciclos 2–5 **743.16 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | edbd7971 | edbd7971 | ✅ |
+| decryptions, whole cell | 798 | 798 | ✅ |
+| decryptions, whole cell, cycle 1 | 190 | 190 | ✅ |
+| outcome | complete|halt|incomplete | complete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-2-perda30  (repetição 1/5)
+== build (scenarios/fms-2-perda30.env)
+ Image docker-des:fms-2n-LMOD-r5-w0-perda30 Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 818B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 3.32kB done
+#2 DONE 0.0s
+
+#3 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#3 DONE 0.8s
+
+#4 docker-image://docker.io/docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
+#4 resolve docker.io/docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32 0.0s done
+#4 CACHED
+
+#5 [internal] load metadata for docker.io/library/ubuntu:26.04
+#5 DONE 0.6s
+
+#6 [internal] load .dockerignore
+#6 transferring context: 2B done
+#6 DONE 0.0s
+
+#7 [internal] load build context
+#7 transferring context: 370B done
+#7 DONE 0.0s
+
+#8 [build 1/7] FROM docker.io/library/ubuntu:26.04@sha256:da6fc2be547864451aa253836dd926da33623312df4a9a243e35dc877c378a78
+#8 resolve docker.io/library/ubuntu:26.04@sha256:da6fc2be547864451aa253836dd926da33623312df4a9a243e35dc877c378a78 0.0s done
+#8 DONE 0.0s
+
+#9 [build 2/7] RUN apt-get update  && apt-get install -y --no-install-recommends g++ libmbedtls-dev  && rm -rf /var/lib/apt/lists/*
+#9 CACHED
+
+#10 [build 4/7] COPY engine/ engine/
+#10 CACHED
+
+#11 [build 3/7] WORKDIR /src
+#11 CACHED
+
+#12 [build 5/7] COPY src/ src/
+#12 CACHED
+
+#13 [build 6/7] RUN cd engine && sha256sum -c --quiet SHA256SUMS
+#13 CACHED
+
+#14 [build 7/7] RUN set -eu; mkdir -p /out; pids="";     for id in $(seq 1 "2"); do       g++ -std=c++17 -O2 -Wall -Wextra -Iengine -Isrc           -DDES_DATA_HEADER=""supervisor_data_fms.h""           -DDES_NODE_ID="$id" -DDES_NUM_NODES="2"           -DDES_FAMILY="DES_FAMILY_LMOD"           -DDES_ROUNDS="5" -DDES_WORK_MS="0"           -DDES_SIMULATE_LOSS_PCT=30           -o "/out/des_node$id" src/des_container_main.cpp           -Wl,--wrap=mbedtls_ecp_mul -l:libmbedcrypto.a &       pids="$pids $!";     done;     for p in $pids; do wait "$p"; done;     { echo "DES_PROBLEM=fms"; echo "DES_NUM_NODES=2";       echo "DES_FAMILY=LMOD"; echo "DES_ROUNDS=5";       echo "DES_WORK_MS=0"; echo "DES_EXTRA_FLAGS=-DDES_SIMULATE_LOSS_PCT=30";       echo "mbedtls=$(dpkg-query -W -f='${Version}' libmbedtls-dev)";       echo "gxx=$(g++ -dumpfullversion)"; } > /out/BUILD_INFO;     cat /out/BUILD_INFO
+#14 2.465 DES_PROBLEM=fms
+#14 2.465 DES_NUM_NODES=2
+#14 2.465 DES_FAMILY=LMOD
+#14 2.465 DES_ROUNDS=5
+#14 2.465 DES_WORK_MS=0
+#14 2.465 DES_EXTRA_FLAGS=-DDES_SIMULATE_LOSS_PCT=30
+#14 2.465 mbedtls=3.6.5-0.1ubuntu2
+#14 2.465 gxx=15.2.0
+#14 DONE 2.5s
+
+#15 [stage-1 2/4] RUN useradd --system --no-create-home --shell /usr/sbin/nologin des
+#15 CACHED
+
+#16 [stage-1 3/4] COPY --from=build /out/ /opt/des/bin/
+#16 DONE 0.0s
+
+#17 [stage-1 4/4] COPY --chmod=0755 docker/entrypoint.sh /usr/local/bin/des-entrypoint
+#17 DONE 0.0s
+
+#18 exporting to image
+#18 exporting layers 0.1s done
+#18 exporting manifest sha256:8d592b152cdf5cd5674586af8ea649f75cf5d1d7951676c1f41a9345f110663f 0.0s done
+#18 exporting config sha256:56496477fd65558a003fb7c0d24d603c11771baad8307cf4eb53abf32e460331 0.0s done
+#18 exporting attestation manifest sha256:1d1d29b1ba20704897480c2db38fd896851800c0fe24ebc15b66048d64f018fb 0.0s done
+#18 exporting manifest list sha256:f125f74a145c74f7234110d270ae936c479944b34ec29e3e151fb7aa24fce03e 0.0s done
+#18 naming to docker.io/library/docker-des:fms-2n-LMOD-r5-w0-perda30 done
+#18 unpacking to docker.io/library/docker-des:fms-2n-LMOD-r5-w0-perda30 0.0s done
+#18 DONE 0.3s
+
+#19 resolving provenance for metadata file
+#19 DONE 0.0s
+ Image docker-des:fms-2n-LMOD-r5-w0-perda30 Built 
+== run (bridge): node1 node2
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node1-1 Started 
+ Container docker-des-node2-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-090511-fms-2-perda30
+# Execução `20260928-090511-fms-2-perda30`
+
+- problema `fms`, família `LMOD`, **2 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **78 executados**, 0 pulados, 142 não alcançados (execução interrompida)
+- impressão digital da configuração: `edbd7971`
+- RTT de aplicação (nó 1, 10 sondas): média 4.20 ms, mín 2.65, máx 4.89
+- resultado: **halt** — SAFE HALT nos nós [1, 2]
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 S1 S2 S3 | 2 | 29/14/13 | 0 | 142 (85) | 9907.9 | 125/237 | 38 | PASS | **NOTIFY unacknowledged — a participant may have missed an uncontrollable shared event** |
+| 2 | S4 S5 S6 | 2 | 22/0/0 | 28 | 159 (105) | 11202.9 | 340/89 | 0 | PASS | **a peer halted** |
+| **total** | | | | | **301 (190)** | 21110.8 | 465/326 | 38 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 42611.2
+
+Tempo por passo: ciclo 1 **968.44 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | edbd7971 | edbd7971 | ✅ |
+| outcome | complete|halt|incomplete | halt | ✅ |
+| consistency across nodes | consistente | consistente até o SAFE HALT (1 evento em voo: 1-2) | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-7-perda1  (repetição 1/5)
+== build (scenarios/fms-7-perda1.env)
+ Image docker-des:fms-7n-LMOD-r5-w0-perda1 Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 816B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 3.32kB done
+#2 DONE 0.0s
+
+#3 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#3 DONE 1.0s
+
+#4 docker-image://docker.io/docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
+#4 resolve docker.io/docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32 0.0s done
+#4 CACHED
+
+#5 [internal] load metadata for docker.io/library/ubuntu:26.04
+#5 DONE 1.0s
+
+#6 [internal] load .dockerignore
+#6 transferring context: 2B done
+#6 DONE 0.0s
+
+#7 [internal] load build context
+#7 transferring context: 370B done
+#7 DONE 0.0s
+
+#8 [build 1/7] FROM docker.io/library/ubuntu:26.04@sha256:da6fc2be547864451aa253836dd926da33623312df4a9a243e35dc877c378a78
+#8 resolve docker.io/library/ubuntu:26.04@sha256:da6fc2be547864451aa253836dd926da33623312df4a9a243e35dc877c378a78 0.0s done
+#8 DONE 0.0s
+
+#9 [build 4/7] COPY engine/ engine/
+#9 CACHED
+
+#10 [build 5/7] COPY src/ src/
+#10 CACHED
+
+#11 [build 2/7] RUN apt-get update  && apt-get install -y --no-install-recommends g++ libmbedtls-dev  && rm -rf /var/lib/apt/lists/*
+#11 CACHED
+
+#12 [build 3/7] WORKDIR /src
+#12 CACHED
+
+#13 [build 6/7] RUN cd engine && sha256sum -c --quiet SHA256SUMS
+#13 CACHED
+
+#14 [build 7/7] RUN set -eu; mkdir -p /out; pids="";     for id in $(seq 1 "7"); do       g++ -std=c++17 -O2 -Wall -Wextra -Iengine -Isrc           -DDES_DATA_HEADER=""supervisor_data_fms.h""           -DDES_NODE_ID="$id" -DDES_NUM_NODES="7"           -DDES_FAMILY="DES_FAMILY_LMOD"           -DDES_ROUNDS="5" -DDES_WORK_MS="0"           -DDES_SIMULATE_LOSS_PCT=1           -o "/out/des_node$id" src/des_container_main.cpp           -Wl,--wrap=mbedtls_ecp_mul -l:libmbedcrypto.a &       pids="$pids $!";     done;     for p in $pids; do wait "$p"; done;     { echo "DES_PROBLEM=fms"; echo "DES_NUM_NODES=7";       echo "DES_FAMILY=LMOD"; echo "DES_ROUNDS=5";       echo "DES_WORK_MS=0"; echo "DES_EXTRA_FLAGS=-DDES_SIMULATE_LOSS_PCT=1";       echo "mbedtls=$(dpkg-query -W -f='${Version}' libmbedtls-dev)";       echo "gxx=$(g++ -dumpfullversion)"; } > /out/BUILD_INFO;     cat /out/BUILD_INFO
+#14 3.900 DES_PROBLEM=fms
+#14 3.900 DES_NUM_NODES=7
+#14 3.900 DES_FAMILY=LMOD
+#14 3.900 DES_ROUNDS=5
+#14 3.900 DES_WORK_MS=0
+#14 3.900 DES_EXTRA_FLAGS=-DDES_SIMULATE_LOSS_PCT=1
+#14 3.900 mbedtls=3.6.5-0.1ubuntu2
+#14 3.900 gxx=15.2.0
+#14 DONE 4.0s
+
+#15 [stage-1 2/4] RUN useradd --system --no-create-home --shell /usr/sbin/nologin des
+#15 CACHED
+
+#16 [stage-1 3/4] COPY --from=build /out/ /opt/des/bin/
+#16 DONE 0.1s
+
+#17 [stage-1 4/4] COPY --chmod=0755 docker/entrypoint.sh /usr/local/bin/des-entrypoint
+#17 DONE 0.0s
+
+#18 exporting to image
+#18 exporting layers
+#18 exporting layers 0.3s done
+#18 exporting manifest sha256:69b48fa886e34240b40d306fec9a5f30f70e635d6488e6211368a8a77593935f 0.0s done
+#18 exporting config sha256:cf71bfa6137fd854f31b51f92a81217a34f0bd559f0624d771bc9ae66a2c56b4 0.0s done
+#18 exporting attestation manifest sha256:59e38d2c7a391e2395d0341d82a153b934509d6e21bf8ddbb6fe1524f4534de3 0.0s done
+#18 exporting manifest list sha256:38ec6337326d2fef1a2a826a814c89645da3390027cf00986fa341c16ed20f94 0.0s done
+#18 naming to docker.io/library/docker-des:fms-7n-LMOD-r5-w0-perda1 done
+#18 unpacking to docker.io/library/docker-des:fms-7n-LMOD-r5-w0-perda1 0.1s done
+#18 DONE 0.5s
+
+#19 resolving provenance for metadata file
+#19 DONE 0.0s
+ Image docker-des:fms-7n-LMOD-r5-w0-perda1 Built 
+== run (bridge): node1 node2 node3 node4 node5 node6 node7
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node7-1 Creating 
+ Container docker-des-node5-1 Creating 
+ Container docker-des-node4-1 Creating 
+ Container docker-des-node6-1 Creating 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node3-1 Creating 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node5-1 Created 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node3-1 Created 
+ Container docker-des-node7-1 Created 
+ Container docker-des-node4-1 Created 
+ Container docker-des-node6-1 Created 
+ Container docker-des-node5-1 Starting 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node3-1 Starting 
+ Container docker-des-node7-1 Starting 
+ Container docker-des-node6-1 Starting 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node4-1 Starting 
+ Container docker-des-node5-1 Started 
+ Container docker-des-node1-1 Started 
+ Container docker-des-node3-1 Started 
+ Container docker-des-node7-1 Started 
+ Container docker-des-node6-1 Started 
+ Container docker-des-node2-1 Started 
+ Container docker-des-node4-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-090659-fms-7-perda1
+# Execução `20260928-090659-fms-7-perda1`
+
+- problema `fms`, família `LMOD`, **7 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **220 executados**, 0 pulados
+- impressão digital da configuração: `04511541`
+- RTT de aplicação (nó 1, 19 sondas): média 4.59 ms, mín 2.83, máx 5.91
+- resultado: **complete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 | 0 | 20/40/40 | 0 | 101 (21) | 7051.9 | 179/2343 | 16 | PASS | não |
+| 2 | S1 | 0 | 20/0/0 | 80 | 101 (21) | 7042.4 | 365/2160 | 0 | PASS | não |
+| 3 | S2 | 0 | 20/0/0 | 80 | 100 (20) | 6972.6 | 365/2162 | 0 | PASS | não |
+| 4 | S3 | 0 | 20/0/0 | 80 | 103 (23) | 7184.9 | 359/2146 | 0 | PASS | não |
+| 5 | S4 | 0 | 0/20/10 | 80 | 114 (26) | 7967.2 | 398/2115 | 2 | PASS | não |
+| 6 | S5 | 0 | 0/0/0 | 110 | 129 (41) | 9028.7 | 442/2084 | 0 | PASS | não |
+| 7 | S6 | 0 | 30/0/0 | 110 | 150 (38) | 10539.5 | 436/2080 | 0 | PASS | não |
+| **total** | | | | | **798 (190)** | 55787.2 | 2544/15090 | 18 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 13141.9, 24769.2, 29803.5, 38779.7, 46748.7
+
+Tempo por passo: ciclo 1 **298.68 ms**; ciclos 2–5 **190.95 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | 04511541 | 04511541 | ✅ |
+| decryptions, whole cell | 798 | 798 | ✅ |
+| decryptions, whole cell, cycle 1 | 190 | 190 | ✅ |
+| outcome | complete|halt|incomplete | complete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-7-perda5  (repetição 1/5)
+== build (scenarios/fms-7-perda5.env)
+ Image docker-des:fms-7n-LMOD-r5-w0-perda5 Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 816B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 3.32kB done
+#2 DONE 0.0s
+
+#3 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#3 DONE 0.6s
+
+#4 docker-image://docker.io/docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
+#4 resolve docker.io/docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32 0.0s done
+#4 CACHED
+
+#5 [internal] load metadata for docker.io/library/ubuntu:26.04
+#5 DONE 0.5s
+
+#6 [internal] load .dockerignore
+#6 transferring context: 2B done
+#6 DONE 0.0s
+
+#7 [internal] load build context
+#7 transferring context: 370B done
+#7 DONE 0.0s
+
+#8 [build 1/7] FROM docker.io/library/ubuntu:26.04@sha256:da6fc2be547864451aa253836dd926da33623312df4a9a243e35dc877c378a78
+#8 resolve docker.io/library/ubuntu:26.04@sha256:da6fc2be547864451aa253836dd926da33623312df4a9a243e35dc877c378a78 0.0s done
+#8 DONE 0.0s
+
+#9 [build 5/7] COPY src/ src/
+#9 CACHED
+
+#10 [build 2/7] RUN apt-get update  && apt-get install -y --no-install-recommends g++ libmbedtls-dev  && rm -rf /var/lib/apt/lists/*
+#10 CACHED
+
+#11 [build 3/7] WORKDIR /src
+#11 CACHED
+
+#12 [build 4/7] COPY engine/ engine/
+#12 CACHED
+
+#13 [build 6/7] RUN cd engine && sha256sum -c --quiet SHA256SUMS
+#13 CACHED
+
+#14 [build 7/7] RUN set -eu; mkdir -p /out; pids="";     for id in $(seq 1 "7"); do       g++ -std=c++17 -O2 -Wall -Wextra -Iengine -Isrc           -DDES_DATA_HEADER=""supervisor_data_fms.h""           -DDES_NODE_ID="$id" -DDES_NUM_NODES="7"           -DDES_FAMILY="DES_FAMILY_LMOD"           -DDES_ROUNDS="5" -DDES_WORK_MS="0"           -DDES_SIMULATE_LOSS_PCT=5           -o "/out/des_node$id" src/des_container_main.cpp           -Wl,--wrap=mbedtls_ecp_mul -l:libmbedcrypto.a &       pids="$pids $!";     done;     for p in $pids; do wait "$p"; done;     { echo "DES_PROBLEM=fms"; echo "DES_NUM_NODES=7";       echo "DES_FAMILY=LMOD"; echo "DES_ROUNDS=5";       echo "DES_WORK_MS=0"; echo "DES_EXTRA_FLAGS=-DDES_SIMULATE_LOSS_PCT=5";       echo "mbedtls=$(dpkg-query -W -f='${Version}' libmbedtls-dev)";       echo "gxx=$(g++ -dumpfullversion)"; } > /out/BUILD_INFO;     cat /out/BUILD_INFO
+#14 3.868 DES_PROBLEM=fms
+#14 3.868 DES_NUM_NODES=7
+#14 3.868 DES_FAMILY=LMOD
+#14 3.868 DES_ROUNDS=5
+#14 3.868 DES_WORK_MS=0
+#14 3.868 DES_EXTRA_FLAGS=-DDES_SIMULATE_LOSS_PCT=5
+#14 3.868 mbedtls=3.6.5-0.1ubuntu2
+#14 3.868 gxx=15.2.0
+#14 DONE 4.0s
+
+#15 [stage-1 2/4] RUN useradd --system --no-create-home --shell /usr/sbin/nologin des
+#15 CACHED
+
+#16 [stage-1 3/4] COPY --from=build /out/ /opt/des/bin/
+#16 DONE 0.1s
+
+#17 [stage-1 4/4] COPY --chmod=0755 docker/entrypoint.sh /usr/local/bin/des-entrypoint
+#17 DONE 0.0s
+
+#18 exporting to image
+#18 exporting layers
+#18 exporting layers 0.3s done
+#18 exporting manifest sha256:58da75690cb42ca2fe44f08e023981490bbb867a9050d22c70c28e2271b46be1 0.0s done
+#18 exporting config sha256:b3ce79d0320cad4e2e87dbc7db33d343da1fd2071dad340a8bea5b9f6e8504c1 0.0s done
+#18 exporting attestation manifest sha256:d74bfd25f2af9f102910bc362dbe80cc4adf2479b5361e786d6413564784d797 0.0s done
+#18 exporting manifest list sha256:1f45bb221e678c858a8d0aacd70df2c1a915c530aa1dea7cdc543d8eb39afddb 0.0s done
+#18 naming to docker.io/library/docker-des:fms-7n-LMOD-r5-w0-perda5 done
+#18 unpacking to docker.io/library/docker-des:fms-7n-LMOD-r5-w0-perda5 0.1s done
+#18 DONE 0.5s
+
+#19 resolving provenance for metadata file
+#19 DONE 0.0s
+ Image docker-des:fms-7n-LMOD-r5-w0-perda5 Built 
+== run (bridge): node1 node2 node3 node4 node5 node6 node7
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node7-1 Creating 
+ Container docker-des-node4-1 Creating 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node6-1 Creating 
+ Container docker-des-node3-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node5-1 Creating 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node3-1 Created 
+ Container docker-des-node6-1 Created 
+ Container docker-des-node4-1 Created 
+ Container docker-des-node7-1 Created 
+ Container docker-des-node5-1 Created 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node5-1 Starting 
+ Container docker-des-node4-1 Starting 
+ Container docker-des-node7-1 Starting 
+ Container docker-des-node6-1 Starting 
+ Container docker-des-node3-1 Starting 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node2-1 Started 
+ Container docker-des-node5-1 Started 
+ Container docker-des-node4-1 Started 
+ Container docker-des-node7-1 Started 
+ Container docker-des-node6-1 Started 
+ Container docker-des-node3-1 Started 
+ Container docker-des-node1-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-090817-fms-7-perda5
+# Execução `20260928-090817-fms-7-perda5`
+
+- problema `fms`, família `LMOD`, **7 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **220 executados**, 0 pulados
+- impressão digital da configuração: `04511541`
+- RTT de aplicação (nó 1, 11 sondas): média 4.51 ms, mín 3.34, máx 5.09
+- resultado: **complete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 | 0 | 20/40/40 | 0 | 101 (21) | 7020.4 | 255/5053 | 83 | PASS | não |
+| 2 | S1 | 0 | 20/0/0 | 80 | 101 (21) | 7035.7 | 864/4477 | 0 | PASS | não |
+| 3 | S2 | 0 | 20/0/0 | 80 | 100 (20) | 6947.4 | 863/4482 | 0 | PASS | não |
+| 4 | S3 | 0 | 20/0/0 | 80 | 103 (23) | 7162.4 | 869/4477 | 0 | PASS | não |
+| 5 | S4 | 0 | 0/20/10 | 80 | 114 (26) | 7945.9 | 856/4504 | 10 | PASS | não |
+| 6 | S5 | 0 | 0/0/0 | 110 | 129 (41) | 8995.4 | 934/4403 | 0 | PASS | não |
+| 7 | S6 | 0 | 30/0/0 | 110 | 150 (38) | 10509.6 | 933/4431 | 0 | PASS | não |
+| **total** | | | | | **798 (190)** | 55616.8 | 5574/31827 | 93 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 36649.6, 75292.3, 102164.1, 146517.9, 180668.6
+
+Tempo por passo: ciclo 1 **832.95 ms**; ciclos 2–5 **818.29 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | 04511541 | 04511541 | ✅ |
+| decryptions, whole cell | 798 | 798 | ✅ |
+| decryptions, whole cell, cycle 1 | 190 | 190 | ✅ |
+| outcome | complete|halt|incomplete | complete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-7-perda10  (repetição 1/5)
+== build (scenarios/fms-7-perda10.env)
+ Image docker-des:fms-7n-LMOD-r5-w0-perda10 Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 818B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 3.32kB 0.0s done
+#2 DONE 0.0s
+
+#3 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#3 DONE 1.2s
+
+#4 docker-image://docker.io/docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
+#4 resolve docker.io/docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
+#4 resolve docker.io/docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32 0.3s done
+#4 CACHED
+
+#5 [internal] load metadata for docker.io/library/ubuntu:26.04
+#5 DONE 1.7s
+
+#6 [internal] load .dockerignore
+#6 transferring context: 2B done
+#6 DONE 0.0s
+
+#7 [internal] load build context
+#7 transferring context: 370B 0.0s done
+#7 DONE 0.2s
+
+#8 [build 1/7] FROM docker.io/library/ubuntu:26.04@sha256:da6fc2be547864451aa253836dd926da33623312df4a9a243e35dc877c378a78
+#8 resolve docker.io/library/ubuntu:26.04@sha256:da6fc2be547864451aa253836dd926da33623312df4a9a243e35dc877c378a78 0.2s done
+#8 DONE 0.3s
+
+#9 [build 3/7] WORKDIR /src
+#9 CACHED
+
+#10 [build 4/7] COPY engine/ engine/
+#10 CACHED
+
+#11 [build 5/7] COPY src/ src/
+#11 CACHED
+
+#12 [build 2/7] RUN apt-get update  && apt-get install -y --no-install-recommends g++ libmbedtls-dev  && rm -rf /var/lib/apt/lists/*
+#12 CACHED
+
+#13 [build 6/7] RUN cd engine && sha256sum -c --quiet SHA256SUMS
+#13 CACHED
+
+#14 [build 7/7] RUN set -eu; mkdir -p /out; pids="";     for id in $(seq 1 "7"); do       g++ -std=c++17 -O2 -Wall -Wextra -Iengine -Isrc           -DDES_DATA_HEADER=""supervisor_data_fms.h""           -DDES_NODE_ID="$id" -DDES_NUM_NODES="7"           -DDES_FAMILY="DES_FAMILY_LMOD"           -DDES_ROUNDS="5" -DDES_WORK_MS="0"           -DDES_SIMULATE_LOSS_PCT=10           -o "/out/des_node$id" src/des_container_main.cpp           -Wl,--wrap=mbedtls_ecp_mul -l:libmbedcrypto.a &       pids="$pids $!";     done;     for p in $pids; do wait "$p"; done;     { echo "DES_PROBLEM=fms"; echo "DES_NUM_NODES=7";       echo "DES_FAMILY=LMOD"; echo "DES_ROUNDS=5";       echo "DES_WORK_MS=0"; echo "DES_EXTRA_FLAGS=-DDES_SIMULATE_LOSS_PCT=10";       echo "mbedtls=$(dpkg-query -W -f='${Version}' libmbedtls-dev)";       echo "gxx=$(g++ -dumpfullversion)"; } > /out/BUILD_INFO;     cat /out/BUILD_INFO
+#14 28.07 DES_PROBLEM=fms
+#14 28.07 DES_NUM_NODES=7
+#14 28.07 DES_FAMILY=LMOD
+#14 28.07 DES_ROUNDS=5
+#14 28.07 DES_WORK_MS=0
+#14 28.07 DES_EXTRA_FLAGS=-DDES_SIMULATE_LOSS_PCT=10
+#14 28.07 mbedtls=3.6.5-0.1ubuntu2
+#14 28.07 gxx=15.2.0
+#14 DONE 28.3s
+
+#15 [stage-1 2/4] RUN useradd --system --no-create-home --shell /usr/sbin/nologin des
+#15 CACHED
+
+#16 [stage-1 3/4] COPY --from=build /out/ /opt/des/bin/
+#16 DONE 0.2s
+
+#17 [stage-1 4/4] COPY --chmod=0755 docker/entrypoint.sh /usr/local/bin/des-entrypoint
+#17 DONE 0.1s
+
+#18 exporting to image
+#18 exporting layers
+#18 exporting layers 1.2s done
+#18 exporting manifest sha256:176ca0d7c277c721215c304191dafacc40b7990e85a9b9d5684d4693ffc33730 0.0s done
+#18 exporting config sha256:674c0a45f36bf4f55181f90dfbcb029e48cf944e58e379c3bdd778c7b7258b69 0.0s done
+#18 exporting attestation manifest sha256:ffc5814102277fbe1e5318b82ae254c440f5243230125ffb9886670dc677b139
+#18 exporting attestation manifest sha256:ffc5814102277fbe1e5318b82ae254c440f5243230125ffb9886670dc677b139 0.0s done
+#18 exporting manifest list sha256:9075cc7417c8a41aded064526be725580b80700dd7a3568e66ea0fc426e80f2e 0.0s done
+#18 naming to docker.io/library/docker-des:fms-7n-LMOD-r5-w0-perda10 done
+#18 unpacking to docker.io/library/docker-des:fms-7n-LMOD-r5-w0-perda10
+#18 unpacking to docker.io/library/docker-des:fms-7n-LMOD-r5-w0-perda10 0.3s done
+#18 DONE 1.8s
+
+#19 resolving provenance for metadata file
+#19 DONE 0.1s
+ Image docker-des:fms-7n-LMOD-r5-w0-perda10 Built 
+== run (bridge): node1 node2 node3 node4 node5 node6 node7
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node7-1 Creating 
+ Container docker-des-node4-1 Creating 
+ Container docker-des-node6-1 Creating 
+ Container docker-des-node5-1 Creating 
+ Container docker-des-node3-1 Creating 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node6-1 Created 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node7-1 Created 
+ Container docker-des-node4-1 Created 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node3-1 Created 
+ Container docker-des-node5-1 Created 
+ Container docker-des-node5-1 Starting 
+ Container docker-des-node3-1 Starting 
+ Container docker-des-node7-1 Starting 
+ Container docker-des-node4-1 Starting 
+ Container docker-des-node6-1 Starting 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node5-1 Started 
+ Container docker-des-node3-1 Started 
+ Container docker-des-node7-1 Started 
+ Container docker-des-node4-1 Started 
+ Container docker-des-node6-1 Started 
+ Container docker-des-node2-1 Started 
+ Container docker-des-node1-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-091228-fms-7-perda10
+# Execução `20260928-091228-fms-7-perda10`
+
+- problema `fms`, família `LMOD`, **7 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **123 executados**, 97 pulados
+- impressão digital da configuração: `04511541`
+- RTT de aplicação (nó 1, 5 sondas): média 4.79 ms, mín 4.12, máx 6.22
+- resultado: **incomplete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 | 1 | 14/23/23 | 0 | 61 (19) | 4241.7 | 557/13775 | 210 | PASS | não |
+| 2 | S1 | 1 | 12/0/0 | 46 | 59 (19) | 4098.3 | 2618/12083 | 0 | PASS | não |
+| 3 | S2 | 1 | 14/0/0 | 46 | 60 (18) | 4175.0 | 2672/12025 | 0 | PASS | não |
+| 4 | S3 | 1 | 10/0/0 | 46 | 59 (21) | 4100.3 | 2592/12115 | 0 | PASS | não |
+| 5 | S4 | 1 | 0/10/5 | 46 | 65 (22) | 4525.1 | 2213/12489 | 37 | PASS | não |
+| 6 | S5 | 0 | 0/0/0 | 61 | 82 (37) | 5715.2 | 2865/11868 | 0 | PASS | não |
+| 7 | S6 | 1 | 12/0/0 | 61 | 83 (34) | 5815.7 | 2583/12150 | 0 | PASS | não |
+| **total** | | | | | **469 (170)** | 32671.3 | 16100/86505 | 247 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 86489.1, 263100.2, 452186.7, 553520.4, 715268.0
+
+Tempo por passo: ciclo 1 **1965.66 ms**; ciclos 2–5 **3572.61 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | 04511541 | 04511541 | ✅ |
+| outcome | complete|halt|incomplete | incomplete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-2-perda1  (repetição 2/5)
+== build skipped (DES_SKIP_BUILD=1): using the existing image
+== run (bridge): node1 node2
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node1-1 Started 
+ Container docker-des-node2-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-092604-fms-2-perda1
+# Execução `20260928-092604-fms-2-perda1`
+
+- problema `fms`, família `LMOD`, **2 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **220 executados**, 0 pulados
+- impressão digital da configuração: `edbd7971`
+- RTT de aplicação (nó 1, 20 sondas): média 3.88 ms, mín 2.51, máx 5.21
+- resultado: **complete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 S1 S2 S3 | 0 | 80/40/40 | 0 | 405 (85) | 28151.8 | 154/235 | 1 | PASS | não |
+| 2 | S4 S5 S6 | 0 | 60/0/0 | 80 | 393 (105) | 27371.7 | 238/154 | 0 | PASS | não |
+| **total** | | | | | **798 (190)** | 55523.5 | 392/389 | 1 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 8865.8, 16908.6, 23437.1, 29975.7, 36811.4
+
+Tempo por passo: ciclo 1 **201.50 ms**; ciclos 2–5 **158.78 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | edbd7971 | edbd7971 | ✅ |
+| decryptions, whole cell | 798 | 798 | ✅ |
+| decryptions, whole cell, cycle 1 | 190 | 190 | ✅ |
+| outcome | complete|halt|incomplete | complete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-2-perda5  (repetição 2/5)
+== build skipped (DES_SKIP_BUILD=1): using the existing image
+== run (bridge): node1 node2
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node2-1 Started 
+ Container docker-des-node1-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-092724-fms-2-perda5
+# Execução `20260928-092724-fms-2-perda5`
+
+- problema `fms`, família `LMOD`, **2 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **220 executados**, 0 pulados
+- impressão digital da configuração: `edbd7971`
+- RTT de aplicação (nó 1, 18 sondas): média 4.19 ms, mín 2.55, máx 5.26
+- resultado: **complete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 S1 S2 S3 | 0 | 80/40/40 | 0 | 405 (85) | 28147.1 | 157/270 | 9 | PASS | não |
+| 2 | S4 S5 S6 | 0 | 60/0/0 | 80 | 393 (105) | 27369.8 | 281/152 | 0 | PASS | não |
+| **total** | | | | | **798 (190)** | 55516.9 | 438/422 | 9 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 15069.6, 24840.0, 31375.7, 39339.4, 49257.8
+
+Tempo por passo: ciclo 1 **342.49 ms**; ciclos 2–5 **194.25 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | edbd7971 | edbd7971 | ✅ |
+| decryptions, whole cell | 798 | 798 | ✅ |
+| decryptions, whole cell, cycle 1 | 190 | 190 | ✅ |
+| outcome | complete|halt|incomplete | complete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-2-perda10  (repetição 2/5)
+== build skipped (DES_SKIP_BUILD=1): using the existing image
+== run (bridge): node1 node2
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node2-1 Started 
+ Container docker-des-node1-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-092834-fms-2-perda10
+# Execução `20260928-092834-fms-2-perda10`
+
+- problema `fms`, família `LMOD`, **2 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **220 executados**, 0 pulados
+- impressão digital da configuração: `edbd7971`
+- RTT de aplicação (nó 1, 15 sondas): média 3.81 ms, mín 2.37, máx 5.50
+- resultado: **complete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 S1 S2 S3 | 0 | 80/40/40 | 0 | 405 (85) | 28152.9 | 173/332 | 25 | PASS | não |
+| 2 | S4 S5 S6 | 0 | 60/0/0 | 80 | 393 (105) | 27377.2 | 368/156 | 0 | PASS | não |
+| **total** | | | | | **798 (190)** | 55530.1 | 541/488 | 25 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 21890.2, 33064.9, 41138.3, 55756.8, 73766.3
+
+Tempo por passo: ciclo 1 **497.50 ms**; ciclos 2–5 **294.75 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | edbd7971 | edbd7971 | ✅ |
+| decryptions, whole cell | 798 | 798 | ✅ |
+| decryptions, whole cell, cycle 1 | 190 | 190 | ✅ |
+| outcome | complete|halt|incomplete | complete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-2-perda20  (repetição 2/5)
+== build skipped (DES_SKIP_BUILD=1): using the existing image
+== run (bridge): node1 node2
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node1-1 Started 
+ Container docker-des-node2-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-093021-fms-2-perda20
+# Execução `20260928-093021-fms-2-perda20`
+
+- problema `fms`, família `LMOD`, **2 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **220 executados**, 0 pulados
+- impressão digital da configuração: `edbd7971`
+- RTT de aplicação (nó 1, 13 sondas): média 3.77 ms, mín 2.50, máx 5.82
+- resultado: **complete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 S1 S2 S3 | 0 | 80/40/40 | 0 | 405 (85) | 28155.1 | 215/457 | 58 | PASS | não |
+| 2 | S4 S5 S6 | 0 | 60/0/0 | 80 | 393 (105) | 27355.9 | 568/176 | 0 | PASS | não |
+| **total** | | | | | **798 (190)** | 55511.0 | 783/633 | 58 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 34450.8, 57362.5, 71852.2, 102572.6, 128816.7
+
+Tempo por passo: ciclo 1 **782.97 ms**; ciclos 2–5 **536.17 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | edbd7971 | edbd7971 | ✅ |
+| decryptions, whole cell | 798 | 798 | ✅ |
+| decryptions, whole cell, cycle 1 | 190 | 190 | ✅ |
+| outcome | complete|halt|incomplete | complete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-2-perda30  (repetição 2/5)
+== build skipped (DES_SKIP_BUILD=1): using the existing image
+== run (bridge): node1 node2
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node2-1 Started 
+ Container docker-des-node1-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-093302-fms-2-perda30
+# Execução `20260928-093302-fms-2-perda30`
+
+- problema `fms`, família `LMOD`, **2 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **32 executados**, 0 pulados, 188 não alcançados (execução interrompida)
+- impressão digital da configuração: `edbd7971`
+- RTT de aplicação (nó 1, 9 sondas): média 3.64 ms, mín 2.62, máx 4.96
+- resultado: **halt** — SAFE HALT nos nós [1, 2]
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 S1 S2 S3 | 2 | 13/5/5 | 0 | 58 (58) | 4033.3 | 66/117 | 18 | PASS | **COMMIT unacknowledged — a participant may not have applied a shared event** |
+| 2 | S4 S5 S6 | 2 | 9/0/0 | 11 | 77 (77) | 5404.5 | 157/43 | 0 | PASS | **a peer halted** |
+| **total** | | | | | **135 (135)** | 9437.8 | 223/160 | 18 | | |
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | edbd7971 | edbd7971 | ✅ |
+| outcome | complete|halt|incomplete | halt | ✅ |
+| consistency across nodes | consistente | consistente até o SAFE HALT (1 evento em voo: 1-2) | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-7-perda1  (repetição 2/5)
+== build skipped (DES_SKIP_BUILD=1): using the existing image
+== run (bridge): node1 node2 node3 node4 node5 node6 node7
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node3-1 Creating 
+ Container docker-des-node4-1 Creating 
+ Container docker-des-node5-1 Creating 
+ Container docker-des-node7-1 Creating 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node6-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node6-1 Created 
+ Container docker-des-node5-1 Created 
+ Container docker-des-node4-1 Created 
+ Container docker-des-node3-1 Created 
+ Container docker-des-node7-1 Created 
+ Container docker-des-node7-1 Starting 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node3-1 Starting 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node4-1 Starting 
+ Container docker-des-node5-1 Starting 
+ Container docker-des-node6-1 Starting 
+ Container docker-des-node7-1 Started 
+ Container docker-des-node2-1 Started 
+ Container docker-des-node3-1 Started 
+ Container docker-des-node1-1 Started 
+ Container docker-des-node4-1 Started 
+ Container docker-des-node5-1 Started 
+ Container docker-des-node6-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-093410-fms-7-perda1
+# Execução `20260928-093410-fms-7-perda1`
+
+- problema `fms`, família `LMOD`, **7 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **220 executados**, 0 pulados
+- impressão digital da configuração: `04511541`
+- RTT de aplicação (nó 1, 19 sondas): média 9.85 ms, mín 2.49, máx 112.45
+- resultado: **complete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 | 0 | 20/40/40 | 0 | 101 (21) | 7026.3 | 187/2453 | 20 | PASS | não |
+| 2 | S1 | 0 | 20/0/0 | 80 | 101 (21) | 7020.9 | 392/2255 | 0 | PASS | não |
+| 3 | S2 | 0 | 20/0/0 | 80 | 100 (20) | 6948.8 | 390/2254 | 0 | PASS | não |
+| 4 | S3 | 0 | 20/0/0 | 80 | 103 (23) | 7164.6 | 383/2245 | 0 | PASS | não |
+| 5 | S4 | 0 | 0/20/10 | 80 | 114 (26) | 7938.2 | 404/2205 | 3 | PASS | não |
+| 6 | S5 | 0 | 0/0/0 | 110 | 129 (41) | 8980.3 | 454/2131 | 0 | PASS | não |
+| 7 | S6 | 0 | 30/0/0 | 110 | 150 (38) | 10476.5 | 461/2184 | 0 | PASS | não |
+| **total** | | | | | **798 (190)** | 55555.6 | 2671/15727 | 23 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 14772.0, 22473.2, 31231.0, 42721.8, 50130.8
+
+Tempo por passo: ciclo 1 **335.73 ms**; ciclos 2–5 **200.90 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | 04511541 | 04511541 | ✅ |
+| decryptions, whole cell | 798 | 798 | ✅ |
+| decryptions, whole cell, cycle 1 | 190 | 190 | ✅ |
+| outcome | complete|halt|incomplete | complete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-7-perda5  (repetição 2/5)
+== build skipped (DES_SKIP_BUILD=1): using the existing image
+== run (bridge): node1 node2 node3 node4 node5 node6 node7
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node3-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node6-1 Creating 
+ Container docker-des-node5-1 Creating 
+ Container docker-des-node4-1 Creating 
+ Container docker-des-node7-1 Creating 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node7-1 Created 
+ Container docker-des-node3-1 Created 
+ Container docker-des-node6-1 Created 
+ Container docker-des-node4-1 Created 
+ Container docker-des-node5-1 Created 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node5-1 Starting 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node6-1 Starting 
+ Container docker-des-node7-1 Starting 
+ Container docker-des-node3-1 Starting 
+ Container docker-des-node4-1 Starting 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node5-1 Started 
+ Container docker-des-node1-1 Started 
+ Container docker-des-node6-1 Started 
+ Container docker-des-node7-1 Started 
+ Container docker-des-node3-1 Started 
+ Container docker-des-node4-1 Started 
+ Container docker-des-node2-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-093552-fms-7-perda5
+# Execução `20260928-093552-fms-7-perda5`
+
+- problema `fms`, família `LMOD`, **7 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **220 executados**, 0 pulados
+- impressão digital da configuração: `04511541`
+- RTT de aplicação (nó 1, 13 sondas): média 4.07 ms, mín 3.49, máx 4.78
+- resultado: **complete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 | 0 | 20/40/40 | 0 | 101 (21) | 7028.1 | 247/4644 | 72 | PASS | não |
+| 2 | S1 | 0 | 20/0/0 | 80 | 101 (21) | 7019.7 | 778/4084 | 0 | PASS | não |
+| 3 | S2 | 0 | 20/0/0 | 80 | 100 (20) | 6949.0 | 791/4115 | 0 | PASS | não |
+| 4 | S3 | 0 | 20/0/0 | 80 | 103 (23) | 7157.8 | 782/4097 | 0 | PASS | não |
+| 5 | S4 | 0 | 0/20/10 | 80 | 114 (26) | 7931.7 | 802/4114 | 9 | PASS | não |
+| 6 | S5 | 0 | 0/0/0 | 110 | 129 (41) | 8980.2 | 874/4045 | 0 | PASS | não |
+| 7 | S6 | 0 | 30/0/0 | 110 | 150 (38) | 10475.0 | 859/4047 | 0 | PASS | não |
+| **total** | | | | | **798 (190)** | 55541.5 | 5133/29146 | 81 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 27320.9, 66978.0, 102328.4, 131868.9, 163135.7
+
+Tempo por passo: ciclo 1 **620.93 ms**; ciclos 2–5 **771.68 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | 04511541 | 04511541 | ✅ |
+| decryptions, whole cell | 798 | 798 | ✅ |
+| decryptions, whole cell, cycle 1 | 190 | 190 | ✅ |
+| outcome | complete|halt|incomplete | complete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-7-perda10  (repetição 2/5)
+== build skipped (DES_SKIP_BUILD=1): using the existing image
+== run (bridge): node1 node2 node3 node4 node5 node6 node7
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node7-1 Creating 
+ Container docker-des-node5-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node6-1 Creating 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node3-1 Creating 
+ Container docker-des-node4-1 Creating 
+ Container docker-des-node4-1 Created 
+ Container docker-des-node7-1 Created 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node6-1 Created 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node3-1 Created 
+ Container docker-des-node5-1 Created 
+ Container docker-des-node4-1 Starting 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node6-1 Starting 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node5-1 Starting 
+ Container docker-des-node3-1 Starting 
+ Container docker-des-node7-1 Starting 
+ Container docker-des-node4-1 Started 
+ Container docker-des-node2-1 Started 
+ Container docker-des-node6-1 Started 
+ Container docker-des-node1-1 Started 
+ Container docker-des-node5-1 Started 
+ Container docker-des-node3-1 Started 
+ Container docker-des-node7-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-093932-fms-7-perda10
+# Execução `20260928-093932-fms-7-perda10`
+
+- problema `fms`, família `LMOD`, **7 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **151 executados**, 69 pulados
+- impressão digital da configuração: `04511541`
+- RTT de aplicação (nó 1, 6 sondas): média 4.21 ms, mín 3.55, máx 4.67
+- resultado: **incomplete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 | 1 | 14/28/28 | 0 | 71 (17) | 4938.6 | 492/11918 | 190 | PASS | não |
+| 2 | S1 | 1 | 14/0/0 | 56 | 71 (17) | 4943.4 | 2240/10335 | 0 | PASS | não |
+| 3 | S2 | 1 | 14/0/0 | 56 | 70 (14) | 4866.5 | 2231/10297 | 0 | PASS | não |
+| 4 | S3 | 1 | 14/0/0 | 56 | 73 (19) | 5120.6 | 2238/10338 | 0 | PASS | não |
+| 5 | S4 | 1 | 0/14/7 | 56 | 81 (19) | 5684.4 | 1885/10595 | 24 | PASS | não |
+| 6 | S5 | 0 | 0/0/0 | 77 | 92 (30) | 6436.0 | 2415/10165 | 0 | PASS | não |
+| 7 | S6 | 1 | 18/0/0 | 77 | 105 (31) | 7350.9 | 2199/10265 | 0 | PASS | não |
+| **total** | | | | | **563 (147)** | 39340.4 | 13700/73913 | 214 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 107927.6, 210718.4, 351953.4, 499717.6, 591743.1
+
+Tempo por passo: ciclo 1 **2452.90 ms**; ciclos 2–5 **2748.95 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | 04511541 | 04511541 | ✅ |
+| outcome | complete|halt|incomplete | incomplete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-2-perda1  (repetição 3/5)
+== build skipped (DES_SKIP_BUILD=1): using the existing image
+== run (bridge): node1 node2
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node2-1 Started 
+ Container docker-des-node1-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-095019-fms-2-perda1
+# Execução `20260928-095019-fms-2-perda1`
+
+- problema `fms`, família `LMOD`, **2 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **220 executados**, 0 pulados
+- impressão digital da configuração: `edbd7971`
+- RTT de aplicação (nó 1, 20 sondas): média 3.63 ms, mín 2.43, máx 5.47
+- resultado: **complete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 S1 S2 S3 | 0 | 80/40/40 | 0 | 405 (85) | 28142.0 | 152/250 | 4 | PASS | não |
+| 2 | S4 S5 S6 | 0 | 60/0/0 | 80 | 393 (105) | 27356.3 | 255/151 | 0 | PASS | não |
+| **total** | | | | | **798 (190)** | 55498.3 | 407/401 | 4 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 8792.5, 17410.2, 23943.3, 31978.2, 41518.2
+
+Tempo por passo: ciclo 1 **199.83 ms**; ciclos 2–5 **185.94 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | edbd7971 | edbd7971 | ✅ |
+| decryptions, whole cell | 798 | 798 | ✅ |
+| decryptions, whole cell, cycle 1 | 190 | 190 | ✅ |
+| outcome | complete|halt|incomplete | complete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-2-perda5  (repetição 3/5)
+== build skipped (DES_SKIP_BUILD=1): using the existing image
+== run (bridge): node1 node2
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node2-1 Started 
+ Container docker-des-node1-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-095131-fms-2-perda5
+# Execução `20260928-095131-fms-2-perda5`
+
+- problema `fms`, família `LMOD`, **2 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **220 executados**, 0 pulados
+- impressão digital da configuração: `edbd7971`
+- RTT de aplicação (nó 1, 18 sondas): média 3.64 ms, mín 2.33, máx 4.54
+- resultado: **complete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 S1 S2 S3 | 0 | 80/40/40 | 0 | 405 (85) | 28148.5 | 173/336 | 22 | PASS | não |
+| 2 | S4 S5 S6 | 0 | 60/0/0 | 80 | 393 (105) | 27364.8 | 353/157 | 0 | PASS | não |
+| **total** | | | | | **798 (190)** | 55513.3 | 526/493 | 22 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 18443.5, 30337.6, 38582.2, 59775.9, 69318.7
+
+Tempo por passo: ciclo 1 **419.17 ms**; ciclos 2–5 **289.06 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | edbd7971 | edbd7971 | ✅ |
+| decryptions, whole cell | 798 | 798 | ✅ |
+| decryptions, whole cell, cycle 1 | 190 | 190 | ✅ |
+| outcome | complete|halt|incomplete | complete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-2-perda10  (repetição 3/5)
+== build skipped (DES_SKIP_BUILD=1): using the existing image
+== run (bridge): node1 node2
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node2-1 Started 
+ Container docker-des-node1-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-095313-fms-2-perda10
+# Execução `20260928-095313-fms-2-perda10`
+
+- problema `fms`, família `LMOD`, **2 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **220 executados**, 0 pulados
+- impressão digital da configuração: `edbd7971`
+- RTT de aplicação (nó 1, 13 sondas): média 3.82 ms, mín 2.51, máx 6.33
+- resultado: **complete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 S1 S2 S3 | 0 | 80/40/40 | 0 | 405 (85) | 28200.7 | 173/329 | 25 | PASS | não |
+| 2 | S4 S5 S6 | 0 | 60/0/0 | 80 | 393 (105) | 27407.0 | 380/161 | 0 | PASS | não |
+| **total** | | | | | **798 (190)** | 55607.7 | 553/490 | 25 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 8734.9, 24955.7, 40953.6, 52559.0, 74213.3
+
+Tempo por passo: ciclo 1 **198.52 ms**; ciclos 2–5 **372.04 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | edbd7971 | edbd7971 | ✅ |
+| decryptions, whole cell | 798 | 798 | ✅ |
+| decryptions, whole cell, cycle 1 | 190 | 190 | ✅ |
+| outcome | complete|halt|incomplete | complete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-2-perda20  (repetição 3/5)
+== build skipped (DES_SKIP_BUILD=1): using the existing image
+== run (bridge): node1 node2
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node2-1 Started 
+ Container docker-des-node1-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-095453-fms-2-perda20
+# Execução `20260928-095453-fms-2-perda20`
+
+- problema `fms`, família `LMOD`, **2 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **220 executados**, 0 pulados
+- impressão digital da configuração: `edbd7971`
+- RTT de aplicação (nó 1, 14 sondas): média 3.39 ms, mín 2.32, máx 4.36
+- resultado: **complete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 S1 S2 S3 | 0 | 80/40/40 | 0 | 405 (85) | 28241.0 | 209/463 | 55 | PASS | não |
+| 2 | S4 S5 S6 | 0 | 60/0/0 | 80 | 393 (105) | 27435.7 | 559/178 | 0 | PASS | não |
+| **total** | | | | | **798 (190)** | 55676.7 | 768/641 | 55 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 30849.6, 56042.6, 77578.3, 104222.8, 124832.1
+
+Tempo por passo: ciclo 1 **701.13 ms**; ciclos 2–5 **533.99 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | edbd7971 | edbd7971 | ✅ |
+| decryptions, whole cell | 798 | 798 | ✅ |
+| decryptions, whole cell, cycle 1 | 190 | 190 | ✅ |
+| outcome | complete|halt|incomplete | complete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-2-perda30  (repetição 3/5)
+== build skipped (DES_SKIP_BUILD=1): using the existing image
+== run (bridge): node1 node2
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node2-1 Started 
+ Container docker-des-node1-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-095720-fms-2-perda30
+# Execução `20260928-095720-fms-2-perda30`
+
+- problema `fms`, família `LMOD`, **2 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **182 executados**, 38 pulados
+- impressão digital da configuração: `edbd7971`
+- RTT de aplicação (nó 1, 13 sondas): média 3.85 ms, mín 2.50, máx 5.32
+- resultado: **incomplete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 S1 S2 S3 | 1 | 68/33/33 | 0 | 337 (85) | 23444.8 | 305/785 | 106 | PASS | não |
+| 2 | S4 S5 S6 | 1 | 48/0/0 | 66 | 327 (105) | 22847.6 | 1118/213 | 0 | PASS | não |
+| **total** | | | | | **664 (190)** | 46292.4 | 1423/998 | 106 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 41052.9, 91080.2, 169101.1, 276577.0, 358158.6
+
+Tempo por passo: ciclo 1 **933.02 ms**; ciclos 2–5 **1801.74 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | edbd7971 | edbd7971 | ✅ |
+| outcome | complete|halt|incomplete | incomplete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-7-perda1  (repetição 3/5)
+== build skipped (DES_SKIP_BUILD=1): using the existing image
+== run (bridge): node1 node2 node3 node4 node5 node6 node7
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node7-1 Creating 
+ Container docker-des-node5-1 Creating 
+ Container docker-des-node6-1 Creating 
+ Container docker-des-node4-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node3-1 Creating 
+ Container docker-des-node5-1 Created 
+ Container docker-des-node6-1 Created 
+ Container docker-des-node3-1 Created 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node4-1 Created 
+ Container docker-des-node7-1 Created 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node4-1 Starting 
+ Container docker-des-node6-1 Starting 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node3-1 Starting 
+ Container docker-des-node5-1 Starting 
+ Container docker-des-node7-1 Starting 
+ Container docker-des-node1-1 Started 
+ Container docker-des-node4-1 Started 
+ Container docker-des-node6-1 Started 
+ Container docker-des-node2-1 Started 
+ Container docker-des-node3-1 Started 
+ Container docker-des-node5-1 Started 
+ Container docker-des-node7-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-100342-fms-7-perda1
+# Execução `20260928-100342-fms-7-perda1`
+
+- problema `fms`, família `LMOD`, **7 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **220 executados**, 0 pulados
+- impressão digital da configuração: `04511541`
+- RTT de aplicação (nó 1, 16 sondas): média 4.72 ms, mín 2.44, máx 16.96
+- resultado: **complete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 | 0 | 20/40/40 | 0 | 101 (21) | 7059.6 | 182/2231 | 13 | PASS | não |
+| 2 | S1 | 0 | 20/0/0 | 80 | 101 (21) | 7052.4 | 347/2074 | 0 | PASS | não |
+| 3 | S2 | 0 | 20/0/0 | 80 | 100 (20) | 6981.4 | 345/2071 | 0 | PASS | não |
+| 4 | S3 | 0 | 20/0/0 | 80 | 103 (23) | 7196.6 | 350/2070 | 0 | PASS | não |
+| 5 | S4 | 0 | 0/20/10 | 80 | 114 (26) | 7980.3 | 377/2032 | 2 | PASS | não |
+| 6 | S5 | 0 | 0/0/0 | 110 | 129 (41) | 9043.7 | 425/2000 | 0 | PASS | não |
+| 7 | S6 | 0 | 30/0/0 | 110 | 150 (38) | 10567.0 | 414/1997 | 0 | PASS | não |
+| **total** | | | | | **798 (190)** | 55881.0 | 2440/14475 | 15 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 5223.8, 14757.0, 24953.9, 31033.1, 39900.6
+
+Tempo por passo: ciclo 1 **118.72 ms**; ciclos 2–5 **197.03 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | 04511541 | 04511541 | ✅ |
+| decryptions, whole cell | 798 | 798 | ✅ |
+| decryptions, whole cell, cycle 1 | 190 | 190 | ✅ |
+| outcome | complete|halt|incomplete | complete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-7-perda5  (repetição 3/5)
+== build skipped (DES_SKIP_BUILD=1): using the existing image
+== run (bridge): node1 node2 node3 node4 node5 node6 node7
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node7-1 Creating 
+ Container docker-des-node5-1 Creating 
+ Container docker-des-node6-1 Creating 
+ Container docker-des-node4-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node3-1 Creating 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node4-1 Created 
+ Container docker-des-node7-1 Created 
+ Container docker-des-node5-1 Created 
+ Container docker-des-node6-1 Created 
+ Container docker-des-node3-1 Created 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node3-1 Starting 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node7-1 Starting 
+ Container docker-des-node5-1 Starting 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node6-1 Starting 
+ Container docker-des-node4-1 Starting 
+ Container docker-des-node3-1 Started 
+ Container docker-des-node1-1 Started 
+ Container docker-des-node7-1 Started 
+ Container docker-des-node5-1 Started 
+ Container docker-des-node2-1 Started 
+ Container docker-des-node6-1 Started 
+ Container docker-des-node4-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-100449-fms-7-perda5
+# Execução `20260928-100449-fms-7-perda5`
+
+- problema `fms`, família `LMOD`, **7 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **220 executados**, 0 pulados
+- impressão digital da configuração: `04511541`
+- RTT de aplicação (nó 1, 9 sondas): média 4.78 ms, mín 4.27, máx 5.29
+- resultado: **complete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 | 0 | 20/40/40 | 0 | 101 (21) | 7052.5 | 244/4504 | 75 | PASS | não |
+| 2 | S1 | 0 | 20/0/0 | 80 | 101 (21) | 7056.2 | 768/4039 | 0 | PASS | não |
+| 3 | S2 | 0 | 20/0/0 | 80 | 100 (20) | 6984.9 | 778/4030 | 0 | PASS | não |
+| 4 | S3 | 0 | 20/0/0 | 80 | 103 (23) | 7195.3 | 770/4028 | 0 | PASS | não |
+| 5 | S4 | 0 | 0/20/10 | 80 | 114 (26) | 7975.5 | 751/4058 | 13 | PASS | não |
+| 6 | S5 | 0 | 0/0/0 | 110 | 129 (41) | 9036.0 | 856/3949 | 0 | PASS | não |
+| 7 | S6 | 0 | 30/0/0 | 110 | 150 (38) | 10545.0 | 843/3960 | 0 | PASS | não |
+| **total** | | | | | **798 (190)** | 55845.4 | 5010/28568 | 88 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 32461.0, 71250.1, 103748.0, 125917.8, 156415.9
+
+Tempo por passo: ciclo 1 **737.75 ms**; ciclos 2–5 **704.29 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | 04511541 | 04511541 | ✅ |
+| decryptions, whole cell | 798 | 798 | ✅ |
+| decryptions, whole cell, cycle 1 | 190 | 190 | ✅ |
+| outcome | complete|halt|incomplete | complete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-7-perda10  (repetição 3/5)
+== build skipped (DES_SKIP_BUILD=1): using the existing image
+== run (bridge): node1 node2 node3 node4 node5 node6 node7
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node7-1 Creating 
+ Container docker-des-node5-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node6-1 Creating 
+ Container docker-des-node4-1 Creating 
+ Container docker-des-node3-1 Creating 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node4-1 Created 
+ Container docker-des-node5-1 Created 
+ Container docker-des-node6-1 Created 
+ Container docker-des-node3-1 Created 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node7-1 Created 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node6-1 Starting 
+ Container docker-des-node5-1 Starting 
+ Container docker-des-node3-1 Starting 
+ Container docker-des-node7-1 Starting 
+ Container docker-des-node4-1 Starting 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node1-1 Started 
+ Container docker-des-node6-1 Started 
+ Container docker-des-node5-1 Started 
+ Container docker-des-node3-1 Started 
+ Container docker-des-node7-1 Started 
+ Container docker-des-node4-1 Started 
+ Container docker-des-node2-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-100752-fms-7-perda10
+# Execução `20260928-100752-fms-7-perda10`
+
+- problema `fms`, família `LMOD`, **7 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **184 executados**, 36 pulados
+- impressão digital da configuração: `04511541`
+- RTT de aplicação (nó 1, 3 sondas): média 4.39 ms, mín 4.16, máx 4.72
+- resultado: **incomplete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 | 1 | 18/33/33 | 0 | 85 (21) | 5942.1 | 420/9689 | 162 | PASS | não |
+| 2 | S1 | 1 | 18/0/0 | 66 | 85 (21) | 5938.0 | 1824/8463 | 0 | PASS | não |
+| 3 | S2 | 1 | 18/0/0 | 66 | 84 (20) | 5866.8 | 1817/8465 | 0 | PASS | não |
+| 4 | S3 | 1 | 16/0/0 | 66 | 85 (23) | 5943.0 | 1784/8502 | 0 | PASS | não |
+| 5 | S4 | 1 | 0/16/8 | 66 | 94 (26) | 6591.7 | 1577/8707 | 32 | PASS | não |
+| 6 | S5 | 0 | 0/0/0 | 90 | 109 (41) | 7647.9 | 1942/8336 | 0 | PASS | não |
+| 7 | S6 | 1 | 24/0/0 | 90 | 124 (38) | 8754.5 | 1832/8383 | 0 | PASS | não |
+| **total** | | | | | **666 (190)** | 46684.0 | 11196/60545 | 194 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 80206.4, 140041.8, 205150.5, 314068.5, 457826.3
+
+Tempo por passo: ciclo 1 **1822.87 ms**; ciclos 2–5 **2145.57 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | 04511541 | 04511541 | ✅ |
+| outcome | complete|halt|incomplete | incomplete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-2-perda1  (repetição 4/5)
+== build skipped (DES_SKIP_BUILD=1): using the existing image
+== run (bridge): node1 node2
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node1-1 Started 
+ Container docker-des-node2-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-101558-fms-2-perda1
+# Execução `20260928-101558-fms-2-perda1`
+
+- problema `fms`, família `LMOD`, **2 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **220 executados**, 0 pulados
+- impressão digital da configuração: `edbd7971`
+- RTT de aplicação (nó 1, 20 sondas): média 3.83 ms, mín 2.60, máx 6.12
+- resultado: **complete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 S1 S2 S3 | 0 | 80/40/40 | 0 | 405 (85) | 28276.3 | 150/230 | 0 | PASS | não |
+| 2 | S4 S5 S6 | 0 | 60/0/0 | 80 | 393 (105) | 27513.6 | 230/150 | 0 | PASS | não |
+| **total** | | | | | **798 (190)** | 55789.9 | 380/380 | 0 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 8633.6, 15201.2, 21776.3, 28350.2, 34917.8
+
+Tempo por passo: ciclo 1 **196.22 ms**; ciclos 2–5 **149.34 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | edbd7971 | edbd7971 | ✅ |
+| decryptions, whole cell | 798 | 798 | ✅ |
+| decryptions, whole cell, cycle 1 | 190 | 190 | ✅ |
+| outcome | complete|halt|incomplete | complete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-2-perda5  (repetição 4/5)
+== build skipped (DES_SKIP_BUILD=1): using the existing image
+== run (bridge): node1 node2
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node1-1 Started 
+ Container docker-des-node2-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-101654-fms-2-perda5
+# Execução `20260928-101654-fms-2-perda5`
+
+- problema `fms`, família `LMOD`, **2 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **220 executados**, 0 pulados
+- impressão digital da configuração: `edbd7971`
+- RTT de aplicação (nó 1, 19 sondas): média 3.84 ms, mín 2.49, máx 5.05
+- resultado: **complete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 S1 S2 S3 | 0 | 80/40/40 | 0 | 405 (85) | 28281.3 | 165/301 | 15 | PASS | não |
+| 2 | S4 S5 S6 | 0 | 60/0/0 | 80 | 393 (105) | 27506.9 | 315/155 | 0 | PASS | não |
+| **total** | | | | | **798 (190)** | 55788.2 | 480/456 | 15 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 13660.9, 25033.0, 34812.3, 44599.0, 59121.2
+
+Tempo por passo: ciclo 1 **310.47 ms**; ciclos 2–5 **258.30 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | edbd7971 | edbd7971 | ✅ |
+| decryptions, whole cell | 798 | 798 | ✅ |
+| decryptions, whole cell, cycle 1 | 190 | 190 | ✅ |
+| outcome | complete|halt|incomplete | complete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-2-perda10  (repetição 4/5)
+== build skipped (DES_SKIP_BUILD=1): using the existing image
+== run (bridge): node1 node2
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node2-1 Started 
+ Container docker-des-node1-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-101814-fms-2-perda10
+# Execução `20260928-101814-fms-2-perda10`
+
+- problema `fms`, família `LMOD`, **2 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **220 executados**, 0 pulados
+- impressão digital da configuração: `edbd7971`
+- RTT de aplicação (nó 1, 17 sondas): média 4.07 ms, mín 2.75, máx 5.69
+- resultado: **complete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 S1 S2 S3 | 0 | 80/40/40 | 0 | 405 (85) | 28257.9 | 177/352 | 28 | PASS | não |
+| 2 | S4 S5 S6 | 0 | 60/0/0 | 80 | 393 (105) | 27505.5 | 381/156 | 0 | PASS | não |
+| **total** | | | | | **798 (190)** | 55763.4 | 558/508 | 28 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 16948.5, 33438.5, 49194.5, 58502.8, 80060.2
+
+Tempo por passo: ciclo 1 **385.19 ms**; ciclos 2–5 **358.59 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | edbd7971 | edbd7971 | ✅ |
+| decryptions, whole cell | 798 | 798 | ✅ |
+| decryptions, whole cell, cycle 1 | 190 | 190 | ✅ |
+| outcome | complete|halt|incomplete | complete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-2-perda20  (repetição 4/5)
+== build skipped (DES_SKIP_BUILD=1): using the existing image
+== run (bridge): node1 node2
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node2-1 Started 
+ Container docker-des-node1-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-101956-fms-2-perda20
+# Execução `20260928-101956-fms-2-perda20`
+
+- problema `fms`, família `LMOD`, **2 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **220 executados**, 0 pulados
+- impressão digital da configuração: `edbd7971`
+- RTT de aplicação (nó 1, 14 sondas): média 3.82 ms, mín 2.83, máx 5.15
+- resultado: **complete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 S1 S2 S3 | 0 | 80/40/40 | 0 | 405 (85) | 28271.0 | 210/429 | 53 | PASS | não |
+| 2 | S4 S5 S6 | 0 | 60/0/0 | 80 | 393 (105) | 27487.0 | 539/174 | 0 | PASS | não |
+| **total** | | | | | **798 (190)** | 55758.0 | 749/603 | 53 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 18643.1, 46777.1, 72076.5, 98972.4, 120384.0
+
+Tempo por passo: ciclo 1 **423.71 ms**; ciclos 2–5 **578.07 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | edbd7971 | edbd7971 | ✅ |
+| decryptions, whole cell | 798 | 798 | ✅ |
+| decryptions, whole cell, cycle 1 | 190 | 190 | ✅ |
+| outcome | complete|halt|incomplete | complete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-2-perda30  (repetição 4/5)
+== build skipped (DES_SKIP_BUILD=1): using the existing image
+== run (bridge): node1 node2
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node1-1 Started 
+ Container docker-des-node2-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-102219-fms-2-perda30
+# Execução `20260928-102219-fms-2-perda30`
+
+- problema `fms`, família `LMOD`, **2 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **8 executados**, 0 pulados, 212 não alcançados (execução interrompida)
+- impressão digital da configuração: `edbd7971`
+- RTT de aplicação (nó 1, 6 sondas): média 4.38 ms, mín 3.90, máx 4.93
+- resultado: **halt** — SAFE HALT nos nós [1, 2]
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 S1 S2 S3 | 2 | 6/1/1 | 0 | 19 (19) | 1332.4 | 45/45 | 4 | PASS | **COMMIT unacknowledged — a participant may not have applied a shared event** |
+| 2 | S4 S5 S6 | 2 | 0/0/0 | 3 | 18 (18) | 1306.1 | 77/27 | 0 | PASS | **a peer halted** |
+| **total** | | | | | **37 (37)** | 2638.5 | 122/72 | 4 | | |
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | edbd7971 | edbd7971 | ✅ |
+| outcome | complete|halt|incomplete | halt | ✅ |
+| consistency across nodes | consistente | consistente até o SAFE HALT (1 evento em voo: 1-2) | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-7-perda1  (repetição 4/5)
+== build skipped (DES_SKIP_BUILD=1): using the existing image
+== run (bridge): node1 node2 node3 node4 node5 node6 node7
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node3-1 Creating 
+ Container docker-des-node7-1 Creating 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node5-1 Creating 
+ Container docker-des-node6-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node4-1 Creating 
+ Container docker-des-node5-1 Created 
+ Container docker-des-node7-1 Created 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node4-1 Created 
+ Container docker-des-node6-1 Created 
+ Container docker-des-node3-1 Created 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node6-1 Starting 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node7-1 Starting 
+ Container docker-des-node4-1 Starting 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node5-1 Starting 
+ Container docker-des-node3-1 Starting 
+ Container docker-des-node6-1 Started 
+ Container docker-des-node2-1 Started 
+ Container docker-des-node7-1 Started 
+ Container docker-des-node4-1 Started 
+ Container docker-des-node1-1 Started 
+ Container docker-des-node5-1 Started 
+ Container docker-des-node3-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-102255-fms-7-perda1
+# Execução `20260928-102255-fms-7-perda1`
+
+- problema `fms`, família `LMOD`, **7 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **220 executados**, 0 pulados
+- impressão digital da configuração: `04511541`
+- RTT de aplicação (nó 1, 18 sondas): média 10.68 ms, mín 2.37, máx 121.62
+- resultado: **complete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 | 0 | 20/40/40 | 0 | 101 (21) | 7057.7 | 177/2372 | 17 | PASS | não |
+| 2 | S1 | 0 | 20/0/0 | 80 | 101 (21) | 7058.2 | 369/2185 | 0 | PASS | não |
+| 3 | S2 | 0 | 20/0/0 | 80 | 100 (20) | 6986.3 | 369/2183 | 0 | PASS | não |
+| 4 | S3 | 0 | 20/0/0 | 80 | 103 (23) | 7198.2 | 372/2180 | 0 | PASS | não |
+| 5 | S4 | 0 | 0/20/10 | 80 | 114 (26) | 7987.4 | 394/2154 | 3 | PASS | não |
+| 6 | S5 | 0 | 0/0/0 | 110 | 129 (41) | 9048.9 | 449/2099 | 0 | PASS | não |
+| 7 | S6 | 0 | 30/0/0 | 110 | 150 (38) | 10571.0 | 444/2113 | 0 | PASS | não |
+| **total** | | | | | **798 (190)** | 55907.7 | 2574/15286 | 20 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 9772.0, 24467.5, 30262.6, 37699.4, 48080.5
+
+Tempo por passo: ciclo 1 **222.09 ms**; ciclos 2–5 **217.66 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | 04511541 | 04511541 | ✅ |
+| decryptions, whole cell | 798 | 798 | ✅ |
+| decryptions, whole cell, cycle 1 | 190 | 190 | ✅ |
+| outcome | complete|halt|incomplete | complete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-7-perda5  (repetição 4/5)
+== build skipped (DES_SKIP_BUILD=1): using the existing image
+== run (bridge): node1 node2 node3 node4 node5 node6 node7
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node7-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node5-1 Creating 
+ Container docker-des-node3-1 Creating 
+ Container docker-des-node4-1 Creating 
+ Container docker-des-node6-1 Creating 
+ Container docker-des-node7-1 Created 
+ Container docker-des-node3-1 Created 
+ Container docker-des-node5-1 Created 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node4-1 Created 
+ Container docker-des-node6-1 Created 
+ Container docker-des-node7-1 Starting 
+ Container docker-des-node3-1 Starting 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node5-1 Starting 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node6-1 Starting 
+ Container docker-des-node4-1 Starting 
+ Container docker-des-node7-1 Started 
+ Container docker-des-node3-1 Started 
+ Container docker-des-node2-1 Started 
+ Container docker-des-node5-1 Started 
+ Container docker-des-node1-1 Started 
+ Container docker-des-node6-1 Started 
+ Container docker-des-node4-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-102407-fms-7-perda5
+# Execução `20260928-102407-fms-7-perda5`
+
+- problema `fms`, família `LMOD`, **7 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **220 executados**, 0 pulados
+- impressão digital da configuração: `04511541`
+- RTT de aplicação (nó 1, 12 sondas): média 4.48 ms, mín 3.30, máx 5.68
+- resultado: **complete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 | 0 | 20/40/40 | 0 | 101 (21) | 7058.7 | 239/4827 | 77 | PASS | não |
+| 2 | S1 | 0 | 20/0/0 | 80 | 101 (21) | 7061.0 | 833/4305 | 0 | PASS | não |
+| 3 | S2 | 0 | 20/0/0 | 80 | 100 (20) | 6978.0 | 838/4272 | 0 | PASS | não |
+| 4 | S3 | 0 | 20/0/0 | 80 | 103 (23) | 7194.9 | 823/4312 | 0 | PASS | não |
+| 5 | S4 | 0 | 0/20/10 | 80 | 114 (26) | 7975.7 | 816/4323 | 13 | PASS | não |
+| 6 | S5 | 0 | 0/0/0 | 110 | 129 (41) | 9041.3 | 907/4234 | 0 | PASS | não |
+| 7 | S6 | 0 | 30/0/0 | 110 | 150 (38) | 10549.4 | 910/4226 | 0 | PASS | não |
+| **total** | | | | | **798 (190)** | 55859.0 | 5366/30499 | 90 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 28959.1, 74055.2, 109239.4, 134877.3, 174728.4
+
+Tempo por passo: ciclo 1 **658.16 ms**; ciclos 2–5 **828.23 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | 04511541 | 04511541 | ✅ |
+| decryptions, whole cell | 798 | 798 | ✅ |
+| decryptions, whole cell, cycle 1 | 190 | 190 | ✅ |
+| outcome | complete|halt|incomplete | complete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-7-perda10  (repetição 4/5)
+== build skipped (DES_SKIP_BUILD=1): using the existing image
+== run (bridge): node1 node2 node3 node4 node5 node6 node7
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node7-1 Creating 
+ Container docker-des-node4-1 Creating 
+ Container docker-des-node6-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node3-1 Creating 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node5-1 Creating 
+ Container docker-des-node7-1 Created 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node5-1 Created 
+ Container docker-des-node4-1 Created 
+ Container docker-des-node3-1 Created 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node6-1 Created 
+ Container docker-des-node7-1 Starting 
+ Container docker-des-node6-1 Starting 
+ Container docker-des-node5-1 Starting 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node3-1 Starting 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node4-1 Starting 
+ Container docker-des-node7-1 Started 
+ Container docker-des-node6-1 Started 
+ Container docker-des-node5-1 Started 
+ Container docker-des-node1-1 Started 
+ Container docker-des-node3-1 Started 
+ Container docker-des-node2-1 Started 
+ Container docker-des-node4-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-102728-fms-7-perda10
+# Execução `20260928-102728-fms-7-perda10`
+
+- problema `fms`, família `LMOD`, **7 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **149 executados**, 71 pulados
+- impressão digital da configuração: `04511541`
+- RTT de aplicação (nó 1, 7 sondas): média 4.45 ms, mín 3.28, máx 5.36
+- resultado: **incomplete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 | 1 | 14/27/27 | 0 | 69 (15) | 4821.9 | 501/12394 | 191 | PASS | não |
+| 2 | S1 | 1 | 16/0/0 | 54 | 71 (15) | 4962.8 | 2317/10758 | 0 | PASS | não |
+| 3 | S2 | 1 | 14/0/0 | 54 | 68 (14) | 4748.8 | 2277/10710 | 0 | PASS | não |
+| 4 | S3 | 1 | 14/0/0 | 54 | 71 (15) | 4963.3 | 2287/10768 | 0 | PASS | não |
+| 5 | S4 | 1 | 0/13/6 | 54 | 76 (14) | 5329.9 | 2033/10995 | 27 | PASS | não |
+| 6 | S5 | 0 | 0/0/0 | 73 | 93 (24) | 6537.0 | 2530/10613 | 0 | PASS | não |
+| 7 | S6 | 1 | 18/0/0 | 73 | 105 (24) | 7447.2 | 2325/10729 | 0 | PASS | não |
+| **total** | | | | | **553 (121)** | 38810.9 | 14270/76967 | 218 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 143708.3, 255457.5, 352496.9, 472915.9, 619707.7
+
+Tempo por passo: ciclo 1 **3266.10 ms**; ciclos 2–5 **2704.54 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | 04511541 | 04511541 | ✅ |
+| outcome | complete|halt|incomplete | incomplete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-2-perda1  (repetição 5/5)
+== build skipped (DES_SKIP_BUILD=1): using the existing image
+== run (bridge): node1 node2
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node2-1 Started 
+ Container docker-des-node1-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-103814-fms-2-perda1
+# Execução `20260928-103814-fms-2-perda1`
+
+- problema `fms`, família `LMOD`, **2 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **220 executados**, 0 pulados
+- impressão digital da configuração: `edbd7971`
+- RTT de aplicação (nó 1, 20 sondas): média 4.68 ms, mín 3.01, máx 6.04
+- resultado: **complete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 S1 S2 S3 | 0 | 80/40/40 | 0 | 405 (85) | 28304.8 | 151/241 | 2 | PASS | não |
+| 2 | S4 S5 S6 | 0 | 60/0/0 | 80 | 393 (105) | 27522.4 | 243/150 | 0 | PASS | não |
+| **total** | | | | | **798 (190)** | 55827.2 | 394/391 | 2 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 8648.6, 16997.6, 23806.9, 31877.3, 38445.4
+
+Tempo por passo: ciclo 1 **196.56 ms**; ciclos 2–5 **169.30 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | edbd7971 | edbd7971 | ✅ |
+| decryptions, whole cell | 798 | 798 | ✅ |
+| decryptions, whole cell, cycle 1 | 190 | 190 | ✅ |
+| outcome | complete|halt|incomplete | complete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-2-perda5  (repetição 5/5)
+== build skipped (DES_SKIP_BUILD=1): using the existing image
+== run (bridge): node1 node2
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node1-1 Started 
+ Container docker-des-node2-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-103913-fms-2-perda5
+# Execução `20260928-103913-fms-2-perda5`
+
+- problema `fms`, família `LMOD`, **2 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **220 executados**, 0 pulados
+- impressão digital da configuração: `edbd7971`
+- RTT de aplicação (nó 1, 19 sondas): média 3.68 ms, mín 2.44, máx 4.81
+- resultado: **complete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 S1 S2 S3 | 0 | 80/40/40 | 0 | 405 (85) | 28265.4 | 169/312 | 19 | PASS | não |
+| 2 | S4 S5 S6 | 0 | 60/0/0 | 80 | 393 (105) | 27490.3 | 330/158 | 0 | PASS | não |
+| **total** | | | | | **798 (190)** | 55755.7 | 499/470 | 19 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 21626.7, 31455.5, 44225.6, 55538.0, 64952.9
+
+Tempo por passo: ciclo 1 **491.52 ms**; ciclos 2–5 **246.17 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | edbd7971 | edbd7971 | ✅ |
+| decryptions, whole cell | 798 | 798 | ✅ |
+| decryptions, whole cell, cycle 1 | 190 | 190 | ✅ |
+| outcome | complete|halt|incomplete | complete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-2-perda10  (repetição 5/5)
+== build skipped (DES_SKIP_BUILD=1): using the existing image
+== run (bridge): node1 node2
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node2-1 Started 
+ Container docker-des-node1-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-104039-fms-2-perda10
+# Execução `20260928-104039-fms-2-perda10`
+
+- problema `fms`, família `LMOD`, **2 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **220 executados**, 0 pulados
+- impressão digital da configuração: `edbd7971`
+- RTT de aplicação (nó 1, 13 sondas): média 3.72 ms, mín 2.64, máx 4.90
+- resultado: **complete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 S1 S2 S3 | 0 | 80/40/40 | 0 | 405 (85) | 28280.6 | 167/312 | 18 | PASS | não |
+| 2 | S4 S5 S6 | 0 | 60/0/0 | 80 | 393 (105) | 27513.6 | 337/152 | 0 | PASS | não |
+| **total** | | | | | **798 (190)** | 55794.2 | 504/464 | 18 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 9293.4, 24579.8, 39215.6, 52577.5, 63866.8
+
+Tempo por passo: ciclo 1 **211.21 ms**; ciclos 2–5 **310.08 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | edbd7971 | edbd7971 | ✅ |
+| decryptions, whole cell | 798 | 798 | ✅ |
+| decryptions, whole cell, cycle 1 | 190 | 190 | ✅ |
+| outcome | complete|halt|incomplete | complete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-2-perda20  (repetição 5/5)
+== build skipped (DES_SKIP_BUILD=1): using the existing image
+== run (bridge): node1 node2
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node2-1 Started 
+ Container docker-des-node1-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-104205-fms-2-perda20
+# Execução `20260928-104205-fms-2-perda20`
+
+- problema `fms`, família `LMOD`, **2 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **220 executados**, 0 pulados
+- impressão digital da configuração: `edbd7971`
+- RTT de aplicação (nó 1, 12 sondas): média 4.14 ms, mín 2.67, máx 4.89
+- resultado: **complete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 S1 S2 S3 | 0 | 80/40/40 | 0 | 405 (85) | 28254.7 | 214/465 | 63 | PASS | não |
+| 2 | S4 S5 S6 | 0 | 60/0/0 | 80 | 393 (105) | 27483.3 | 578/166 | 0 | PASS | não |
+| **total** | | | | | **798 (190)** | 55738.0 | 792/631 | 63 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 24565.5, 54035.3, 84324.2, 103614.6, 136473.4
+
+Tempo por passo: ciclo 1 **558.31 ms**; ciclos 2–5 **635.84 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | edbd7971 | edbd7971 | ✅ |
+| decryptions, whole cell | 798 | 798 | ✅ |
+| decryptions, whole cell, cycle 1 | 190 | 190 | ✅ |
+| outcome | complete|halt|incomplete | complete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-2-perda30  (repetição 5/5)
+== build skipped (DES_SKIP_BUILD=1): using the existing image
+== run (bridge): node1 node2
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node2-1 Started 
+ Container docker-des-node1-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-104444-fms-2-perda30
+# Execução `20260928-104444-fms-2-perda30`
+
+- problema `fms`, família `LMOD`, **2 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **13 executados**, 0 pulados, 207 não alcançados (execução interrompida)
+- impressão digital da configuração: `edbd7971`
+- RTT de aplicação (nó 1, 6 sondas): média 4.30 ms, mín 4.12, máx 4.55
+- resultado: **halt** — SAFE HALT nos nós [1, 2]
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 S1 S2 S3 | 2 | 8/3/2 | 0 | 33 (33) | 2306.2 | 71/102 | 15 | PASS | **NOTIFY unacknowledged — a participant may have missed an uncontrollable shared event** |
+| 2 | S4 S5 S6 | 2 | 0/0/0 | 6 | 39 (39) | 2816.3 | 149/44 | 0 | PASS | **a peer halted** |
+| **total** | | | | | **72 (72)** | 5122.5 | 220/146 | 15 | | |
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | edbd7971 | edbd7971 | ✅ |
+| outcome | complete|halt|incomplete | halt | ✅ |
+| consistency across nodes | consistente | consistente até o SAFE HALT (1 evento em voo: 1-2) | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-7-perda1  (repetição 5/5)
+== build skipped (DES_SKIP_BUILD=1): using the existing image
+== run (bridge): node1 node2 node3 node4 node5 node6 node7
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node7-1 Creating 
+ Container docker-des-node5-1 Creating 
+ Container docker-des-node6-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node4-1 Creating 
+ Container docker-des-node3-1 Creating 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node5-1 Created 
+ Container docker-des-node3-1 Created 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node6-1 Created 
+ Container docker-des-node7-1 Created 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node4-1 Created 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node3-1 Starting 
+ Container docker-des-node6-1 Starting 
+ Container docker-des-node5-1 Starting 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node4-1 Starting 
+ Container docker-des-node7-1 Starting 
+ Container docker-des-node1-1 Started 
+ Container docker-des-node3-1 Started 
+ Container docker-des-node6-1 Started 
+ Container docker-des-node4-1 Started 
+ Container docker-des-node7-1 Started 
+ Container docker-des-node2-1 Started 
+ Container docker-des-node5-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-104540-fms-7-perda1
+# Execução `20260928-104540-fms-7-perda1`
+
+- problema `fms`, família `LMOD`, **7 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **220 executados**, 0 pulados
+- impressão digital da configuração: `04511541`
+- RTT de aplicação (nó 1, 19 sondas): média 4.67 ms, mín 2.79, máx 5.86
+- resultado: **complete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 | 0 | 20/40/40 | 0 | 101 (21) | 7063.1 | 180/2310 | 14 | PASS | não |
+| 2 | S1 | 0 | 20/0/0 | 80 | 101 (21) | 7058.1 | 360/2130 | 0 | PASS | não |
+| 3 | S2 | 0 | 20/0/0 | 80 | 100 (20) | 6986.4 | 367/2120 | 0 | PASS | não |
+| 4 | S3 | 0 | 20/0/0 | 80 | 103 (23) | 7191.1 | 361/2130 | 0 | PASS | não |
+| 5 | S4 | 0 | 0/20/10 | 80 | 114 (26) | 7975.9 | 380/2103 | 5 | PASS | não |
+| 6 | S5 | 0 | 0/0/0 | 110 | 129 (41) | 9029.8 | 437/2059 | 0 | PASS | não |
+| 7 | S6 | 0 | 30/0/0 | 110 | 150 (38) | 10533.3 | 430/2059 | 0 | PASS | não |
+| **total** | | | | | **798 (190)** | 55837.7 | 2515/14911 | 19 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 10121.3, 15837.3, 25000.0, 34639.8, 45377.5
+
+Tempo por passo: ciclo 1 **230.03 ms**; ciclos 2–5 **200.32 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | 04511541 | 04511541 | ✅ |
+| decryptions, whole cell | 798 | 798 | ✅ |
+| decryptions, whole cell, cycle 1 | 190 | 190 | ✅ |
+| outcome | complete|halt|incomplete | complete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-7-perda5  (repetição 5/5)
+== build skipped (DES_SKIP_BUILD=1): using the existing image
+== run (bridge): node1 node2 node3 node4 node5 node6 node7
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node7-1 Creating 
+ Container docker-des-node5-1 Creating 
+ Container docker-des-node6-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node4-1 Creating 
+ Container docker-des-node3-1 Creating 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node6-1 Created 
+ Container docker-des-node4-1 Created 
+ Container docker-des-node3-1 Created 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node7-1 Created 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node5-1 Created 
+ Container docker-des-node3-1 Starting 
+ Container docker-des-node5-1 Starting 
+ Container docker-des-node4-1 Starting 
+ Container docker-des-node6-1 Starting 
+ Container docker-des-node7-1 Starting 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node3-1 Started 
+ Container docker-des-node5-1 Started 
+ Container docker-des-node4-1 Started 
+ Container docker-des-node6-1 Started 
+ Container docker-des-node7-1 Started 
+ Container docker-des-node1-1 Started 
+ Container docker-des-node2-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-104650-fms-7-perda5
+# Execução `20260928-104650-fms-7-perda5`
+
+- problema `fms`, família `LMOD`, **7 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **220 executados**, 0 pulados
+- impressão digital da configuração: `04511541`
+- RTT de aplicação (nó 1, 11 sondas): média 13.30 ms, mín 2.53, máx 110.23
+- resultado: **complete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 | 0 | 20/40/40 | 0 | 101 (21) | 7066.4 | 247/4667 | 77 | PASS | não |
+| 2 | S1 | 0 | 20/0/0 | 80 | 101 (21) | 7063.7 | 802/4144 | 0 | PASS | não |
+| 3 | S2 | 0 | 20/0/0 | 80 | 100 (20) | 6987.5 | 792/4125 | 0 | PASS | não |
+| 4 | S3 | 0 | 20/0/0 | 80 | 103 (23) | 7198.0 | 791/4157 | 0 | PASS | não |
+| 5 | S4 | 0 | 0/20/10 | 80 | 114 (26) | 7997.4 | 795/4153 | 9 | PASS | não |
+| 6 | S5 | 0 | 0/0/0 | 110 | 129 (41) | 9050.9 | 871/4089 | 0 | PASS | não |
+| 7 | S6 | 0 | 30/0/0 | 110 | 150 (38) | 10585.5 | 864/4100 | 0 | PASS | não |
+| **total** | | | | | **798 (190)** | 55949.4 | 5162/29435 | 86 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 38306.1, 71533.9, 102453.4, 122412.2, 160302.0
+
+Tempo por passo: ciclo 1 **870.59 ms**; ciclos 2–5 **693.16 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | 04511541 | 04511541 | ✅ |
+| decryptions, whole cell | 798 | 798 | ✅ |
+| decryptions, whole cell, cycle 1 | 190 | 190 | ✅ |
+| outcome | complete|halt|incomplete | complete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+################ fms-7-perda10  (repetição 5/5)
+== build skipped (DES_SKIP_BUILD=1): using the existing image
+== run (bridge): node1 node2 node3 node4 node5 node6 node7
+ Network docker-des_cell Creating 
+ Network docker-des_cell Creating 
+ Network docker-des_cell Created 
+ Network docker-des_cell Created 
+ Container docker-des-node7-1 Creating 
+ Container docker-des-node5-1 Creating 
+ Container docker-des-node1-1 Creating 
+ Container docker-des-node3-1 Creating 
+ Container docker-des-node2-1 Creating 
+ Container docker-des-node6-1 Creating 
+ Container docker-des-node4-1 Creating 
+ Container docker-des-node3-1 Created 
+ Container docker-des-node5-1 Created 
+ Container docker-des-node7-1 Created 
+ Container docker-des-node6-1 Created 
+ Container docker-des-node4-1 Created 
+ Container docker-des-node2-1 Created 
+ Container docker-des-node1-1 Created 
+ Container docker-des-node7-1 Starting 
+ Container docker-des-node3-1 Starting 
+ Container docker-des-node2-1 Starting 
+ Container docker-des-node5-1 Starting 
+ Container docker-des-node1-1 Starting 
+ Container docker-des-node4-1 Starting 
+ Container docker-des-node6-1 Starting 
+ Container docker-des-node7-1 Started 
+ Container docker-des-node3-1 Started 
+ Container docker-des-node2-1 Started 
+ Container docker-des-node5-1 Started 
+ Container docker-des-node1-1 Started 
+ Container docker-des-node4-1 Started 
+ Container docker-des-node6-1 Started 
+== collect -> results/20260928-085743-varredura/20260928-104957-fms-7-perda10
+# Execução `20260928-104957-fms-7-perda10`
+
+- problema `fms`, família `LMOD`, **7 containers**, UDP multicast
+- 5 ciclos × 44 passos = 220 passos; **134 executados**, 86 pulados
+- impressão digital da configuração: `04511541`
+- RTT de aplicação (nó 1, 7 sondas): média 4.38 ms, mín 2.94, máx 5.86
+- resultado: **incomplete**
+
+| nó | supervisores | saída | disparou (local/ctrl/unctrl) | aplicou p/ pares | decifrações (ciclo 1) | HE total ms | quadros tx/rx | retx | oráculo | halt |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | S0 | 1 | 14/24/24 | 0 | 63 (21) | 4417.3 | 529/12813 | 190 | PASS | não |
+| 2 | S1 | 1 | 12/0/0 | 48 | 61 (21) | 4265.6 | 2382/11083 | 0 | PASS | não |
+| 3 | S2 | 1 | 12/0/0 | 48 | 60 (20) | 4191.7 | 2376/11076 | 0 | PASS | não |
+| 4 | S3 | 1 | 12/0/0 | 48 | 63 (23) | 4402.3 | 2374/11060 | 0 | PASS | não |
+| 5 | S4 | 1 | 0/12/6 | 48 | 70 (26) | 4913.7 | 2059/11420 | 31 | PASS | não |
+| 6 | S5 | 0 | 0/0/0 | 66 | 85 (41) | 5976.8 | 2603/10918 | 0 | PASS | não |
+| 7 | S6 | 1 | 18/0/0 | 66 | 94 (38) | 6647.1 | 2413/11078 | 0 | PASS | não |
+| **total** | | | | | **496 (190)** | 34814.5 | 14736/79448 | 221 | | |
+
+Fim de cada ciclo no relógio comum (o **último** nó a terminar), ms: 66619.0, 259348.6, 349958.0, 512384.4, 647453.5
+
+Tempo por passo: ciclo 1 **1514.07 ms**; ciclos 2–5 **3300.20 ms**
+
+Verificação cruzada com o supervisor MONOLÍTICO: **off**
+
+## Verificações
+
+| verificação | esperado | obtido | |
+|---|---|---|---|
+| config fingerprint | 04511541 | 04511541 | ✅ |
+| outcome | complete|halt|incomplete | incomplete | ✅ |
+| consistency across nodes | consistente | consistente | ✅ |
+| same fingerprint on every node | 1 | 1 | ✅ |
+| oracle PASS on every node | True | True | ✅ |
+| crypto self-test PASS on every node | True | True | ✅ |
+
+**TODAS AS VERIFICAÇÕES PASSARAM**
+
+
+================ vereditos
+  fms-2-perda1           PASS (5 de 5)
+  fms-2-perda5           PASS (5 de 5)
+  fms-2-perda10          PASS (5 de 5)
+  fms-2-perda20          PASS (5 de 5)
+  fms-2-perda30          PASS (5 de 5)
+  fms-7-perda1           PASS (5 de 5)
+  fms-7-perda5           PASS (5 de 5)
+  fms-7-perda10          PASS (5 de 5)
+
+nenhuma execução fms-N (blocos, containers na ponte) em results/20260928-085743-varredura
+percentis de latência por passo: results/20260928-085743-varredura/latencia.md
+# Robustez a perda de quadros
+
+Cada nó descarta P % dos quadros que recebe, depois da autenticação (`DES_SIMULATE_LOSS_PCT`), com sorteio novo por execução e por nó. Decifração emulada a 69 ms e *timeouts* do motor (1,5 s) como no ESP32.
+
+## Desfecho
+
+**completa**: os 220 passos; **SAFE HALT**: um COMMIT/NOTIFY esgotou as retransmissões depois do ponto de commit e a célula parou; **incompleta**: terminou com passos pulados (o dono desistiu *antes* do commit, nada foi aplicado).
+
+| nós | perda | execuções | completa | SAFE HALT | incompleta | passos executados | pulados | retransmissões |
+|---|---|---|---|---|---|---|---|---|
+| 2 | 1 % | 5 | 5 | 0 | 0 | 220.0 ± 0.0 de 220 | 0.0 ± 0.0 | 1.6 ± 1.5 |
+| 2 | 5 % | 5 | 5 | 0 | 0 | 220.0 ± 0.0 de 220 | 0.0 ± 0.0 | 15.6 ± 5.1 |
+| 2 | 10 % | 5 | 5 | 0 | 0 | 220.0 ± 0.0 de 220 | 0.0 ± 0.0 | 23.8 ± 3.7 |
+| 2 | 20 % | 5 | 5 | 0 | 0 | 220.0 ± 0.0 de 220 | 0.0 ± 0.0 | 61.6 ± 10.4 |
+| 2 | 30 % | 5 | 0 | 4 | 1 | 62.6 ± 72.2 de 220 | 7.6 ± 17.0 | 36.2 ± 40.9 |
+| 7 | 1 % | 5 | 5 | 0 | 0 | 220.0 ± 0.0 de 220 | 0.0 ± 0.0 | 19.0 ± 2.9 |
+| 7 | 5 % | 5 | 5 | 0 | 0 | 220.0 ± 0.0 de 220 | 0.0 ± 0.0 | 87.6 ± 4.5 |
+| 7 | 10 % | 5 | 0 | 0 | 5 | 148.2 ± 23.1 de 220 | 71.8 ± 23.1 | 218.8 ± 19.0 |
+
+## Segurança (tem de valer em toda execução)
+
+| nós | perda | consistência entre nós | (das quais: 1 evento em voo no SAFE HALT) | oráculo PASS em todo nó | todas as verificações |
+|---|---|---|---|---|---|
+| 2 | 1 % | 5/5 | 0 | 5/5 | 5/5 |
+| 2 | 5 % | 5/5 | 0 | 5/5 | 5/5 |
+| 2 | 10 % | 5/5 | 0 | 5/5 | 5/5 |
+| 2 | 20 % | 5/5 | 0 | 5/5 | 5/5 |
+| 2 | 30 % | 5/5 | 4 | 5/5 | 5/5 |
+| 7 | 1 % | 5/5 | 0 | 5/5 | 5/5 |
+| 7 | 5 % | 5/5 | 0 | 5/5 | 5/5 |
+| 7 | 10 % | 5/5 | 0 | 5/5 | 5/5 |
+
+## Tempo por passo das execuções completas (ms)
+
+Compare com a varredura sem perda: 2 nós ≈ 196 / 149, 7 nós ≈ 90 / 61 ms (ciclo 1 / ciclos 2–5).
+
+| nós | perda | completas | ciclo 1 | ciclos 2–5 |
+|---|---|---|---|---|
+| 2 | 1 % | 5 | 204.2 ± 13.0 | 162.5 ± 15.5 |
+| 2 | 5 % | 5 | 365.0 ± 91.1 | 247.2 ± 34.2 |
+| 2 | 10 % | 5 | 334.2 ± 127.2 | 329.0 ± 34.0 |
+| 2 | 20 % | 5 | 640.0 ± 147.0 | 605.4 ± 87.4 |
+| 2 | 30 % | 0 | — | — |
+| 7 | 1 % | 5 | 241.1 ± 83.3 | 201.4 ± 9.9 |
+| 7 | 5 % | 5 | 744.1 ± 107.8 | 763.1 ± 62.7 |
+| 7 | 10 % | 0 | — | — |
+
+## Motivos de SAFE HALT
+
+- 2 nós, 30 %: COMMIT unacknowledged — a participant may not have applied a shared event
+- 2 nós, 30 %: NOTIFY unacknowledged — a participant may have missed an uncontrollable shared event
+- 2 nós, 30 %: a peer halted
+
